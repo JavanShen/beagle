@@ -1,25 +1,21 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { addToast } from "@heroui/react";
+import useStore from "@/store";
 
-const service = axios.create({
-  baseURL: localStorage.getItem("source") || undefined,
-});
+const service = axios.create();
 
 service.interceptors.request.use((config) => {
-  const store =
-    JSON.parse(localStorage.getItem("beagle-store") || "{}").state || {};
-
   const controller = new AbortController();
   config.signal = controller.signal;
 
-  config.baseURL = config.baseURL || store.source;
+  config.baseURL = config.baseURL || useStore.getState().origin;
 
   if (!config.baseURL && window.location.pathname !== "/login") {
     controller.abort();
     window.location.replace("/login");
   }
 
-  const token = store.token;
+  const token = useStore.getState().token;
   if (token) {
     config.headers.Authorization = token;
   }

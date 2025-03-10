@@ -14,7 +14,9 @@ const Login = () => {
     onSuccess: (res) => {
       if (res?.code === 200) {
         setToken(res.data.token);
-        navigate("/");
+        navigate("/", {
+          replace: true,
+        });
       }
     },
   });
