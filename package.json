@@ -13,6 +13,7 @@
     "@heroui/react": "^2.7.4",
     "@heroui/system": "^2.4.11",
     "@heroui/theme": "^2.4.11",
+    "ahooks": "^3.8.4",
     "axios": "^1.8.2",
     "framer-motion": "^12.4.10",
     "music-metadata": "^11.0.0",

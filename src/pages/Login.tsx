@@ -1,14 +1,33 @@
 import { Form, Input, Button } from "@heroui/react";
+import { login } from "@/request/user";
+import useStore from "@/store";
+import { useNavigate } from "react-router";
+import { useRequest } from "ahooks";
 
 const Login = () => {
+  const { setSource, setToken } = useStore();
+
+  const navigate = useNavigate();
+
+  const { loading: isLoginLoading, run: onLogin } = useRequest(login, {
+    manual: true,
+    onSuccess: (res) => {
+      if (res?.code === 200) {
+        setToken(res.data.token);
+        navigate("/");
+      }
+    },
+  });
+
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
-    // TODO: Implement login logic
+    const sourceURL = formData.get("source") as string;
 
-    console.log(username, password);
+    setSource(sourceURL);
+    onLogin(username, password);
   };
 
   return (
@@ -17,9 +36,15 @@ const Login = () => {
         className="w-1/3 max-w-screen-md flex flex-col items-center gap-y-10"
         onSubmit={onSubmit}
       >
-        <Input type="username" name="username" label="Username" isRequired />
+        <Input type="url" name="source" label="Source URL" isRequired />
+        <Input type="text" name="username" label="Username" isRequired />
         <Input type="password" name="password" label="Password" isRequired />
-        <Button type="submit" color="primary" fullWidth>
+        <Button
+          type="submit"
+          color="primary"
+          fullWidth
+          isLoading={isLoginLoading}
+        >
           Login
         </Button>
       </Form>
