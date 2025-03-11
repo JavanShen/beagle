@@ -26,7 +26,7 @@ service.interceptors.response.use(
   (res) => {
     const data = res.data;
 
-    if (data.code !== 200) {
+    if (data.code && data.code !== 200) {
       addToast({
         title: "Error",
         description: data.message || "Unknown error",

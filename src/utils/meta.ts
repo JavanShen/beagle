@@ -1,3 +1,6 @@
+import { getFileSlice } from "@/request/fs";
+import { parseBuffer } from "music-metadata";
+
 export const calID3Size = (buffer: ArrayBuffer) => {
   const typedArray = new Int8Array(buffer);
 
@@ -14,6 +17,18 @@ export const calID3Size = (buffer: ArrayBuffer) => {
       ((sizeBytes[2] & 0x7f) << 7) |
       (sizeBytes[3] & 0x7f);
 
-    return `bytes=0-${10 + metadataSize}`; // 返回精确范围
+    return 10 + metadataSize; // 返回精确范围
+  }
+};
+
+// TODO
+export const parseID3 = async (filePath: string) => {
+  const slice = await getFileSlice(filePath, 0, 9);
+  const id3HeadSize = calID3Size(slice);
+  if (id3HeadSize) {
+    const id3Buffer = await getFileSlice(filePath, 0, id3HeadSize);
+    console.log(id3Buffer);
+    const id3 = await parseBuffer(new Uint8Array(id3Buffer));
+    console.log(id3);
   }
 };
