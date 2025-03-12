@@ -1,8 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { FileList } from "@/request/fs";
+import { IAudioMetadata } from "music-metadata";
 
-const excludeKeys = ["musicList"];
+const excludeKeys = ["musicList", "musicMetaMap"];
+
+type Metadata = IAudioMetadata & {
+  cover?: string;
+};
 
 type BeagleState = {
   token: string;
@@ -12,8 +17,10 @@ type BeagleState = {
   musicPath: string;
   setSource: (source: string) => void;
 
+  musicMetaMap: Map<string, Metadata | null>;
   musicList: FileList["content"];
   setMusicList: (musicList: FileList["content"]) => void;
+  addMusicMeta: (id: string, meta: Metadata | null) => void;
 };
 
 const useStore = create<BeagleState>()(
@@ -29,8 +36,13 @@ const useStore = create<BeagleState>()(
         set({ origin: url.origin, musicPath: url.pathname });
       },
 
+      musicMetaMap: new Map(),
       musicList: [],
       setMusicList: (musicList) => set({ musicList }),
+      addMusicMeta: (id, meta) =>
+        set((state) => ({
+          musicMetaMap: new Map(state.musicMetaMap).set(id, meta),
+        })),
     }),
     {
       name: "beagle-store",

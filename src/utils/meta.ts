@@ -21,14 +21,17 @@ export const calID3Size = (buffer: ArrayBuffer) => {
   }
 };
 
-// TODO
 export const parseID3 = async (filePath: string) => {
-  const slice = await getFileSlice(filePath, 0, 9);
-  const id3HeadSize = calID3Size(slice);
-  if (id3HeadSize) {
-    const id3Buffer = await getFileSlice(filePath, 0, id3HeadSize);
-    console.log(id3Buffer);
-    const id3 = await parseBuffer(new Uint8Array(id3Buffer));
-    console.log(id3);
+  try {
+    const slice = await getFileSlice(filePath, 0, 9);
+    const id3HeadSize = calID3Size(slice);
+    if (id3HeadSize) {
+      const id3Buffer = await getFileSlice(filePath, 0, id3HeadSize);
+      const id3 = await parseBuffer(new Uint8Array(id3Buffer));
+      return id3;
+    }
+  } catch (error) {
+    console.error("Error parsing ID3:", error);
   }
+  return null;
 };

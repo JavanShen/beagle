@@ -1,5 +1,4 @@
 import { request } from "@/utils/request";
-import useStore from "@/store";
 
 export type FileList = {
   /**
@@ -57,12 +56,12 @@ type Content = {
    */
   type: number;
 };
-export const getFileList = () =>
+export const getFileList = (path: string) =>
   request<FileList>({
     method: "POST",
     url: "/api/fs/list",
     data: {
-      path: useStore.getState().musicPath,
+      path,
     },
   });
 
