@@ -13,6 +13,7 @@ type BeagleState = {
   token: string;
   setToken: (token: string) => void;
 
+  source: string;
   origin: string;
   musicPath: string;
   setSource: (source: string) => void;
@@ -29,11 +30,12 @@ const useStore = create<BeagleState>()(
       token: "",
       setToken: (token) => set({ token }),
 
+      source: "",
       origin: "",
       musicPath: "",
       setSource: (source) => {
         const url = new URL(source);
-        set({ origin: url.origin, musicPath: url.pathname });
+        set({ source, origin: url.origin, musicPath: url.pathname });
       },
 
       musicMetaMap: new Map(),

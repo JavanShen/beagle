@@ -4,6 +4,10 @@ import useStore from "@/store";
 
 const service = axios.create();
 
+const jumpLogin = () => {
+  window.location.replace("/login");
+};
+
 service.interceptors.request.use((config) => {
   const controller = new AbortController();
   config.signal = controller.signal;
@@ -12,7 +16,7 @@ service.interceptors.request.use((config) => {
 
   if (!config.baseURL && window.location.pathname !== "/login") {
     controller.abort();
-    window.location.replace("/login");
+    jumpLogin();
   }
 
   const token = useStore.getState().token;
@@ -27,11 +31,15 @@ service.interceptors.response.use(
     const data = res.data;
 
     if (data.code && data.code !== 200) {
-      addToast({
-        title: "Error",
-        description: data.message || "Unknown error",
-        color: "danger",
-      });
+      if (data.code === 401) {
+        jumpLogin();
+      } else {
+        addToast({
+          title: "Error",
+          description: data.message || "Unknown error",
+          color: "danger",
+        });
+      }
     }
 
     return data;
@@ -44,7 +52,7 @@ service.interceptors.response.use(
     });
 
     if (err.response.status === 401) {
-      window.location.replace("/login");
+      jumpLogin();
     }
 
     return Promise.reject(err);

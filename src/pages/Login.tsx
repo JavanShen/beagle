@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import { useRequest } from "ahooks";
 
 const Login = () => {
-  const { setSource, setToken } = useStore();
+  const { source, setSource, setToken } = useStore();
 
   const navigate = useNavigate();
 
@@ -38,7 +38,13 @@ const Login = () => {
         className="w-1/3 max-w-screen-md flex flex-col items-center gap-y-10"
         onSubmit={onSubmit}
       >
-        <Input type="url" name="source" label="Source URL" isRequired />
+        <Input
+          type="url"
+          name="source"
+          label="Source URL"
+          isRequired
+          defaultValue={source}
+        />
         <Input type="text" name="username" label="Username" isRequired />
         <Input type="password" name="password" label="Password" isRequired />
         <Button

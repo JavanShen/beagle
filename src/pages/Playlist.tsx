@@ -1,7 +1,7 @@
 import { useRef, memo } from "react";
 import useStore from "@/store";
 import { useDebounceEffect, useVirtualList } from "ahooks";
-import { Image } from "@heroui/react";
+import { Image, Skeleton } from "@heroui/react";
 import { parseID3 } from "@/utils/meta";
 import { getFileInfo } from "@/request/fs";
 
@@ -10,19 +10,41 @@ type ListItemProps = {
   cover?: string;
   musicName?: string;
   artist?: string;
+  isLoaded?: boolean;
 };
 const ListItem = memo(
-  ({ musicId, cover, musicName, artist }: ListItemProps) => {
+  ({ musicId, cover, musicName, artist, isLoaded }: ListItemProps) => {
     return (
       <li
         key={musicId}
-        className="flex items-center px-6"
-        style={{ height: "60px" }}
+        className="flex items-center px-5 mx-4 rounded-lg hover:bg-red-400/40 hover:text-red-600 hover:cursor-pointer transition-background"
+        style={{ height: "64px" }}
       >
-        <Image width={50} height={50} src={cover} alt="cover" />
+        <Image
+          isLoading={!isLoaded}
+          width={50}
+          height={50}
+          src={cover}
+          alt="cover"
+        />
         <div className="ml-2">
-          <p className="text-base">{musicName}</p>
-          <p className="text-sm text-gray-700">{artist}</p>
+          {isLoaded ? (
+            <>
+              <p className="text-base font-semibold">{musicName}</p>
+              <p className="text-sm opacity-70">{artist}</p>
+            </>
+          ) : (
+            <>
+              <Skeleton
+                className="rounded-lg"
+                style={{ width: 150, height: 12, marginBottom: 8 }}
+              />
+              <Skeleton
+                className="rounded-lg"
+                style={{ width: 100, height: 12 }}
+              />
+            </>
+          )}
         </div>
       </li>
     );
@@ -87,6 +109,7 @@ const Playlist = () => {
               cover={musicMeta?.cover}
               musicName={title || data.name}
               artist={artist}
+              isLoaded={musicMetaMap.has(data.sign)}
             />
           );
         })}
