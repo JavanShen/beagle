@@ -1,5 +1,6 @@
-import { getFileSlice } from "@/request/fs";
+import { getFileSlice, getFileInfo } from "@/request/fs";
 import { parseBuffer } from "music-metadata";
+import useStore from "@/store";
 
 export const calID3Size = (buffer: ArrayBuffer) => {
   const typedArray = new Int8Array(buffer);
@@ -34,4 +35,28 @@ export const parseID3 = async (filePath: string) => {
     console.error("Error parsing ID3:", error);
   }
   return null;
+};
+
+export const parseMusicMeta = (sign: string, fileName: string) => {
+  const { musicMetaMap, musicPath, addMusicMeta } = useStore.getState();
+  if (musicMetaMap.has(sign)) return;
+  getFileInfo(`${musicPath}/${fileName}`).then((fileInfo) => {
+    parseID3(fileInfo.data.raw_url).then((id3) => {
+      const coverInfo = id3?.common.picture?.[0];
+      const coverUrl = coverInfo
+        ? URL.createObjectURL(
+            new Blob([coverInfo.data], { type: coverInfo.type }),
+          )
+        : undefined;
+      addMusicMeta(
+        sign,
+        id3
+          ? {
+              ...id3,
+              cover: coverUrl,
+            }
+          : null,
+      );
+    });
+  });
 };

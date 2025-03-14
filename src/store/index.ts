@@ -22,6 +22,9 @@ type BeagleState = {
   musicList: FileList["content"];
   setMusicList: (musicList: FileList["content"]) => void;
   addMusicMeta: (id: string, meta: Metadata | null) => void;
+
+  currentMusicId: string;
+  setCurrentMusicId: (id: string) => void;
 };
 
 const useStore = create<BeagleState>()(
@@ -45,6 +48,9 @@ const useStore = create<BeagleState>()(
         set((state) => ({
           musicMetaMap: new Map(state.musicMetaMap).set(id, meta),
         })),
+
+      currentMusicId: "",
+      setCurrentMusicId: (id) => set({ currentMusicId: id }),
     }),
     {
       name: "beagle-store",
