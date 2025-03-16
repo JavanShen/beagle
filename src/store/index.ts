@@ -45,7 +45,10 @@ const useStore = create<BeagleState>()(
 
       musicMetaMap: new Map(),
       musicList: [],
-      setMusicList: (musicList) => set({ musicList }),
+      setMusicList: (musicList) => {
+        console.log("setMusicList");
+        set({ musicList });
+      },
       addMusicMeta: (id, meta) =>
         set((state) => ({
           musicMetaMap: new Map(state.musicMetaMap).set(id, meta),

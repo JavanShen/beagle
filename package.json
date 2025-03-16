@@ -13,6 +13,7 @@
     "@heroui/react": "^2.7.4",
     "@heroui/system": "^2.4.11",
     "@heroui/theme": "^2.4.11",
+    "@types/react-window": "^1.8.8",
     "ahooks": "^3.8.4",
     "axios": "^1.8.2",
     "framer-motion": "^12.4.10",
@@ -22,6 +23,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.3.0",
+    "react-virtualized-auto-sizer": "^1.0.25",
     "react-window": "^1.8.11",
     "tailwindcss": "^3.4.17",
     "zustand": "^5.0.3"
