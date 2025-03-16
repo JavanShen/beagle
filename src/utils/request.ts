@@ -9,13 +9,9 @@ const jumpLogin = () => {
 };
 
 service.interceptors.request.use((config) => {
-  const controller = new AbortController();
-  config.signal = controller.signal;
-
   config.baseURL = config.baseURL || useStore.getState().origin;
 
   if (!config.baseURL && window.location.pathname !== "/login") {
-    controller.abort();
     jumpLogin();
   }
 

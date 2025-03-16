@@ -48,15 +48,12 @@ export const parseMusicMeta = (sign: string, fileName: string) => {
             new Blob([coverInfo.data], { type: coverInfo.type }),
           )
         : undefined;
-      addMusicMeta(
-        sign,
-        id3
-          ? {
-              ...id3,
-              cover: coverUrl,
-            }
-          : null,
-      );
+      addMusicMeta(sign, {
+        ...id3,
+        cover: coverUrl,
+        hasMeta: id3 ? true : false,
+        rawUrl: fileInfo.data.raw_url,
+      });
     });
   });
 };

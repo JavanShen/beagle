@@ -5,7 +5,9 @@ import { useNavigate } from "react-router";
 import { useRequest } from "ahooks";
 
 const Login = () => {
-  const { source, setSource, setToken } = useStore();
+  const source = useStore((state) => state.source);
+  const setSource = useStore((state) => state.setSource);
+  const setToken = useStore((state) => state.setToken);
 
   const navigate = useNavigate();
 

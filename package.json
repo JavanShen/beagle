@@ -22,6 +22,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.3.0",
+    "react-window": "^1.8.11",
     "tailwindcss": "^3.4.17",
     "zustand": "^5.0.3"
   },

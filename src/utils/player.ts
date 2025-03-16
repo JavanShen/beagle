@@ -10,11 +10,8 @@ export const secondsToMinutes = (seconds: number) => {
 };
 
 export default class Player extends Audio {
-  source: string;
-
-  constructor(source: string) {
+  constructor(source?: string) {
     super(source);
-    this.source = source;
   }
 
   loadedData(fn: () => void) {
@@ -48,6 +45,12 @@ export default class Player extends Audio {
   setVolume(val: number) {
     const volume = Math.min(Math.max(0, val), 100) / 100;
     super.volume = volume;
+  }
+
+  playAudio(source: string) {
+    super.pause();
+    super.src = source;
+    super.load();
   }
 
   destroy() {

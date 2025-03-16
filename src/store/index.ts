@@ -5,8 +5,10 @@ import { IAudioMetadata } from "music-metadata";
 
 const excludeKeys = ["musicList", "musicMetaMap"];
 
-type Metadata = IAudioMetadata & {
+type Metadata = Partial<IAudioMetadata> & {
   cover?: string;
+  rawUrl?: string;
+  hasMeta?: boolean;
 };
 
 type BeagleState = {

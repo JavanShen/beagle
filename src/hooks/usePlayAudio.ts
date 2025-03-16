@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Player, { secondsToMinutes } from "@/utils/player";
 
-const usePlayAudio = (source: string, loaded?: () => void) => {
-  const [player, setPlayer] = useState<null | Player>(null);
+const usePlayAudio = (source?: string, loaded?: () => void) => {
+  console.log("useaudio");
+  const player = useMemo(() => new Player(), []);
 
   const [currentTime, setCurrentTime] = useState(0);
   const [currentTimeText, setCurrentTimeText] = useState("00:00");
@@ -15,12 +16,13 @@ const usePlayAudio = (source: string, loaded?: () => void) => {
   const isManualUpdating = useRef(false);
 
   useEffect(() => {
-    setPlayer((preVal) => {
-      setIsCanPlay(false);
-      setIsPlay(false);
-      preVal?.destroy();
-      return new Player(source || "");
-    });
+    if (!source) return;
+
+    setIsCanPlay(false);
+    setIsPlay(false);
+    player.playAudio(source);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [source]);
 
   useEffect(() => {
@@ -42,15 +44,12 @@ const usePlayAudio = (source: string, loaded?: () => void) => {
     player?.bePaused(() => {
       setIsPlay(false);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [player]);
 
-  useEffect(
-    () => () => {
+    return () => {
       player?.destroy();
-    },
-    [player],
-  );
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const play = () => {
     player?.play();

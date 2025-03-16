@@ -17,7 +17,7 @@ const ListItem = memo(
     return (
       <li
         key={musicId}
-        className={`flex items-center px-5 mx-4 rounded-lg ${isLoaded ? "hover:bg-red-400/40 hover:text-red-600 hover:cursor-pointer hover:shadow-md" : ""} transition-all`}
+        className={`flex items-center px-5 mx-4 rounded-lg ${isLoaded ? "hover:bg-gray-200/40 hover:cursor-pointer" : ""} transition-background`}
         style={{ height: "64px" }}
         onClick={onClick}
       >
@@ -26,14 +26,17 @@ const ListItem = memo(
           width={50}
           height={50}
           src={cover}
-          shadow="md"
+          radius="md"
           alt="cover"
         />
-        <div className="ml-2">
+        <div
+          className="ml-4 flex flex-col justify-between"
+          style={{ height: 46 }}
+        >
           {isLoaded ? (
             <>
-              <p className="text-base font-semibold">{musicName}</p>
-              <p className="text-sm opacity-70">{artist}</p>
+              <div className="text-base font-semibold">{musicName}</div>
+              <div className="text-sm opacity-70">{artist}</div>
             </>
           ) : (
             <>
@@ -54,6 +57,8 @@ const ListItem = memo(
 );
 
 const Playlist = () => {
+  console.log("playlist rerender");
+
   const containerRef = useRef(null);
   const wrapperRef = useRef(null);
 
