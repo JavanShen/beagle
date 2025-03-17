@@ -121,6 +121,14 @@ export const getFileInfo = (path: string) =>
     },
   });
 
+export const getFileStream = (path: string) =>
+  request<ReadableStream<Uint8Array>, true>({
+    method: "GET",
+    url: path,
+    responseType: "stream",
+    adapter: "fetch",
+  });
+
 export const getFileSlice = (path: string, start: number, end: number) =>
   request<ArrayBuffer, true>({
     method: "GET",
