@@ -21,21 +21,14 @@ const Player = () => {
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentMusicId]);
 
-  const { play, pause, totalTimeText, currentTimeText } = usePlayAudio(
-    musicInfo.rawUrl,
-  );
+  const controls = usePlayAudio(musicInfo.rawUrl);
 
-  return (
-    <MiniPlayer
-      musicName={musicInfo.title}
-      artist={musicInfo.artist}
-      cover={musicInfo.cover}
-      duration={totalTimeText}
-      progress={currentTimeText}
-      onPlay={play}
-      onPause={pause}
-    />
-  );
+  const playerInfo = {
+    ...controls,
+    ...musicInfo,
+  };
+
+  return <MiniPlayer {...playerInfo} />;
 };
 
 export default Player;

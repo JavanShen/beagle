@@ -17,8 +17,6 @@ const ListItem = memo(
     const isLoaded = metadata !== undefined;
     const { title: musicName, artist } = metadata?.common || {};
 
-    console.count(`list item rerender ${musicId}, isloaded: ${isLoaded}`);
-
     useEffect(() => {
       parseMusicMeta(musicId, fileName);
     }, [musicId, fileName]);
@@ -71,8 +69,6 @@ const Playlist = () => {
 
   const musicList = useStore((state) => state.musicList);
   const setCurrentMusicId = useStore((state) => state.setCurrentMusicId);
-
-  console.log("playlist rerender", musicList);
 
   return (
     <div className="w-full h-full" ref={containerRef}>

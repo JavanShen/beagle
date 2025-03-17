@@ -1,17 +1,19 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import Player, { secondsToMinutes } from "@/utils/player";
 
+export type UsePlayAudioReturn = ReturnType<typeof usePlayAudio>;
+
 const usePlayAudio = (source?: string, loaded?: () => void) => {
   console.log("useaudio");
   const player = useMemo(() => new Player(), []);
 
   const [currentTime, setCurrentTime] = useState(0);
   const [currentTimeText, setCurrentTimeText] = useState("00:00");
-  const [totalTime, setTotalTime] = useState(0);
-  const [totalTimeText, setTotalTimeText] = useState("00:00");
+  const [duration, setDuration] = useState(0);
+  const [durationText, setDurationText] = useState("00:00");
   const [volume, setVolume] = useState<null | number>(null);
 
-  const [isPlay, setIsPlay] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [isCanPlay, setIsCanPlay] = useState(false);
   const isManualUpdating = useRef(false);
 
@@ -19,7 +21,7 @@ const usePlayAudio = (source?: string, loaded?: () => void) => {
     if (!source) return;
 
     setIsCanPlay(false);
-    setIsPlay(false);
+    setIsPlaying(false);
     player.playAudio(source);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -27,8 +29,8 @@ const usePlayAudio = (source?: string, loaded?: () => void) => {
 
   useEffect(() => {
     player?.canPlay(() => {
-      setTotalTime(Math.floor(player.duration || 0));
-      setTotalTimeText(player.totalTimeText || "00:00");
+      setDuration(Math.floor(player.duration || 0));
+      setDurationText(player.durationText || "00:00");
       setVolume(player.muted ? null : player.volume * 100);
       setIsCanPlay(true);
       loaded?.();
@@ -42,7 +44,7 @@ const usePlayAudio = (source?: string, loaded?: () => void) => {
     });
 
     player?.bePaused(() => {
-      setIsPlay(false);
+      setIsPlaying(false);
     });
 
     return () => {
@@ -53,12 +55,12 @@ const usePlayAudio = (source?: string, loaded?: () => void) => {
 
   const play = () => {
     player?.play();
-    setIsPlay(true);
+    setIsPlaying(true);
   };
 
   const pause = () => {
     player?.pause();
-    setIsPlay(false);
+    setIsPlaying(false);
   };
 
   const updateTime = (val: number) => {
@@ -94,13 +96,13 @@ const usePlayAudio = (source?: string, loaded?: () => void) => {
 
   return {
     currentTime,
-    totalTime,
-    totalTimeText,
+    duration,
+    durationText,
     play,
     pause,
     updateTime,
     jump,
-    isPlay,
+    isPlaying,
     currentTimeText,
     isCanPlay,
     volume,

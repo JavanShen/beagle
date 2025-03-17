@@ -59,7 +59,7 @@ export default class Player extends Audio {
     super.remove();
   }
 
-  get totalTimeText() {
+  get durationText() {
     return secondsToMinutes(this.duration);
   }
 

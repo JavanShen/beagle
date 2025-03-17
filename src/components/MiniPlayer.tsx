@@ -1,26 +1,34 @@
 import { memo } from "react";
-import { Card, Image, Spacer, Button } from "@heroui/react";
+import { Card, Image, Spacer, Button, Slider } from "@heroui/react";
+import { UsePlayAudioReturn } from "@/hooks/usePlayAudio";
+import PlayIcon from "@/assets/play_arrow.svg?react";
+import PauseIcon from "@/assets/pause.svg?react";
+import NextIcon from "@/assets/skip_next.svg?react";
+import PrevIcon from "@/assets/skip_previous.svg?react";
 
-type MiniPlayerProps = {
+type MiniPlayerProps = UsePlayAudioReturn & {
   cover?: string;
-  musicName?: string;
+  title?: string;
   artist?: string;
-  duration?: string;
-  progress?: string;
-  onPlay?: () => void;
-  onPause?: () => void;
 };
 
 const MiniPlayer = memo(
   ({
     cover,
-    musicName,
+    title,
     artist,
+    durationText,
+    currentTimeText,
     duration,
-    progress,
-    onPlay,
-    onPause,
+    currentTime,
+    isPlaying,
+    updateTime,
+    jump,
+    play: onPlay,
+    pause: onPause,
   }: MiniPlayerProps) => {
+    console.count("mini player rerender");
+
     return (
       <Card
         fullWidth
@@ -30,33 +38,45 @@ const MiniPlayer = memo(
       >
         <div className="flex items-center px-4 h-full w-full">
           <Image src={cover} height={60} width={60} isBlurred alt="cover" />
-          <div className="ml-4">
-            <p className="text-base font-semibold">{musicName}</p>
+          <div className="mx-4">
+            <p className="text-base font-semibold">{title}</p>
             <p className="text-sm opacity-80">{artist}</p>
           </div>
-
-          <div className="flex">
-            <Button
-              size="sm"
-              color="primary"
-              className="rounded-full"
-              onPress={onPlay}
-            >
-              播放
-            </Button>
-            <Spacer />
-            <Button
-              size="sm"
-              color="primary"
-              className="rounded-full"
-              onPress={onPause}
-            >
-              暂停
-            </Button>
-            <Spacer />
-            <span>{duration}</span>
-            <span>{progress}</span>
-          </div>
+          <Button isIconOnly size="md" radius="md" variant="light">
+            <PrevIcon />
+          </Button>
+          <Button
+            isIconOnly
+            size="lg"
+            radius="md"
+            variant="light"
+            onPress={isPlaying ? onPause : onPlay}
+          >
+            {isPlaying ? (
+              <PauseIcon height={36} width={36} />
+            ) : (
+              <PlayIcon height={40} width={40} />
+            )}
+          </Button>
+          <Button isIconOnly size="md" radius="md" variant="light">
+            <NextIcon />
+          </Button>
+          <Spacer />
+          <span className="text-sm">{currentTimeText}</span>
+          <Spacer />
+          <Slider
+            aria-label="music-progress"
+            size="sm"
+            className="flex-1"
+            minValue={0}
+            maxValue={duration}
+            value={currentTime}
+            step={1}
+            onChange={(val) => updateTime(val as number)}
+            onChangeEnd={(val) => jump(val as number)}
+          />
+          <Spacer />
+          <span className="text-sm">{durationText}</span>
         </div>
       </Card>
     );
