@@ -15,7 +15,7 @@ const ListItem = memo(
   ({ musicId, fileName, style, onClick }: ListItemProps) => {
     const metadata = useStore((state) => state.musicMetaMap.get(musicId));
     const isLoaded = metadata !== undefined;
-    const { title: musicName, artist } = metadata?.common || {};
+    const { title: musicName, artist } = metadata || {};
 
     useEffect(() => {
       parseMusicMeta(musicId, fileName);

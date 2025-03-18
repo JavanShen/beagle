@@ -1,11 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { FileList } from "@/request/fs";
-import { IAudioMetadata } from "music-metadata";
 
 const excludeKeys = ["musicList", "musicMetaMap"];
 
-type Metadata = Partial<IAudioMetadata> & {
+type Metadata = {
+  title?: string;
+  artist?: string;
   cover?: string;
   rawUrl?: string;
   hasMeta?: boolean;

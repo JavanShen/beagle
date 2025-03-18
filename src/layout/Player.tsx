@@ -9,7 +9,7 @@ const Player = () => {
 
   const musicInfo = useMemo(() => {
     const musicMeta = musicMetaMap.get(currentMusicId);
-    const { title, artist } = musicMeta?.common || {};
+    const { title, artist } = musicMeta || {};
 
     return {
       title,

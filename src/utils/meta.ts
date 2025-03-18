@@ -19,14 +19,16 @@ export const parseMusicMeta = (sign: string, fileName: string) => {
   if (musicMetaMap.has(sign)) return;
   const joinUrl = encodeURI(`${origin}/p${musicPath}/${fileName}?sign=${sign}`);
   parseID3(joinUrl).then((id3) => {
-    const coverInfo = id3?.common.picture?.[0];
+    const { title, artist, picture } = id3?.common || {};
+    const coverInfo = picture?.[0];
     const coverUrl = coverInfo
       ? URL.createObjectURL(
           new Blob([coverInfo.data], { type: coverInfo.type }),
         )
       : undefined;
     addMusicMeta(sign, {
-      ...id3,
+      title,
+      artist,
       cover: coverUrl,
       hasMeta: id3 ? true : false,
       rawUrl: joinUrl,
