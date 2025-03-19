@@ -14,24 +14,28 @@ export const parseID3 = async (filePath: string) => {
   return null;
 };
 
-export const parseMusicMeta = (sign: string, fileName: string) => {
+export const parseMusicMeta = async (sign: string, fileName: string) => {
   const { musicMetaMap, musicPath, origin, addMusicMeta } = useStore.getState();
   if (musicMetaMap.has(sign)) return;
   const joinUrl = encodeURI(`${origin}/p${musicPath}/${fileName}?sign=${sign}`);
-  parseID3(joinUrl).then((id3) => {
-    const { title, artist, picture } = id3?.common || {};
-    const coverInfo = picture?.[0];
-    const coverUrl = coverInfo
-      ? URL.createObjectURL(
-          new Blob([coverInfo.data], { type: coverInfo.type }),
-        )
-      : undefined;
-    addMusicMeta(sign, {
-      title,
-      artist,
-      cover: coverUrl,
-      hasMeta: id3 ? true : false,
-      rawUrl: joinUrl,
-    });
-  });
+
+  const id3 = await parseID3(joinUrl);
+
+  const { title, artist, picture } = id3?.common || {};
+  const coverInfo = picture?.[0];
+  const coverUrl = coverInfo
+    ? URL.createObjectURL(new Blob([coverInfo.data], { type: coverInfo.type }))
+    : undefined;
+
+  const metadata = {
+    title,
+    artist,
+    cover: coverUrl,
+    hasMeta: id3 ? true : false,
+    rawUrl: joinUrl,
+  };
+
+  addMusicMeta(sign, metadata);
+
+  return metadata;
 };

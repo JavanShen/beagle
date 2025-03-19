@@ -1,4 +1,4 @@
-import { useRef, memo, useEffect } from "react";
+import { memo, useEffect } from "react";
 import useStore from "@/store";
 import { Image, Skeleton } from "@heroui/react";
 import { parseMusicMeta } from "@/utils/meta";
@@ -18,7 +18,9 @@ const ListItem = memo(
     const { title: musicName, artist } = metadata || {};
 
     useEffect(() => {
-      parseMusicMeta(musicId, fileName);
+      if (musicId && fileName) {
+        parseMusicMeta(musicId, fileName);
+      }
     }, [musicId, fileName]);
 
     return (
@@ -64,43 +66,38 @@ const ListItem = memo(
 );
 
 const Playlist = () => {
-  const containerRef = useRef(null);
-  const wrapperRef = useRef(null);
-
   const musicList = useStore((state) => state.musicList);
-  const setCurrentMusicId = useStore((state) => state.setCurrentMusicId);
+  const setCurrentMusic = useStore((state) => state.setCurrentMusic);
 
   return (
-    <div className="w-full h-full" ref={containerRef}>
-      <ul className="w-full h-full" ref={wrapperRef}>
-        <AutoSizer style={{ height: "100%", width: "100%" }}>
-          {({ height }) => (
-            <FixedSizeList
-              height={height}
-              itemSize={64}
-              width={"100%"}
-              itemCount={musicList.length}
-            >
-              {({ index, style }) => {
-                const { name, sign } = musicList[index] || {};
+    <ul className="w-full h-full">
+      <AutoSizer style={{ height: "100%", width: "100%" }}>
+        {({ height }) => (
+          <FixedSizeList
+            height={height}
+            itemSize={64}
+            width={"100%"}
+            itemCount={musicList.length}
+          >
+            {({ index, style }) => {
+              const { name, sign } = musicList[index] || {};
 
-                return (
-                  <ListItem
-                    key={sign}
-                    musicId={sign}
-                    fileName={name}
-                    style={style}
-                    onClick={() => {
-                      setCurrentMusicId(sign);
-                    }}
-                  ></ListItem>
-                );
-              }}
-            </FixedSizeList>
-          )}
-        </AutoSizer>
-      </ul>
-    </div>
+              return (
+                <ListItem
+                  key={sign}
+                  musicId={sign}
+                  fileName={name}
+                  style={style}
+                  onClick={() => {
+                    setCurrentMusic(sign, index, name);
+                  }}
+                ></ListItem>
+              );
+            }}
+          </FixedSizeList>
+        )}
+      </AutoSizer>
+    </ul>
   );
 };
 
