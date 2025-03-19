@@ -33,9 +33,6 @@ type BeagleState = {
   currentMusicIndex: number;
   currentMusicId: string;
   currentFileName: string;
-  setCurrentFileName: (fileName: string) => void;
-  setCurrentMusicId: (id: string) => void;
-  setCurrentMusicIndex: (index: number) => void;
   setCurrentMusic: (id: string, index: number, fileName: string) => void;
 
   playMode: "list" | "random" | "single";
@@ -77,15 +74,13 @@ const useStore = create<BeagleState>()(
       currentMusicIndex: 0,
       currentMusicId: "",
       currentFileName: "",
-      setCurrentFileName: (fileName) => set({ currentFileName: fileName }),
-      setCurrentMusicId: (id) => set({ currentMusicId: id }),
-      setCurrentMusicIndex: (index) => set({ currentMusicIndex: index }),
       setCurrentMusic: (id, index, fileName) => {
-        set({
+        set((state) => ({
           currentMusicId: id,
           currentMusicIndex: index,
           currentFileName: fileName,
-        });
+          history: [...state.history, index],
+        }));
       },
 
       // 播放模式
