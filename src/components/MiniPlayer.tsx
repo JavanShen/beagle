@@ -4,6 +4,9 @@ import PlayIcon from "@/assets/play_arrow.svg?react";
 import PauseIcon from "@/assets/pause.svg?react";
 import NextIcon from "@/assets/skip_next.svg?react";
 import PrevIcon from "@/assets/skip_previous.svg?react";
+import ShuffleIcon from "@/assets/shuffle.svg?react";
+import RepeatIcon from "@/assets/repeat.svg?react";
+import QueueIcon from "@/assets/queue_music.svg?react";
 
 type MiniPlayerProps = UsePlayAudioReturn & {
   cover?: string;
@@ -11,7 +14,10 @@ type MiniPlayerProps = UsePlayAudioReturn & {
   artist?: string;
   nextDisabled?: boolean;
   prevDisabled?: boolean;
+  playMode?: string;
   next: () => void;
+  prev: () => void;
+  setPlayMode: (mode: "list" | "random" | "single") => void;
 };
 
 const MiniPlayer = ({
@@ -28,6 +34,9 @@ const MiniPlayer = ({
   prevDisabled,
   nextDisabled,
   next,
+  prev,
+  playMode,
+  setPlayMode,
   play: onPlay,
   pause: onPause,
 }: MiniPlayerProps) => {
@@ -42,9 +51,13 @@ const MiniPlayer = ({
     >
       <div className="flex items-center px-4 h-full w-full">
         <Image src={cover} height={60} width={60} isBlurred alt="cover" />
-        <div className="mx-4">
-          <p className="text-base font-semibold">{title}</p>
-          <p className="text-sm opacity-80">{artist}</p>
+        <div className="w-2/12 max-w-36 mx-4 whitespace-nowrap overflow-hidden flex-1">
+          <p className="text-base font-semibold text-ellipsis overflow-hidden">
+            {title}
+          </p>
+          <p className="text-sm opacity-80 text-ellipsis overflow-hidden">
+            {artist}
+          </p>
         </div>
         <Button
           isIconOnly
@@ -52,6 +65,7 @@ const MiniPlayer = ({
           radius="md"
           variant="light"
           isDisabled={prevDisabled}
+          onPress={prev}
         >
           <PrevIcon />
         </Button>
@@ -79,12 +93,14 @@ const MiniPlayer = ({
           <NextIcon />
         </Button>
         <Spacer />
-        <span className="text-sm">{currentTimeText}</span>
+        <span className="text-sm opacity-65">{currentTimeText}</span>
         <Spacer />
         <Slider
           aria-label="music-progress"
           size="sm"
           className="flex-1"
+          radius="md"
+          hideThumb
           minValue={0}
           maxValue={duration}
           value={currentTime}
@@ -93,7 +109,29 @@ const MiniPlayer = ({
           onChangeEnd={(val) => jump(val as number)}
         />
         <Spacer />
-        <span className="text-sm">{durationText}</span>
+        <span className="text-sm opacity-65">{durationText}</span>
+        <Spacer />
+        <Button
+          isIconOnly
+          size="sm"
+          radius="md"
+          variant="light"
+          onPress={() => setPlayMode("random")}
+        >
+          <ShuffleIcon
+            fill={playMode === "random" ? "#006FED" : undefined}
+            height={20}
+            width={20}
+          />
+        </Button>
+        <Spacer />
+        <Button isIconOnly size="sm" radius="md" variant="light">
+          <RepeatIcon fill="#006FED" height={20} width={20} />
+        </Button>
+        <Spacer />
+        <Button isIconOnly size="sm" radius="md" variant="light">
+          <QueueIcon height={24} width={24} />
+        </Button>
       </div>
     </Card>
   );

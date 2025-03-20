@@ -21,7 +21,7 @@ export const parseMusicMeta = async (sign: string, fileName: string) => {
 
   const id3 = await parseID3(joinUrl);
 
-  const { title, artist, picture } = id3?.common || {};
+  const { title, artist, picture, album } = id3?.common || {};
   const coverInfo = picture?.[0];
   const coverUrl = coverInfo
     ? URL.createObjectURL(new Blob([coverInfo.data], { type: coverInfo.type }))
@@ -30,6 +30,8 @@ export const parseMusicMeta = async (sign: string, fileName: string) => {
   const metadata = {
     title,
     artist,
+    album,
+    duration: id3?.format.duration,
     cover: coverUrl,
     hasMeta: id3 ? true : false,
     rawUrl: joinUrl,

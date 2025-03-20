@@ -7,6 +7,8 @@ const excludeKeys = ["musicList", "musicMetaMap", "history"];
 type Metadata = {
   title?: string;
   artist?: string;
+  album?: string;
+  duration?: number;
   cover?: string;
   rawUrl?: string;
   hasMeta?: boolean;
@@ -36,6 +38,7 @@ type BeagleState = {
   setCurrentMusic: (id: string, index: number, fileName: string) => void;
 
   playMode: "list" | "random" | "single";
+  setPlayMode: (mode: "list" | "random" | "single") => void;
 };
 
 const useStore = create<BeagleState>()(
@@ -85,6 +88,7 @@ const useStore = create<BeagleState>()(
 
       // 播放模式
       playMode: "list",
+      setPlayMode: (mode) => set({ playMode: mode }),
     }),
     {
       name: "beagle-store",

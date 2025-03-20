@@ -18,6 +18,7 @@ const Player = () => {
 
   const setCurrentMusic = useStore((state) => state.setCurrentMusic);
   const setPlaylist = useStore((state) => state.setPlaylist);
+  const setPlayMode = useStore((state) => state.setPlayMode);
 
   // 销毁后清理媒体通知
   useEffect(
@@ -95,6 +96,16 @@ const Player = () => {
     setCurrentMusic(music.sign, musicIndex, music.name);
   };
 
+  // TODO 上一首逻辑修补
+  const prev = () => {
+    if (history.length === 0) return;
+
+    const musicIndex = history[history.length - 1];
+    const music = musicList[musicIndex];
+
+    setCurrentMusic(music.sign, musicIndex, music.name);
+  };
+
   const controls = usePlayAudio(musicInfo?.rawUrl);
 
   const playerInfo = {
@@ -103,6 +114,9 @@ const Player = () => {
     prevDisabled: history.length === 0,
     nextDisabled: playlist.length === 0,
     next,
+    prev,
+    playMode,
+    setPlayMode,
   };
 
   return <MiniPlayer {...playerInfo} />;
