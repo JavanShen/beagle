@@ -21,14 +21,15 @@ const Player = () => {
   const setPlayMode = useStore((state) => state.setPlayMode);
 
   // 销毁后清理媒体通知
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    return () => {
       if ("mediaSession" in navigator) {
         navigator.mediaSession.metadata = null;
+        navigator.mediaSession.setActionHandler("nexttrack", null);
+        navigator.mediaSession.setActionHandler("previoustrack", null);
       }
-    },
-    [],
-  );
+    };
+  }, []);
 
   // 获取播放音乐的信息
   useEffect(() => {
@@ -38,15 +39,6 @@ const Player = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentMusicId, currentFileName]);
-
-  // 设置媒体通知 https://developer.mozilla.org/en-US/docs/Web/API/Media_Session_API
-  if ("mediaSession" in navigator) {
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title: musicInfo?.title,
-      artist: musicInfo?.artist,
-      artwork: [{ src: musicInfo?.cover || "" }],
-    });
-  }
 
   // 更新待播放列表
   useEffect(() => {
@@ -105,6 +97,18 @@ const Player = () => {
 
     setCurrentMusic(music.sign, musicIndex, music.name);
   };
+
+  // 设置媒体通知 https://developer.mozilla.org/en-US/docs/Web/API/Media_Session_API
+  if ("mediaSession" in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: musicInfo?.title,
+      artist: musicInfo?.artist,
+      artwork: [{ src: musicInfo?.cover || "" }],
+    });
+
+    navigator.mediaSession.setActionHandler("nexttrack", next);
+    navigator.mediaSession.setActionHandler("previoustrack", prev);
+  }
 
   const controls = usePlayAudio(musicInfo?.rawUrl);
 
