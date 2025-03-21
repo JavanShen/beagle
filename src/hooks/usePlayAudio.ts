@@ -33,6 +33,7 @@ const usePlayAudio = (source?: string, loaded?: () => void) => {
       setDurationText(player.durationText || "00:00");
       setVolume(player.muted ? null : player.volume * 100);
       setIsCanPlay(true);
+      play();
       loaded?.();
     });
 

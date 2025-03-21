@@ -31,7 +31,7 @@ const ListItem = memo(
         style={{ ...style, height: 64 }}
         onClick={() => isLoaded && onClick?.()}
       >
-        <div className="flex items-center w-4/12">
+        <div className="flex items-center w-full md:w-4/12">
           <Image
             isLoading={!isLoaded}
             width={50}
@@ -67,10 +67,10 @@ const ListItem = memo(
             )}
           </div>
         </div>
-        <div className="text-sm opacity-70 text-start w-4/12 overflow-hidden text-ellipsis">
+        <div className="text-sm opacity-70 text-start w-4/12 overflow-hidden text-ellipsis hidden md:block">
           <span>{album}</span>
         </div>
-        <div className="text-sm opacity-70 text-end w-1/12 overflow-hidden">
+        <div className="text-sm opacity-70 text-end w-1/12 overflow-hidden hidden sm:block">
           <span>{duration ? secondsToMinutes(duration) : ""}</span>
         </div>
       </div>
