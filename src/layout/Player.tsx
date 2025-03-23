@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useStore from "@/store";
 import usePlayAudio from "@/hooks/usePlayAudio";
 import MiniPlayer from "@/components/MiniPlayer";
@@ -19,6 +19,22 @@ const Player = () => {
   const setCurrentMusic = useStore((state) => state.setCurrentMusic);
   const setPlaylist = useStore((state) => state.setPlaylist);
   const setPlayMode = useStore((state) => state.setPlayMode);
+
+  const { coverData, coverType, artist, title, rawUrl } = musicInfo || {};
+
+  const [coverUrl, setCoverUrl] = useState<string>();
+  useEffect(() => {
+    if (coverData && coverType) {
+      const url = URL.createObjectURL(
+        new Blob([coverData], { type: coverType }),
+      );
+      setCoverUrl(url);
+      return () => {
+        console.log("revoke now", url);
+        URL.revokeObjectURL(url);
+      };
+    }
+  }, [coverData, coverType]);
 
   // 销毁后清理媒体通知
   useEffect(() => {
@@ -48,8 +64,6 @@ const Player = () => {
       if (playMode === "single") {
         setPlaylist([]);
       } else if (playMode === "list") {
-        console.log("list done", currentMusicIndex, musicList.length);
-
         setPlaylist(
           generateOrderedArray(
             Math.min(10, musicList.length),
@@ -80,10 +94,12 @@ const Player = () => {
   }, [musicList, playMode, currentMusicIndex]);
 
   const next = () => {
+    const playlist = useStore.getState().playlist;
+
     if (playlist.length === 0) return;
 
     const musicIndex = playlist[0];
-    const music = musicList[musicIndex];
+    const music = useStore.getState().musicList[musicIndex];
 
     setCurrentMusic(music.sign, musicIndex, music.name);
   };
@@ -101,20 +117,22 @@ const Player = () => {
   // 设置媒体通知 https://developer.mozilla.org/en-US/docs/Web/API/Media_Session_API
   if ("mediaSession" in navigator) {
     navigator.mediaSession.metadata = new MediaMetadata({
-      title: musicInfo?.title,
-      artist: musicInfo?.artist,
-      artwork: [{ src: musicInfo?.cover || "" }],
+      title,
+      artist,
+      artwork: [{ src: coverUrl || "" }],
     });
 
     navigator.mediaSession.setActionHandler("nexttrack", next);
     navigator.mediaSession.setActionHandler("previoustrack", prev);
   }
 
-  const controls = usePlayAudio(musicInfo?.rawUrl);
+  const controls = usePlayAudio(rawUrl, undefined, next);
 
   const playerInfo = {
     ...controls,
-    ...musicInfo,
+    title,
+    artist,
+    cover: coverUrl,
     prevDisabled: history.length === 0,
     nextDisabled: playlist.length === 0,
     next,

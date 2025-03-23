@@ -8,7 +8,11 @@ const jumpLogin = () => {
   window.location.replace("/login");
 };
 
-service.interceptors.request.use((config) => {
+service.interceptors.request.use(async (config) => {
+  if (!useStore.persist.hasHydrated()) {
+    await useStore.persist.rehydrate();
+  }
+
   config.baseURL = config.baseURL || useStore.getState().origin;
 
   if (!config.baseURL && window.location.pathname !== "/login") {
@@ -41,13 +45,15 @@ service.interceptors.response.use(
     return data;
   },
   (err) => {
-    addToast({
-      title: "Error",
-      description: err.data?.message || err.message || "Unknown error",
-      color: "danger",
-    });
+    if (err.code !== "ERR_CANCELED") {
+      addToast({
+        title: "Error",
+        description: err.data?.message || err.message || "Unknown error",
+        color: "danger",
+      });
+    }
 
-    if (err.response.status === 401) {
+    if (err.response?.status === 401) {
       jumpLogin();
     }
 

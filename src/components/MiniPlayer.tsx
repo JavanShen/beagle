@@ -44,7 +44,6 @@ const MiniPlayer = ({
   pause: onPause,
 }: MiniPlayerProps) => {
   console.count("mini player rerender");
-  console.log("cover", cover);
 
   return (
     <Card

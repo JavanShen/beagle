@@ -1,15 +1,17 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { FileList } from "@/request/fs";
+import localforage from "localforage";
 
-const excludeKeys = ["musicList", "musicMetaMap", "history"];
+const excludeKeys = ["musicList", "history"];
 
 type Metadata = {
   title?: string;
   artist?: string;
   album?: string;
   duration?: number;
-  cover?: string;
+  coverData?: Uint8Array<ArrayBufferLike>;
+  coverType?: string;
   rawUrl?: string;
   hasMeta?: boolean;
 };
@@ -92,10 +94,27 @@ const useStore = create<BeagleState>()(
     }),
     {
       name: "beagle-store",
+      storage: {
+        setItem: async (key, value) => {
+          await localforage.setItem(key, value);
+        },
+        getItem: async (key) => {
+          console.log("get item now");
+          return await localforage.getItem(key);
+        },
+        removeItem: async (key) => {
+          await localforage.removeItem(key);
+        },
+      },
       partialize: (state) =>
         Object.fromEntries(
-          Object.entries(state).filter(([key]) => !excludeKeys.includes(key)),
-        ),
+          Object.entries(state).filter(
+            ([key, val]) =>
+              !excludeKeys.includes(key) &&
+              Object.prototype.toString.call(val) !== "[object Function]",
+          ),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ) as any,
     },
   ),
 );

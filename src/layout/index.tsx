@@ -10,11 +10,17 @@ const Layout = () => {
 
   // 获取全部音乐列表
   useEffect(() => {
-    getFileList(musicPath).then((res) => {
+    const controller = new AbortController();
+
+    getFileList(musicPath, controller.signal).then((res) => {
       if (res.code === 200) {
         setMusicList(res.data.content);
       }
     });
+
+    return () => {
+      controller.abort();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [musicPath]);
 

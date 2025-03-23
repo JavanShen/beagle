@@ -56,13 +56,14 @@ type Content = {
    */
   type: number;
 };
-export const getFileList = (path: string) =>
+export const getFileList = (path: string, signal?: AbortSignal) =>
   request<FileList>({
     method: "POST",
     url: "/api/fs/list",
     data: {
       path,
     },
+    signal,
   });
 
 export type FileInfo = {

@@ -3,7 +3,11 @@ import Player, { secondsToMinutes } from "@/utils/player";
 
 export type UsePlayAudioReturn = ReturnType<typeof usePlayAudio>;
 
-const usePlayAudio = (source?: string, loaded?: () => void) => {
+const usePlayAudio = (
+  source?: string,
+  loaded?: () => void,
+  ended?: () => void,
+) => {
   console.log("useaudio");
   const player = useMemo(() => new Player(), []);
 
@@ -23,6 +27,7 @@ const usePlayAudio = (source?: string, loaded?: () => void) => {
     setIsCanPlay(false);
     setIsPlaying(false);
     player.playAudio(source);
+    play();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [source]);
@@ -33,7 +38,6 @@ const usePlayAudio = (source?: string, loaded?: () => void) => {
       setDurationText(player.durationText || "00:00");
       setVolume(player.muted ? null : player.volume * 100);
       setIsCanPlay(true);
-      play();
       loaded?.();
     });
 
@@ -46,6 +50,10 @@ const usePlayAudio = (source?: string, loaded?: () => void) => {
 
     player?.bePaused(() => {
       setIsPlaying(false);
+    });
+
+    player?.addEventListener("ended", () => {
+      ended?.();
     });
 
     return () => {

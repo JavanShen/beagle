@@ -1,9 +1,9 @@
-import { memo, useEffect } from "react";
+import { memo, useEffect, CSSProperties, useState } from "react";
 import useStore from "@/store";
 import { Image, Skeleton } from "@heroui/react";
 import { secondsToMinutes } from "@/utils/player";
 import { parseMusicMeta } from "@/utils/meta";
-import { FixedSizeList } from "react-window";
+import { FixedSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 
 type ListItemProps = {
@@ -16,13 +16,37 @@ const ListItem = memo(
   ({ musicId, fileName, style, onClick }: ListItemProps) => {
     const metadata = useStore((state) => state.musicMetaMap.get(musicId));
     const isLoaded = metadata !== undefined;
-    const { title: musicName, artist, album, duration } = metadata || {};
+    const {
+      title: musicName,
+      artist,
+      album,
+      duration,
+      coverData,
+      coverType,
+    } = metadata || {};
 
     useEffect(() => {
       if (musicId && fileName) {
         parseMusicMeta(musicId, fileName);
       }
     }, [musicId, fileName]);
+
+    console.count("playlist item reload" + fileName);
+
+    // 生成封面url
+    const [coverUrl, setCoverUrl] = useState<string | undefined>(undefined);
+    useEffect(() => {
+      if (coverData && coverType) {
+        const url = URL.createObjectURL(
+          new Blob([coverData], { type: coverType }),
+        );
+        setCoverUrl(url);
+        return () => {
+          console.log("revoke now", url);
+          URL.revokeObjectURL(url);
+        };
+      }
+    }, [coverData, coverType]);
 
     return (
       <div
@@ -36,7 +60,7 @@ const ListItem = memo(
             isLoading={!isLoaded}
             width={50}
             height={50}
-            src={metadata?.cover}
+            src={coverUrl}
             radius="md"
             alt="cover"
           />
@@ -47,7 +71,7 @@ const ListItem = memo(
             {isLoaded ? (
               <>
                 <span className="text-base font-semibold text-ellipsis overflow-hidden">
-                  {musicName}
+                  {musicName || fileName}
                 </span>
                 <span className="text-sm opacity-70 text-ellipsis overflow-hidden">
                   {artist}
@@ -82,6 +106,8 @@ const Playlist = () => {
   const musicList = useStore((state) => state.musicList);
   const setCurrentMusic = useStore((state) => state.setCurrentMusic);
 
+  console.count("playlist rerender");
+
   return (
     <div className="w-full h-full px-4">
       <AutoSizer style={{ height: "100%", width: "100%" }}>
@@ -92,21 +118,24 @@ const Playlist = () => {
             width={"100%"}
             itemCount={musicList.length}
           >
-            {({ index, style }) => {
-              const { name, sign } = musicList[index] || {};
+            {memo(
+              ({ index, style }: { index: number; style: CSSProperties }) => {
+                const { name, sign } = musicList[index] || {};
 
-              return (
-                <ListItem
-                  key={sign}
-                  musicId={sign}
-                  fileName={name}
-                  style={style}
-                  onClick={() => {
-                    setCurrentMusic(sign, index, name);
-                  }}
-                ></ListItem>
-              );
-            }}
+                return (
+                  <ListItem
+                    key={sign}
+                    musicId={sign}
+                    fileName={name}
+                    style={style}
+                    onClick={() => {
+                      setCurrentMusic(sign, index, name);
+                    }}
+                  ></ListItem>
+                );
+              },
+              areEqual,
+            )}
           </FixedSizeList>
         )}
       </AutoSizer>

@@ -37,7 +37,7 @@ const Login = () => {
   return (
     <div className="flex items-center justify-center w-screen h-screen">
       <Form
-        className="w-1/3 max-w-screen-md flex flex-col items-center gap-y-10"
+        className="w-2/3 lg:w-1/3 lg:max-w-screen-md flex flex-col items-center gap-y-10"
         onSubmit={onSubmit}
       >
         <Input
