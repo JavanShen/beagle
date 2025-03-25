@@ -19,7 +19,6 @@
     "axios": "^1.8.2",
     "framer-motion": "^12.4.10",
     "immer": "^10.1.1",
-    "localforage": "^1.10.0",
     "lodash-es": "^4.17.21",
     "music-metadata": "^11.0.0",
     "react": "^19.0.0",

@@ -1,17 +1,15 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { FileList } from "@/request/fs";
-import localforage from "localforage";
 
-const excludeKeys = ["musicList", "history", "coverMap"];
+const excludeKeys = ["musicList", "history", "musicMetaMap"];
 
 type Metadata = {
   title?: string;
   artist?: string;
   album?: string;
   duration?: number;
-  coverData?: Uint8Array<ArrayBufferLike>;
-  coverType?: string;
+  coverUrl?: string;
   rawUrl?: string;
   hasMeta?: boolean;
 };
@@ -26,7 +24,6 @@ type BeagleState = {
   setSource: (source: string) => void;
 
   musicMetaMap: Map<string, Metadata | null>;
-  coverMap: Map<string, string | undefined>;
   musicList: FileList["content"];
   playlist: number[];
   history: number[];
@@ -34,7 +31,6 @@ type BeagleState = {
   setPlaylist: (playlist: number[]) => void;
   setHistory: (history: number[]) => void;
   addMusicMeta: (id: string, meta: Metadata | null) => void;
-  addCover: (id: string, cover?: string) => void;
 
   currentMusicIndex: number;
   currentMusicId: string;
@@ -62,7 +58,6 @@ const useStore = create<BeagleState>()(
 
       // 音乐&元数据&播放列表
       musicMetaMap: new Map(),
-      coverMap: new Map(),
       musicList: [],
       playlist: [],
       history: [],
@@ -76,10 +71,6 @@ const useStore = create<BeagleState>()(
       addMusicMeta: (id, meta) =>
         set((state) => ({
           musicMetaMap: new Map(state.musicMetaMap).set(id, meta),
-        })),
-      addCover: (id, cover) =>
-        set((state) => ({
-          coverMap: new Map(state.coverMap).set(id, cover),
         })),
 
       // 当前播放歌曲
@@ -101,27 +92,10 @@ const useStore = create<BeagleState>()(
     }),
     {
       name: "beagle-store",
-      storage: {
-        setItem: async (key, value) => {
-          await localforage.setItem(key, value);
-        },
-        getItem: async (key) => {
-          console.log("get item now");
-          return await localforage.getItem(key);
-        },
-        removeItem: async (key) => {
-          await localforage.removeItem(key);
-        },
-      },
       partialize: (state) =>
         Object.fromEntries(
-          Object.entries(state).filter(
-            ([key, val]) =>
-              !excludeKeys.includes(key) &&
-              Object.prototype.toString.call(val) !== "[object Function]",
-          ),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ) as any,
+          Object.entries(state).filter(([key]) => !excludeKeys.includes(key)),
+        ),
     },
   ),
 );
