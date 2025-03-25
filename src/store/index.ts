@@ -38,7 +38,9 @@ type BeagleState = {
   setCurrentMusic: (id: string, index: number, fileName: string) => void;
 
   playMode: "list" | "random" | "single";
+  volume: number | null;
   setPlayMode: (mode: "list" | "random" | "single") => void;
+  setVolume: (volume: number | null) => void;
 };
 
 const useStore = create<BeagleState>()(
@@ -74,7 +76,7 @@ const useStore = create<BeagleState>()(
         })),
 
       // 当前播放歌曲
-      currentMusicIndex: 0,
+      currentMusicIndex: -1,
       currentMusicId: "",
       currentFileName: "",
       setCurrentMusic: (id, index, fileName) => {
@@ -86,9 +88,11 @@ const useStore = create<BeagleState>()(
         }));
       },
 
-      // 播放模式
+      // 播放信息
       playMode: "list",
+      volume: 100,
       setPlayMode: (mode) => set({ playMode: mode }),
+      setVolume: (volume) => set({ volume }),
     }),
     {
       name: "beagle-store",

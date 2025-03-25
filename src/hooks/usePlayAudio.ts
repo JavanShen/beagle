@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import Player, { secondsToMinutes } from "@/utils/player";
+import useStore from "@/store";
 
 export type UsePlayAudioReturn = ReturnType<typeof usePlayAudio>;
 
@@ -8,26 +9,31 @@ const usePlayAudio = (
   loaded?: () => void,
   ended?: () => void,
 ) => {
-  console.log("useaudio");
-  const player = useMemo(() => new Player(), []);
-
   const [currentTime, setCurrentTime] = useState(0);
   const [currentTimeText, setCurrentTimeText] = useState("00:00");
   const [duration, setDuration] = useState(0);
   const [durationText, setDurationText] = useState("00:00");
-  const [volume, setVolume] = useState<null | number>(null);
+  const volume = useStore((state) => state.volume);
+  const setVolume = useStore((state) => state.setVolume);
+  const player = useMemo(
+    () => new Player(undefined, { volume }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isCanPlay, setIsCanPlay] = useState(false);
   const isManualUpdating = useRef(false);
+  const isAutoPlay = useRef(false);
 
   useEffect(() => {
     if (!source) return;
 
     setIsCanPlay(false);
-    setIsPlaying(false);
     player.playAudio(source);
-    play();
+    if (isAutoPlay.current) {
+      player.play();
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [source]);
@@ -36,7 +42,6 @@ const usePlayAudio = (
     player?.canPlay(() => {
       setDuration(Math.floor(player.duration || 0));
       setDurationText(player.durationText || "00:00");
-      setVolume(player.muted ? null : player.volume * 100);
       setIsCanPlay(true);
       loaded?.();
     });
@@ -52,6 +57,10 @@ const usePlayAudio = (
       setIsPlaying(false);
     });
 
+    player?.bePlayed(() => {
+      setIsPlaying(true);
+    });
+
     player?.addEventListener("ended", () => {
       ended?.();
     });
@@ -64,12 +73,12 @@ const usePlayAudio = (
 
   const play = () => {
     player?.play();
-    setIsPlaying(true);
+    isAutoPlay.current = true;
   };
 
   const pause = () => {
     player?.pause();
-    setIsPlaying(false);
+    isAutoPlay.current = false;
   };
 
   const updateTime = (val: number) => {

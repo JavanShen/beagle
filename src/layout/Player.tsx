@@ -90,7 +90,6 @@ const Player = () => {
     setCurrentMusic(music.sign, musicIndex, music.name);
   };
 
-  // TODO 上一首逻辑修补
   const prev = () => {
     if (history.length === 0) return;
 
@@ -99,6 +98,8 @@ const Player = () => {
 
     setCurrentMusic(music.sign, musicIndex, music.name);
   };
+
+  const controls = usePlayAudio(rawUrl, undefined, next);
 
   // 设置媒体通知 https://developer.mozilla.org/en-US/docs/Web/API/Media_Session_API
   if ("mediaSession" in navigator) {
@@ -110,13 +111,16 @@ const Player = () => {
 
     navigator.mediaSession.setActionHandler("nexttrack", next);
     navigator.mediaSession.setActionHandler("previoustrack", prev);
+    navigator.mediaSession.setActionHandler("seekto", (val) => {
+      if (val.seekTime) {
+        controls.jump(val.seekTime);
+      }
+    });
   }
-
-  const controls = usePlayAudio(rawUrl, undefined, next);
 
   const playerInfo = {
     ...controls,
-    title,
+    title: title || currentFileName,
     artist,
     cover: coverUrl,
     prevDisabled: history.length === 0,

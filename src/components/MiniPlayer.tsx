@@ -8,6 +8,7 @@ import ShuffleIcon from "@/assets/shuffle.svg?react";
 import RepeatIcon from "@/assets/repeat.svg?react";
 import QueueIcon from "@/assets/queue_music.svg?react";
 import VolumeIcon from "@/assets/volume.svg?react";
+import MuteIcon from "@/assets/volume_mute.svg?react";
 
 type MiniPlayerProps = UsePlayAudioReturn & {
   cover?: string;
@@ -37,6 +38,8 @@ const MiniPlayer = ({
   nextDisabled,
   next,
   updateVolume,
+  mute,
+  unmute,
   prev,
   playMode,
   setPlayMode,
@@ -143,8 +146,18 @@ const MiniPlayer = ({
           </Button>
           <Spacer />
           <div className="flex items-center">
-            <Button isIconOnly size="sm" radius="md" variant="light">
-              <VolumeIcon height={20} width={20} />
+            <Button
+              isIconOnly
+              size="sm"
+              radius="md"
+              variant="light"
+              onPress={volume ? mute : unmute}
+            >
+              {volume ? (
+                <VolumeIcon height={20} width={20} />
+              ) : (
+                <MuteIcon height={20} width={20} />
+              )}
             </Button>
             <Slider
               aria-label="volume control"
