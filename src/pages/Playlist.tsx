@@ -1,10 +1,11 @@
-import { memo, useEffect, CSSProperties, useState } from "react";
+import { memo, useEffect, CSSProperties } from "react";
 import useStore from "@/store";
 import { Image, Skeleton } from "@heroui/react";
 import { secondsToMinutes } from "@/utils/player";
 import { parseMusicMeta } from "@/utils/meta";
 import { FixedSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
+import useCover from "@/hooks/useCover";
 
 type ListItemProps = {
   musicId: string;
@@ -33,20 +34,7 @@ const ListItem = memo(
 
     console.count("playlist item reload" + fileName);
 
-    // 生成封面url
-    const [coverUrl, setCoverUrl] = useState<string | undefined>(undefined);
-    useEffect(() => {
-      if (coverData && coverType) {
-        const url = URL.createObjectURL(
-          new Blob([coverData], { type: coverType }),
-        );
-        setCoverUrl(url);
-        return () => {
-          console.log("revoke now", url);
-          URL.revokeObjectURL(url);
-        };
-      }
-    }, [coverData, coverType]);
+    const { coverUrl } = useCover(musicId, coverData, coverType);
 
     return (
       <div

@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useStore from "@/store";
 import usePlayAudio from "@/hooks/usePlayAudio";
 import MiniPlayer from "@/components/MiniPlayer";
 import { parseMusicMeta } from "@/utils/meta";
 import { generateRandomArray, generateOrderedArray } from "@/utils/array";
+import useCover from "@/hooks/useCover";
 
 const Player = () => {
   const currentMusicId = useStore((state) => state.currentMusicId);
@@ -22,19 +23,7 @@ const Player = () => {
 
   const { coverData, coverType, artist, title, rawUrl } = musicInfo || {};
 
-  const [coverUrl, setCoverUrl] = useState<string>();
-  useEffect(() => {
-    if (coverData && coverType) {
-      const url = URL.createObjectURL(
-        new Blob([coverData], { type: coverType }),
-      );
-      setCoverUrl(url);
-      return () => {
-        console.log("revoke now", url);
-        URL.revokeObjectURL(url);
-      };
-    }
-  }, [coverData, coverType]);
+  const { coverUrl } = useCover(currentMusicId, coverData, coverType);
 
   // 销毁后清理媒体通知
   useEffect(() => {

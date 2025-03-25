@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 import { FileList } from "@/request/fs";
 import localforage from "localforage";
 
-const excludeKeys = ["musicList", "history"];
+const excludeKeys = ["musicList", "history", "coverMap"];
 
 type Metadata = {
   title?: string;
@@ -26,6 +26,7 @@ type BeagleState = {
   setSource: (source: string) => void;
 
   musicMetaMap: Map<string, Metadata | null>;
+  coverMap: Map<string, string | undefined>;
   musicList: FileList["content"];
   playlist: number[];
   history: number[];
@@ -33,6 +34,7 @@ type BeagleState = {
   setPlaylist: (playlist: number[]) => void;
   setHistory: (history: number[]) => void;
   addMusicMeta: (id: string, meta: Metadata | null) => void;
+  addCover: (id: string, cover?: string) => void;
 
   currentMusicIndex: number;
   currentMusicId: string;
@@ -60,6 +62,7 @@ const useStore = create<BeagleState>()(
 
       // 音乐&元数据&播放列表
       musicMetaMap: new Map(),
+      coverMap: new Map(),
       musicList: [],
       playlist: [],
       history: [],
@@ -73,6 +76,10 @@ const useStore = create<BeagleState>()(
       addMusicMeta: (id, meta) =>
         set((state) => ({
           musicMetaMap: new Map(state.musicMetaMap).set(id, meta),
+        })),
+      addCover: (id, cover) =>
+        set((state) => ({
+          coverMap: new Map(state.coverMap).set(id, cover),
         })),
 
       // 当前播放歌曲
