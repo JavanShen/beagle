@@ -8,11 +8,7 @@ const jumpLogin = () => {
   window.location.replace("/login");
 };
 
-service.interceptors.request.use(async (config) => {
-  if (!useStore.persist.hasHydrated()) {
-    await useStore.persist.rehydrate();
-  }
-
+service.interceptors.request.use((config) => {
   config.baseURL = config.baseURL || useStore.getState().origin;
 
   if (!config.baseURL && window.location.pathname !== "/login") {

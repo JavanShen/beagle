@@ -4,7 +4,6 @@ import usePlayAudio from "@/hooks/usePlayAudio";
 import MiniPlayer from "@/components/MiniPlayer";
 import { parseMusicMeta } from "@/utils/meta";
 import { generateRandomArray, generateOrderedArray } from "@/utils/array";
-import useCover from "@/hooks/useCover";
 
 const Player = () => {
   const currentMusicId = useStore((state) => state.currentMusicId);
@@ -21,9 +20,7 @@ const Player = () => {
   const setPlaylist = useStore((state) => state.setPlaylist);
   const setPlayMode = useStore((state) => state.setPlayMode);
 
-  const { coverData, coverType, artist, title, rawUrl } = musicInfo || {};
-
-  const { coverUrl } = useCover(currentMusicId, coverData, coverType);
+  const { coverUrl, artist, title, rawUrl } = musicInfo || {};
 
   // 销毁后清理媒体通知
   useEffect(() => {

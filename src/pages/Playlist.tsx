@@ -5,7 +5,6 @@ import { secondsToMinutes } from "@/utils/player";
 import { parseMusicMeta } from "@/utils/meta";
 import { FixedSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import useCover from "@/hooks/useCover";
 
 type ListItemProps = {
   musicId: string;
@@ -22,8 +21,7 @@ const ListItem = memo(
       artist,
       album,
       duration,
-      coverData,
-      coverType,
+      coverUrl,
     } = metadata || {};
 
     useEffect(() => {
@@ -33,8 +31,6 @@ const ListItem = memo(
     }, [musicId, fileName]);
 
     console.count("playlist item reload" + fileName);
-
-    const { coverUrl } = useCover(musicId, coverData, coverType);
 
     return (
       <div
