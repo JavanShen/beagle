@@ -26,7 +26,12 @@ const ListItem = memo(
 
     useEffect(() => {
       if (musicId && fileName) {
-        parseMusicMeta(musicId, fileName);
+        const controller = new AbortController();
+        parseMusicMeta(musicId, fileName, controller.signal);
+
+        return () => {
+          controller.abort();
+        };
       }
     }, [musicId, fileName]);
 

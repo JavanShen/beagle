@@ -122,12 +122,13 @@ export const getFileInfo = (path: string) =>
     },
   });
 
-export const getFileStream = (path: string) =>
+export const getFileStream = (path: string, signal?: AbortSignal) =>
   request<ReadableStream<Uint8Array>, true>({
     method: "GET",
     url: path,
     responseType: "stream",
     adapter: "fetch",
+    signal,
   });
 
 export const getFileSlice = (path: string, start: number, end: number) =>

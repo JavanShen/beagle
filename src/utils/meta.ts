@@ -2,24 +2,28 @@ import { getFileStream } from "@/request/fs";
 import { parseWebStream } from "music-metadata";
 import useStore from "@/store";
 
-export const parseID3 = async (filePath: string) => {
+export const parseID3 = async (filePath: string, signal?: AbortSignal) => {
   try {
-    const stream = await getFileStream(filePath);
+    const stream = await getFileStream(filePath, signal);
     const id3 = await parseWebStream(stream);
     stream.cancel();
     return id3;
   } catch (error) {
-    console.error("Error parsing ID3:", error);
+    console.log("Error parsing ID3:", error);
   }
   return null;
 };
 
-export const parseMusicMeta = async (sign: string, fileName: string) => {
+export const parseMusicMeta = async (
+  sign: string,
+  fileName: string,
+  signal?: AbortSignal,
+) => {
   const { musicMetaMap, musicPath, origin, addMusicMeta } = useStore.getState();
   if (musicMetaMap.has(sign) || !sign) return;
   const joinUrl = encodeURI(`${origin}/p${musicPath}/${fileName}?sign=${sign}`);
 
-  const id3 = await parseID3(joinUrl);
+  const id3 = await parseID3(joinUrl, signal);
 
   const { title, artist, picture, album } = id3?.common || {};
   const coverInfo = picture?.[0];
