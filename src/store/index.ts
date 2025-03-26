@@ -37,8 +37,14 @@ type BeagleState = {
   currentFileName: string;
   setCurrentMusic: (id: string, index: number, fileName: string) => void;
 
-  playMode: "list" | "random" | "single";
-  setPlayMode: (mode: "list" | "random" | "single") => void;
+  isShuffle: boolean;
+  isLoop: boolean;
+  isRepeat: boolean;
+  volume: number | null;
+  setVolume: (volume: number | null) => void;
+  setIsRepeat: (isRepeat: boolean) => void;
+  setIsShuffle: (isShuffle: boolean) => void;
+  setIsLoop: (isLoop: boolean) => void;
 };
 
 const useStore = create<BeagleState>()(
@@ -74,7 +80,7 @@ const useStore = create<BeagleState>()(
         })),
 
       // 当前播放歌曲
-      currentMusicIndex: 0,
+      currentMusicIndex: -1,
       currentMusicId: "",
       currentFileName: "",
       setCurrentMusic: (id, index, fileName) => {
@@ -86,9 +92,15 @@ const useStore = create<BeagleState>()(
         }));
       },
 
-      // 播放模式
-      playMode: "list",
-      setPlayMode: (mode) => set({ playMode: mode }),
+      // 播放信息
+      isShuffle: false,
+      isLoop: false,
+      isRepeat: false,
+      volume: 100,
+      setVolume: (volume) => set({ volume }),
+      setIsRepeat: (isRepeat) => set({ isRepeat }),
+      setIsShuffle: (isShuffle) => set({ isShuffle }),
+      setIsLoop: (isLoop) => set({ isLoop }),
     }),
     {
       name: "beagle-store",

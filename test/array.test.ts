@@ -1,5 +1,8 @@
 import { expect, test, describe } from "vitest";
-import { generateRandomArray } from "../src/utils/array.ts";
+import {
+  generateRandomArray,
+  generateOrderedArray,
+} from "../src/utils/array.ts";
 
 describe("generateRandomArray", () => {
   test("生成指定长度的数组", () => {
@@ -22,5 +25,23 @@ describe("generateRandomArray", () => {
     expect(
       array.every((num) => num >= 0 && num <= 6 && ![2, 4].includes(num)),
     ).toBe(true);
+  });
+});
+
+describe("generateOrderedArray", () => {
+  test("should generate an ordered array of the correct length", () => {
+    expect(generateOrderedArray(5)).toEqual([0, 1, 2, 3, 4]);
+  });
+
+  test("should start from the specified start number", () => {
+    expect(generateOrderedArray(5, 10)).toEqual([10, 11, 12, 13, 14]);
+  });
+
+  test("should not exceed the max value when loop is false", () => {
+    expect(generateOrderedArray(5, 10, 12)).toEqual([10, 11]);
+  });
+
+  test("should wrap around when loop is true", () => {
+    expect(generateOrderedArray(5, 0, 3, true)).toEqual([0, 1, 2, 0, 1]);
   });
 });
