@@ -1,5 +1,6 @@
 import useStore from "@/store";
 import { generateRandomArray, generateOrderedArray } from "./array";
+import { parseMusicMeta } from "./meta";
 
 const zeroFill = (num: number) => {
   if (num < 10 && num >= 0) return `0${num}`;
@@ -12,24 +13,20 @@ export const secondsToMinutes = (seconds: number) => {
   return `${formatTime(seconds / 60)}:${formatTime(seconds % 60)}`;
 };
 
-export const updatePlaylist = (trigger: "next" | "prev" | "select") => {
-  const { musicList, playMode, currentMusicIndex, setPlaylist, playlist } =
-    useStore.getState();
+export const updatePlaylist = (trigger?: "next" | "prev" | "select") => {
+  const {
+    musicList,
+    isShuffle,
+    isLoop,
+    currentMusicIndex,
+    setPlaylist,
+    playlist,
+  } = useStore.getState();
 
   if (musicList.length > 0) {
-    console.log("update playlist");
-
-    if (playMode === "single") {
-      setPlaylist([]);
-    } else if (playMode === "list") {
-      setPlaylist(
-        generateOrderedArray(
-          Math.min(10, musicList.length),
-          currentMusicIndex + 1,
-        ),
-      );
-    } else if (playMode === "random") {
-      setPlaylist(
+    let newPlaylist: number[] = [];
+    if (isShuffle) {
+      newPlaylist =
         trigger === "next"
           ? [
               ...playlist.filter((item) => item !== currentMusicIndex),
@@ -43,9 +40,20 @@ export const updatePlaylist = (trigger: "next" | "prev" | "select") => {
               Math.min(10, musicList.length),
               musicList.length - 1,
               [currentMusicIndex],
-            ),
+            );
+    } else {
+      newPlaylist = generateOrderedArray(
+        isLoop ? 10 : Math.min(10, musicList.length),
+        currentMusicIndex + 1,
+        musicList.length - 1,
+        isLoop,
       );
     }
+
+    setPlaylist(newPlaylist);
+
+    const nextMusic = musicList[newPlaylist[0]];
+    parseMusicMeta(nextMusic.sign, nextMusic.name);
   }
 };
 
@@ -54,34 +62,49 @@ export type PlayerInitData = {
 };
 
 export default class Player extends Audio {
+  controllers: AbortController[];
+
   constructor(source?: string, initData: PlayerInitData = {}) {
     super(source);
     super.preload = "auto";
     this.setVolume(initData.volume || 100);
+
+    this.controllers = [];
+  }
+
+  private addControllerEventListener<K extends keyof HTMLMediaElementEventMap>(
+    eventType: K,
+    fn: (this: HTMLMediaElement, ev: HTMLMediaElementEventMap[K]) => unknown,
+  ) {
+    const controller = new AbortController();
+    super.addEventListener(eventType, fn, {
+      signal: controller.signal,
+    });
+    this.controllers.push(controller);
   }
 
   loadedData(fn: () => void) {
-    super.addEventListener("loadeddata", fn);
+    this.addControllerEventListener("loadeddata", fn);
   }
 
   timeUpdate(fn: () => void) {
-    super.addEventListener("timeupdate", fn);
+    this.addControllerEventListener("timeupdate", fn);
   }
 
   canPlay(fn: () => void) {
-    super.addEventListener("canplaythrough", fn);
+    this.addControllerEventListener("canplay", fn);
   }
 
   bePlayed(fn: () => void) {
-    super.addEventListener("play", fn);
+    this.addControllerEventListener("play", fn);
   }
 
   bePaused(fn: () => void) {
-    super.addEventListener("pause", fn);
+    this.addControllerEventListener("pause", fn);
   }
 
   onEnded(fn: () => void) {
-    super.addEventListener("ended", fn);
+    this.addControllerEventListener("ended", fn);
   }
 
   mute() {
@@ -103,7 +126,13 @@ export default class Player extends Audio {
     super.load();
   }
 
+  reload() {
+    super.load();
+  }
+
   destroy() {
+    this.controllers.forEach((controller) => controller.abort());
+    this.controllers = [];
     super.pause();
     super.src = "";
     super.remove();

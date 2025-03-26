@@ -1,7 +1,7 @@
 import { memo, useEffect, CSSProperties } from "react";
 import useStore from "@/store";
 import { Image, Skeleton } from "@heroui/react";
-import { secondsToMinutes } from "@/utils/player";
+import { secondsToMinutes, updatePlaylist } from "@/utils/player";
 import { parseMusicMeta } from "@/utils/meta";
 import { FixedSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -119,6 +119,7 @@ const Playlist = () => {
                     style={style}
                     onClick={() => {
                       setCurrentMusic(sign, index, name);
+                      updatePlaylist("select");
                     }}
                   ></ListItem>
                 );

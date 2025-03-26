@@ -5,10 +5,11 @@ import PauseIcon from "@/assets/pause.svg?react";
 import NextIcon from "@/assets/skip_next.svg?react";
 import PrevIcon from "@/assets/skip_previous.svg?react";
 import ShuffleIcon from "@/assets/shuffle.svg?react";
-import RepeatIcon from "@/assets/repeat.svg?react";
+import LoopIcon from "@/assets/repeat.svg?react";
 import QueueIcon from "@/assets/queue_music.svg?react";
 import VolumeIcon from "@/assets/volume.svg?react";
 import MuteIcon from "@/assets/volume_mute.svg?react";
+import RepeatIcon from "@/assets/repeat_one.svg?react";
 
 type MiniPlayerProps = UsePlayAudioReturn & {
   cover?: string;
@@ -16,10 +17,14 @@ type MiniPlayerProps = UsePlayAudioReturn & {
   artist?: string;
   nextDisabled?: boolean;
   prevDisabled?: boolean;
-  playMode?: string;
+  isLoop?: boolean;
+  isShuffle?: boolean;
+  isRepeat?: boolean;
   next: () => void;
   prev: () => void;
-  setPlayMode: (mode: "list" | "random" | "single") => void;
+  setIsShuffle: (value: boolean) => void;
+  setIsRepeat: (value: boolean) => void;
+  setIsLoop: (value: boolean) => void;
 };
 
 const MiniPlayer = ({
@@ -34,6 +39,12 @@ const MiniPlayer = ({
   isPlaying,
   updateTime,
   jump,
+  isLoop,
+  isShuffle,
+  isRepeat,
+  setIsShuffle,
+  setIsRepeat,
+  setIsLoop,
   prevDisabled,
   nextDisabled,
   next,
@@ -41,8 +52,6 @@ const MiniPlayer = ({
   mute,
   unmute,
   prev,
-  playMode,
-  setPlayMode,
   play: onPlay,
   pause: onPause,
 }: MiniPlayerProps) => {
@@ -76,7 +85,7 @@ const MiniPlayer = ({
           radius="md"
           variant="light"
           isDisabled={prevDisabled}
-          onPress={prev}
+          onPress={() => prev()}
         >
           <PrevIcon />
         </Button>
@@ -99,7 +108,7 @@ const MiniPlayer = ({
           radius="md"
           variant="light"
           isDisabled={nextDisabled}
-          onPress={next}
+          onPress={() => next()}
         >
           <NextIcon />
         </Button>
@@ -132,17 +141,41 @@ const MiniPlayer = ({
             size="sm"
             radius="md"
             variant="light"
-            onPress={() => setPlayMode("random")}
+            onPress={() => setIsShuffle(!isShuffle)}
           >
             <ShuffleIcon
-              fill={playMode === "random" ? "#006FED" : undefined}
+              fill={isShuffle ? "#006FED" : undefined}
               height={20}
               width={20}
             />
           </Button>
           <Spacer />
-          <Button isIconOnly size="sm" radius="md" variant="light">
-            <RepeatIcon fill="#006FED" height={20} width={20} />
+          <Button
+            isIconOnly
+            size="sm"
+            radius="md"
+            variant="light"
+            onPress={() => {
+              if (isRepeat) {
+                setIsRepeat(false);
+                setIsLoop(false);
+              } else if (isLoop) {
+                setIsLoop(false);
+                setIsRepeat(true);
+              } else {
+                setIsLoop(true);
+              }
+            }}
+          >
+            {isRepeat ? (
+              <RepeatIcon fill="#006FED" height={20} width={20} />
+            ) : (
+              <LoopIcon
+                fill={isLoop ? "#006FED" : undefined}
+                height={20}
+                width={20}
+              />
+            )}
           </Button>
           <Spacer />
           <div className="flex items-center">

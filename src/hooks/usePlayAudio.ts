@@ -7,7 +7,7 @@ export type UsePlayAudioReturn = ReturnType<typeof usePlayAudio>;
 const usePlayAudio = (
   source?: string,
   loaded?: () => void,
-  ended?: () => void,
+  ended?: (isEnded?: boolean) => void,
 ) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [currentTimeText, setCurrentTimeText] = useState("00:00");
@@ -61,8 +61,8 @@ const usePlayAudio = (
       setIsPlaying(true);
     });
 
-    player?.addEventListener("ended", () => {
-      ended?.();
+    player?.onEnded(() => {
+      ended?.(true);
     });
 
     return () => {
@@ -79,6 +79,13 @@ const usePlayAudio = (
   const pause = () => {
     player?.pause();
     isAutoPlay.current = false;
+  };
+
+  const reload = () => {
+    player?.reload();
+    if (isAutoPlay.current) {
+      player?.play();
+    }
   };
 
   const updateTime = (val: number) => {
@@ -127,6 +134,7 @@ const usePlayAudio = (
     updateVolume,
     mute,
     unmute,
+    reload,
   };
 };
 

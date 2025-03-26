@@ -3,22 +3,24 @@ import useStore from "@/store";
 import usePlayAudio from "@/hooks/usePlayAudio";
 import MiniPlayer from "@/components/MiniPlayer";
 import { parseMusicMeta } from "@/utils/meta";
-import { generateRandomArray, generateOrderedArray } from "@/utils/array";
+import { updatePlaylist } from "@/utils/player";
 
 const Player = () => {
   const currentMusicId = useStore((state) => state.currentMusicId);
   const currentFileName = useStore((state) => state.currentFileName);
-  const currentMusicIndex = useStore((state) => state.currentMusicIndex);
   const musicInfo = useStore((state) => state.musicMetaMap.get(currentMusicId));
   const musicMetaMap = useStore.getState().musicMetaMap;
   const musicList = useStore((state) => state.musicList);
   const history = useStore((state) => state.history);
   const playlist = useStore((state) => state.playlist);
-  const playMode = useStore((state) => state.playMode);
+  const isShuffle = useStore((state) => state.isShuffle);
+  const isRepeat = useStore((state) => state.isRepeat);
+  const isLoop = useStore((state) => state.isLoop);
 
+  const setIsShuffle = useStore((state) => state.setIsShuffle);
+  const setIsRepeat = useStore((state) => state.setIsRepeat);
+  const setIsLoop = useStore((state) => state.setIsLoop);
   const setCurrentMusic = useStore((state) => state.setCurrentMusic);
-  const setPlaylist = useStore((state) => state.setPlaylist);
-  const setPlayMode = useStore((state) => state.setPlayMode);
 
   const { coverUrl, artist, title, rawUrl } = musicInfo || {};
 
@@ -42,44 +44,15 @@ const Player = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentMusicId, currentFileName]);
 
-  // 更新待播放列表
   useEffect(() => {
-    if (musicList.length > 0) {
-      console.log("update playlist");
+    updatePlaylist();
+  }, [isShuffle, isLoop]);
 
-      if (playMode === "single") {
-        setPlaylist([]);
-      } else if (playMode === "list") {
-        setPlaylist(
-          generateOrderedArray(
-            Math.min(10, musicList.length),
-            currentMusicIndex + 1,
-          ),
-        );
-      } else if (playMode === "random") {
-        setPlaylist(
-          playlist.length > 0
-            ? [
-                ...playlist.filter((item) => item !== currentMusicIndex),
-                ...generateRandomArray(
-                  Math.min(10, musicList.length) - playlist.length,
-                  musicList.length - 1,
-                  playlist.slice(1),
-                ),
-              ]
-            : generateRandomArray(
-                Math.min(10, musicList.length),
-                musicList.length - 1,
-                [currentMusicIndex],
-              ),
-        );
-      }
+  const next = (isEnded?: boolean) => {
+    if (useStore.getState().isRepeat && isEnded) {
+      return controls.reload();
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [musicList, playMode, currentMusicIndex]);
-
-  const next = () => {
     const playlist = useStore.getState().playlist;
 
     if (playlist.length === 0) return;
@@ -88,6 +61,7 @@ const Player = () => {
     const music = useStore.getState().musicList[musicIndex];
 
     setCurrentMusic(music.sign, musicIndex, music.name);
+    updatePlaylist("next");
   };
 
   const prev = () => {
@@ -109,7 +83,7 @@ const Player = () => {
       artwork: [{ src: coverUrl || "" }],
     });
 
-    navigator.mediaSession.setActionHandler("nexttrack", next);
+    navigator.mediaSession.setActionHandler("nexttrack", () => next());
     navigator.mediaSession.setActionHandler("previoustrack", prev);
     navigator.mediaSession.setActionHandler("seekto", (val) => {
       if (val.seekTime) {
@@ -127,8 +101,12 @@ const Player = () => {
     nextDisabled: playlist.length === 0,
     next,
     prev,
-    playMode,
-    setPlayMode,
+    isLoop,
+    isShuffle,
+    isRepeat,
+    setIsShuffle,
+    setIsRepeat,
+    setIsLoop,
   };
 
   return <MiniPlayer {...playerInfo} />;

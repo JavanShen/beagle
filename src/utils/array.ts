@@ -1,7 +1,13 @@
-export const generateOrderedArray = (length: number, start: number = 0) => {
+export const generateOrderedArray = (
+  length: number,
+  start: number = 0,
+  max: number = Infinity,
+  loop: boolean = false,
+) => {
   const arr = [];
   for (let i = 0; i < length; i++) {
-    arr.push(start + i);
+    if (start + i >= max && !loop) break;
+    arr.push(loop ? i % max : start + i);
   }
   return arr;
 };
