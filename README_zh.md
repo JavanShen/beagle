@@ -2,6 +2,7 @@
     <img height="140" width="140" src="./public/logo.png">
     <h1>Beagle</h1>
     <p>一个在线音乐播放器，支持 Alist</p>
+    <a href="https://beagle-ashy-psi.vercel.app">Demo</a>
 </div>
 
 [English](./README.md) | 中文
@@ -18,3 +19,7 @@
 - [ ] 音乐搜索
 - [ ] 配置同步
 - [ ] webdav 支持
+
+## 截图
+![Screenshot](./images/screenshot-lg.png)
+![Screenshot](./images/screenshot-sm.png)

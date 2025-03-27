@@ -2,6 +2,7 @@
     <img height="140" width="140" src="./public/logo.png">
     <h1>Beagle</h1>
     <p>An online music player with Alist support</p>
+    <a href="https://beagle-ashy-psi.vercel.app">Demo</a>
 </div>
 
 English | [中文](./README_zh.md)
@@ -18,3 +19,7 @@ English | [中文](./README_zh.md)
 - [ ] Music Search
 - [ ] Configuration Sync
 - [ ] webdav support
+
+## Screenshots
+![Screenshot](./images/screenshot-lg.png)
+![Screenshot](./images/screenshot-sm.png)
