@@ -1,8 +1,7 @@
-<div style="text-align: center;">
-    <img height="120" width="120" src="./public/logo.png">
-</div>
-<div style="text-align: center;">
-    一个在线音乐播放器，支持 Alist
+<div align="center">
+    <img height="140" width="140" src="./public/logo.png">
+    <h1>Beagle</h1>
+    <p>一个在线音乐播放器，支持 Alist</p>
 </div>
 
 [English](./README.md) | 中文

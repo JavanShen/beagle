@@ -1,8 +1,7 @@
-<div style="text-align: center;">
-    <img height="120" width="120" src="./public/logo.png">
-</div>
-<div style="text-align: center;">
-    An online music player with Alist support
+<div align="center">
+    <img height="140" width="140" src="./public/logo.png">
+    <h1>Beagle</h1>
+    <p>An online music player with Alist support</p>
 </div>
 
 English | [中文](./README_zh.md)
