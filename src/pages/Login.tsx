@@ -48,7 +48,7 @@ const Login = () => {
           isRequired
           defaultValue={source}
           endContent={
-            <Tooltip content="URL pointing to the music folder, like https://example.com/dav/music">
+            <Tooltip content="URL pointing to the music folder in alist, like https://example.com/alist/music">
               <TipIcon
                 className="opacity-60 cursor-default"
                 height={24}
