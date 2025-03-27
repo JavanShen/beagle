@@ -1,4 +1,9 @@
-An online music player with Alist support
+<div style="text-align: center;">
+    <img height="120" width="120" src="./public/logo.png">
+</div>
+<div style="text-align: center;">
+    An online music player with Alist support
+</div>
 
 English | [中文](./README_zh.md)
 

@@ -1,4 +1,9 @@
-一个在线音乐播放器，支持 Alist
+<div style="text-align: center;">
+    <img height="120" width="120" src="./public/logo.png">
+</div>
+<div style="text-align: center;">
+    一个在线音乐播放器，支持 Alist
+</div>
 
 [English](./README.md) | 中文
 
