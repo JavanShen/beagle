@@ -4,7 +4,7 @@ import useStore from "@/store";
 
 const service = axios.create();
 
-const jumpLogin = () => {
+export const jumpLogin = () => {
   window.location.replace("/login");
 };
 

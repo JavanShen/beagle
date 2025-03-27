@@ -42,6 +42,7 @@ export const updatePlaylist = (trigger?: "next" | "prev" | "select") => {
               [currentMusicIndex],
             );
     } else {
+      console.log(currentMusicIndex, musicList.length, isLoop);
       newPlaylist = generateOrderedArray(
         isLoop ? 10 : Math.min(10, musicList.length),
         currentMusicIndex + 1,

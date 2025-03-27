@@ -17,6 +17,7 @@ type Metadata = {
 type BeagleState = {
   token: string;
   setToken: (token: string) => void;
+  clearToken: () => void;
 
   source: string;
   origin: string;
@@ -52,6 +53,7 @@ const useStore = create<BeagleState>()(
     (set) => ({
       token: "",
       setToken: (token) => set({ token }),
+      clearToken: () => set({ token: "" }),
 
       // 音乐源
       source: "",

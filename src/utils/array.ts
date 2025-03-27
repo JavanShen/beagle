@@ -7,7 +7,7 @@ export const generateOrderedArray = (
   const arr = [];
   for (let i = 0; i < length; i++) {
     if (start + i >= max && !loop) break;
-    arr.push(loop ? i % max : start + i);
+    arr.push(loop ? (start + i) % max : start + i);
   }
   return arr;
 };

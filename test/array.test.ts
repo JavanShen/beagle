@@ -42,6 +42,6 @@ describe("generateOrderedArray", () => {
   });
 
   test("should wrap around when loop is true", () => {
-    expect(generateOrderedArray(5, 0, 3, true)).toEqual([0, 1, 2, 0, 1]);
+    expect(generateOrderedArray(5, 2, 3, true)).toEqual([2, 0, 1, 2, 0]);
   });
 });
