@@ -1,11 +1,12 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { addToast } from "@heroui/react";
 import useStore from "@/store";
+import router from "@/routes";
 
 const service = axios.create();
 
 export const jumpLogin = () => {
-  window.location.replace("/login");
+  router.navigate("/login", { replace: true });
 };
 
 service.interceptors.request.use((config) => {

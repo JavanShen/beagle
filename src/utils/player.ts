@@ -122,7 +122,6 @@ export default class Player extends Audio {
   }
 
   playAudio(source: string) {
-    super.pause();
     super.src = source;
     super.load();
   }
