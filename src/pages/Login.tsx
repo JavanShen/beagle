@@ -1,8 +1,9 @@
-import { Form, Input, Button } from "@heroui/react";
+import { Form, Input, Button, Tooltip } from "@heroui/react";
 import { login } from "@/request/user";
 import useStore from "@/store";
 import { useNavigate } from "react-router";
 import { useRequest } from "ahooks";
+import TipIcon from "@/assets/help.svg?react";
 
 const Login = () => {
   const source = useStore((state) => state.source);
@@ -46,6 +47,15 @@ const Login = () => {
           label="Source URL"
           isRequired
           defaultValue={source}
+          endContent={
+            <Tooltip content="URL pointing to the music folder, like https://example.com/dav/music">
+              <TipIcon
+                className="opacity-60 cursor-default"
+                height={24}
+                width={24}
+              />
+            </Tooltip>
+          }
         />
         <Input type="text" name="username" label="Username" isRequired />
         <Input type="password" name="password" label="Password" isRequired />
