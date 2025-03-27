@@ -17,7 +17,7 @@ const Menu = () => {
 
   return (
     <div className="w-full h-full">
-      <div className="text-right m-2 mb-4">
+      <div className="text-right mb-4 mx-2">
         <Button
           isIconOnly
           size="sm"
