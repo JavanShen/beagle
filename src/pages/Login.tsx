@@ -13,10 +13,10 @@ const Login = () => {
   const navigate = useNavigate();
 
   const { loading: isLoginLoading, run: onLogin } = useRequest(
-    async (user, pwd) => {
+    async (user, pwd, otp) => {
       // 允许无账号登录
       if (user && pwd) {
-        return await login(user, pwd);
+        return await login(user, pwd, otp);
       } else {
         navigate("/", { replace: true });
       }
@@ -39,10 +39,11 @@ const Login = () => {
     const formData = new FormData(event.currentTarget);
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
+    const otp = formData.get("OTP") as string;
     const sourceURL = formData.get("source") as string;
 
     setSource(sourceURL);
-    onLogin(username, password);
+    onLogin(username, password, otp);
   };
 
   return (
@@ -68,6 +69,7 @@ const Login = () => {
         />
         <Input type="text" name="username" label="Username" />
         <Input type="password" name="password" label="Password" />
+        <Input type="text" name="OTP" label="OTP" />
         <Button
           type="submit"
           color="primary"
