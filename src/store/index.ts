@@ -61,7 +61,11 @@ const useStore = create<BeagleState>()(
       musicPath: "",
       setSource: (source) => {
         const url = new URL(source);
-        set({ source, origin: url.origin, musicPath: url.pathname });
+        set({
+          source,
+          origin: url.origin,
+          musicPath: decodeURIComponent(url.pathname),
+        });
       },
 
       // 音乐&元数据&播放列表
