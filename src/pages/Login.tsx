@@ -12,17 +12,27 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const { loading: isLoginLoading, run: onLogin } = useRequest(login, {
-    manual: true,
-    onSuccess: (res) => {
-      if (res?.code === 200) {
-        setToken(res.data.token);
-        navigate("/", {
-          replace: true,
-        });
+  const { loading: isLoginLoading, run: onLogin } = useRequest(
+    async (user, pwd) => {
+      // 允许无账号登录
+      if (user && pwd) {
+        return await login(user, pwd);
+      } else {
+        navigate("/", { replace: true });
       }
     },
-  });
+    {
+      manual: true,
+      onSuccess: (res) => {
+        if (res?.code === 200) {
+          setToken(res.data.token);
+          navigate("/", {
+            replace: true,
+          });
+        }
+      },
+    },
+  );
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -45,7 +55,6 @@ const Login = () => {
           type="url"
           name="source"
           label="Source URL"
-          isRequired
           defaultValue={source}
           endContent={
             <Tooltip content="URL pointing to the music folder in alist, like https://example.com/alist/music">
@@ -57,8 +66,8 @@ const Login = () => {
             </Tooltip>
           }
         />
-        <Input type="text" name="username" label="Username" isRequired />
-        <Input type="password" name="password" label="Password" isRequired />
+        <Input type="text" name="username" label="Username" />
+        <Input type="password" name="password" label="Password" />
         <Button
           type="submit"
           color="primary"

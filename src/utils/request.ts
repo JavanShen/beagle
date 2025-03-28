@@ -9,17 +9,25 @@ export const jumpLogin = () => {
   router.navigate("/login", { replace: true });
 };
 
+export const showErrorMsg = (errorMsg: string) => {
+  addToast({
+    title: "Error",
+    description: errorMsg || "Unknown error",
+    color: "danger",
+  });
+};
+
 service.interceptors.request.use((config) => {
   config.baseURL = config.baseURL || useStore.getState().origin;
 
   if (!config.baseURL && window.location.pathname !== "/login") {
     jumpLogin();
+    showErrorMsg("no source url");
   }
 
   const token = useStore.getState().token;
-  if (token) {
-    config.headers.Authorization = token;
-  }
+  config.headers.Authorization = token || "";
+
   return config;
 });
 
@@ -30,28 +38,20 @@ service.interceptors.response.use(
     if (data.code && data.code !== 200) {
       if (data.code === 401) {
         jumpLogin();
-      } else {
-        addToast({
-          title: "Error",
-          description: data.message || "Unknown error",
-          color: "danger",
-        });
       }
+      showErrorMsg(data.message);
     }
 
     return data;
   },
   (err) => {
     if (err.code !== "ERR_CANCELED") {
-      addToast({
-        title: "Error",
-        description: err.data?.message || err.message || "Unknown error",
-        color: "danger",
-      });
+      showErrorMsg(err.data?.message || err.message);
     }
 
     if (err.response?.status === 401) {
       jumpLogin();
+      showErrorMsg("Unauthorized");
     }
 
     return Promise.reject(err);
