@@ -1,4 +1,4 @@
-import { memo, useEffect, CSSProperties } from "react";
+import { memo, useEffect, useRef, CSSProperties } from "react";
 import useStore from "@/store";
 import { Image, Skeleton } from "@heroui/react";
 import { secondsToMinutes, updatePlaylist } from "@/utils/player";
@@ -94,18 +94,32 @@ const ListItem = memo(
 const Playlist = () => {
   const musicList = useStore((state) => state.musicList);
   const setCurrentMusic = useStore((state) => state.setCurrentMusic);
+  const isInitializedScroll = useRef(false);
+  const listRef = useRef<FixedSizeList | null>(null);
+
+  // 定位到当前播放音乐位置
+  useEffect(() => {
+    if (!isInitializedScroll.current && listRef.current) {
+      isInitializedScroll.current = true;
+      listRef.current?.scrollToItem(
+        useStore.getState().currentMusicIndex,
+        "center",
+      );
+    }
+  }, [musicList.length]);
 
   console.count("playlist rerender");
 
   return (
     <div className="w-full h-full px-4">
-      <AutoSizer style={{ height: "100%", width: "100%" }}>
+      <AutoSizer style={{ width: "100%" }}>
         {({ height }) => (
           <FixedSizeList
             height={height}
             itemSize={64}
             width={"100%"}
             itemCount={musicList.length}
+            ref={listRef}
           >
             {memo(
               ({ index, style }: { index: number; style: CSSProperties }) => {
