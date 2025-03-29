@@ -1,6 +1,7 @@
 import { getFileStream } from "@/request/fs";
 import { parseWebStream } from "music-metadata";
 import useStore from "@/store";
+import { isAxiosError } from "axios";
 
 export const parseID3 = async (filePath: string, signal?: AbortSignal) => {
   const stream = await getFileStream(filePath, signal);
@@ -14,14 +15,11 @@ export const parseMusicMeta = async (
   fileName: string,
   signal?: AbortSignal,
 ) => {
-  try {
-    const { musicMetaMap, musicPath, origin, addMusicMeta } =
-      useStore.getState();
-    if (musicMetaMap.has(sign) || !sign) return;
-    const joinUrl = encodeURI(
-      `${origin}/p${musicPath}/${fileName}?sign=${sign}`,
-    );
+  const { musicMetaMap, musicPath, origin, addMusicMeta } = useStore.getState();
+  if (musicMetaMap.has(sign) || !sign) return;
 
+  const joinUrl = `${origin}/p${encodeURI(musicPath)}/${encodeURIComponent(fileName)}?sign=${sign}`;
+  try {
     const id3 = await parseID3(joinUrl, signal);
 
     const { title, artist, picture, album } = id3?.common || {};
@@ -45,7 +43,10 @@ export const parseMusicMeta = async (
     addMusicMeta(sign, metadata);
 
     return metadata;
-  } catch (error) {
+  } catch (error: unknown) {
+    if (isAxiosError(error) && error?.code !== "ERR_CANCELED") {
+      addMusicMeta(sign, {});
+    }
     console.log(error);
   }
   return null;
