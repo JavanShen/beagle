@@ -7,7 +7,12 @@ module.exports = {
     "./node_modules/@heroui/theme/dist/components/(button|image|input|popover|slider|card|skeleton|toast).{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      flex: {
+        5: "5 5 0%",
+        9: "9 9 0%",
+      },
+    },
   },
   darkMode: "class",
   plugins: [heroui()],

@@ -64,78 +64,85 @@ const MiniPlayer = ({
       style={{ height: 80 }}
       className="w-11/12 fixed bottom-4 z-50 left-1/2 -translate-x-1/2"
     >
-      <div className="flex items-center px-4 h-full w-full">
-        {cover ? (
-          <Image src={cover} height={60} width={60} isBlurred alt="cover" />
-        ) : (
-          <Skeleton className="rounded-xl" style={{ height: 60, width: 60 }} />
-        )}
-
-        <div className="sm:w-2/12 sm:max-w-36 mx-4 whitespace-nowrap overflow-hidden flex-1">
-          <p className="text-base font-semibold text-ellipsis overflow-hidden">
-            {title}
-          </p>
-          <p className="text-sm opacity-80 text-ellipsis overflow-hidden">
-            {artist}
-          </p>
-        </div>
-        <Button
-          isIconOnly
-          size="md"
-          radius="md"
-          variant="light"
-          isDisabled={prevDisabled}
-          onPress={() => prev()}
-        >
-          <PrevIcon />
-        </Button>
-        <Button
-          isIconOnly
-          size="lg"
-          radius="md"
-          variant="light"
-          onPress={isPlaying ? onPause : onPlay}
-        >
-          {isPlaying ? (
-            <PauseIcon height={36} width={36} />
+      <div className="flex items-center justify-between px-4 h-full w-full">
+        <div className="flex items-center overflow-hidden flex-5">
+          {cover ? (
+            <Image src={cover} height={60} width={60} isBlurred alt="cover" />
           ) : (
-            <PlayIcon height={40} width={40} />
+            <Skeleton
+              className="rounded-xl"
+              style={{ height: 60, width: 60 }}
+            />
           )}
-        </Button>
-        <Button
-          isIconOnly
-          size="md"
-          radius="md"
-          variant="light"
-          isDisabled={nextDisabled}
-          onPress={() => next()}
-        >
-          <NextIcon />
-        </Button>
-        <Spacer className="hidden sm:inline" />
-        <span className="text-sm opacity-65 hidden sm:inline">
-          {currentTimeText}
-        </span>
-        <Spacer className="hidden sm:inline" />
-        <Slider
-          aria-label="music-progress"
-          size="sm"
-          className="flex-1 hidden sm:block"
-          radius="md"
-          hideThumb
-          minValue={0}
-          maxValue={duration}
-          value={currentTime}
-          step={1}
-          onChange={(val) => updateTime(val as number)}
-          onChangeEnd={(val) => jump(val as number)}
-        />
-        <Spacer className="hidden sm:inline" />
-        <span className="text-sm opacity-65 hidden sm:inline">
-          {durationText}
-        </span>
-        <div className="hidden md:flex">
+
+          <div className="mx-4 whitespace-nowrap overflow-hidden flex-1">
+            <p className="text-base font-semibold text-ellipsis overflow-hidden">
+              {title}
+            </p>
+            <p className="text-sm opacity-80 text-ellipsis overflow-hidden">
+              {artist}
+            </p>
+          </div>
+        </div>
+        <div className="flex justify-end items-center max-w-screen-sm flex-1 sm:flex-9">
+          <Button
+            isIconOnly
+            size="md"
+            radius="md"
+            variant="light"
+            isDisabled={prevDisabled}
+            onPress={() => prev()}
+          >
+            <PrevIcon />
+          </Button>
+          <Button
+            isIconOnly
+            size="lg"
+            radius="md"
+            variant="light"
+            onPress={isPlaying ? onPause : onPlay}
+          >
+            {isPlaying ? (
+              <PauseIcon height={36} width={36} />
+            ) : (
+              <PlayIcon height={40} width={40} />
+            )}
+          </Button>
+          <Button
+            isIconOnly
+            size="md"
+            radius="md"
+            variant="light"
+            isDisabled={nextDisabled}
+            onPress={() => next()}
+          >
+            <NextIcon />
+          </Button>
+          <Spacer className="hidden sm:inline" />
+          <span className="text-sm opacity-65 hidden sm:inline">
+            {currentTimeText}
+          </span>
+          <Spacer className="hidden sm:inline" />
+          <Slider
+            aria-label="music-progress"
+            size="sm"
+            className="hidden sm:block"
+            radius="md"
+            hideThumb
+            minValue={0}
+            maxValue={duration}
+            value={currentTime}
+            step={1}
+            onChange={(val) => updateTime(val as number)}
+            onChangeEnd={(val) => jump(val as number)}
+          />
+          <Spacer className="hidden sm:inline" />
+          <span className="text-sm opacity-65 hidden sm:inline">
+            {durationText}
+          </span>
           <Spacer />
+        </div>
+        <div className="hidden md:flex justify-end flex-5">
           <Button
             isIconOnly
             size="sm"
