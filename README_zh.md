@@ -15,10 +15,12 @@
 - [x] 播放模式
 - [x] 响应式
 - [x] 系统媒体控制
+- [ ] WebDAV 支持
+- [ ] 跨平台客户端
 - [ ] 音乐分组
 - [ ] 音乐搜索
 - [ ] 配置同步
-- [ ] webdav 支持
+- [ ] 全屏播放器
 
 ## 截图
 ![Screenshot](./images/screenshot-lg.png)

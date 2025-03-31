@@ -15,10 +15,12 @@ English | [中文](./README_zh.md)
 - [x] Playback modes
 - [x] Responsive
 - [x] System Media Controls
+- [ ] WebDAV support
+- [ ] Cross-platform client
 - [ ] Music Grouping
 - [ ] Music Search
 - [ ] Configuration Sync
-- [ ] webdav support
+- [ ] Fullscreen player
 
 ## Screenshots
 ![Screenshot](./images/screenshot-lg.png)
