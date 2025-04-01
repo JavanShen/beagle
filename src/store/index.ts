@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { FileList } from "@/request/fs";
+import { SourceType } from "@/types/global";
 
 const excludeKeys = ["musicList", "history", "musicMetaMap"];
 
@@ -19,9 +20,11 @@ type BeagleState = {
   setToken: (token: string) => void;
   clearToken: () => void;
 
+  sourceType: SourceType;
   source: string;
   origin: string;
   musicPath: string;
+  setSourceType: (sourceType: SourceType) => void;
   setSource: (source: string) => void;
 
   musicMetaMap: Map<string, Metadata | null>;
@@ -56,6 +59,7 @@ const useStore = create<BeagleState>()(
       clearToken: () => set({ token: "" }),
 
       // 音乐源
+      sourceType: SourceType.WEBDAV,
       source: "",
       origin: "",
       musicPath: "",
@@ -66,6 +70,9 @@ const useStore = create<BeagleState>()(
           origin: url.origin,
           musicPath: decodeURIComponent(url.pathname),
         });
+      },
+      setSourceType: (sourceType) => {
+        set({ sourceType });
       },
 
       // 音乐&元数据&播放列表
