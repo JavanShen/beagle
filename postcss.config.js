@@ -1,10 +1,8 @@
 export default {
   plugins: {
     tailwindcss: {},
+    "postcss-100vh-fix": {},
+    autoprefixer: {},
   },
-  extends: {
-    width: {
-      title: "200px",
-    },
-  },
+  extends: {},
 };
