@@ -4,8 +4,9 @@ on:
   push:
     branches:
       - main
+      - deployment
     tags:
-      - "v1.*.*"
+      - "v*"
   workflow_dispatch:
 
 jobs:
@@ -26,6 +27,8 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        with:
+          platforms: linux/arm64/v8
 
       - name: Setup build metadata
         id: meta
