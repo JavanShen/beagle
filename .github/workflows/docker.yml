@@ -3,13 +3,9 @@ name: docker-build-push
 on:
   push:
     branches:
-      # - main
-      - docker-ci
-    # tags:
-    #   - "v*"
-  # pull_request:
-  #   branches:
-  #     - main
+      - main
+    tags:
+      - "v1.*.*"
   workflow_dispatch:
 
 jobs:
