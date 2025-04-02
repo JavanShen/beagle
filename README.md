@@ -7,7 +7,7 @@
 
 English | [中文](./README_zh.md)
 
-## Features
+## Features 🌟
 - [x] Music lists
 - [x] Parsing music metadata
 - [x] Bottom player
@@ -22,6 +22,13 @@ English | [中文](./README_zh.md)
 - [ ] Configuration Sync
 - [ ] Fullscreen player
 
-## Screenshots
+## Deployment 🚀
+### Vercel 🛠️
+[![vercel button](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FJavanShen%2Fbeagle&project-name=beagle&repository-name=beagle)
+
+### Docker 🐳
+`docker run -d -p 3028:80 oneboluo/beagle`
+
+## Screenshots 📷
 ![Screenshot](./images/screenshot-lg.png)
 ![Screenshot](./images/screenshot-sm.png)

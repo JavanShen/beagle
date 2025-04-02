@@ -7,7 +7,7 @@
 
 [English](./README.md) | 中文
 
-## 功能
+## 功能 🌟
 - [x] 音乐列表
 - [x] 解析音乐元数据
 - [x] 底部播放器
@@ -22,6 +22,13 @@
 - [ ] 配置同步
 - [ ] 全屏播放器
 
-## 截图
+## 部署 🚀
+### Vercel 🛠️
+[![vercel button](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FJavanShen%2Fbeagle&project-name=beagle&repository-name=beagle)
+
+### Docker 🐳
+`docker run -d -p 3028:80 oneboluo/beagle`
+
+## 截图 📷
 ![Screenshot](./images/screenshot-lg.png)
 ![Screenshot](./images/screenshot-sm.png)
