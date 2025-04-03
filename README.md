@@ -5,9 +5,11 @@
     <a href="https://beagle-ashy-psi.vercel.app">Demo</a>
 </div>
 
+[![CI](https://github.com/JavanShen/beagle/actions/workflows/docker.yml/badge.svg?branch=main)](https://github.com/JavanShen/corgi/actions/workflows/ci.yml) ![Docker Pulls](https://img.shields.io/docker/pulls/oneboluo/beagle)
+
 English | [中文](./README_zh.md)
 
-## Features
+## Features 🌟
 - [x] Music lists
 - [x] Parsing music metadata
 - [x] Bottom player
@@ -22,6 +24,15 @@ English | [中文](./README_zh.md)
 - [ ] Configuration Sync
 - [ ] Fullscreen player
 
-## Screenshots
+## Deployment 🚀
+### Vercel 🛠️
+[![vercel button](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FJavanShen%2Fbeagle&project-name=beagle&repository-name=beagle)
+
+### Docker 🐳
+```shell
+docker run -d -p 3028:80 oneboluo/beagle
+```
+
+## Screenshots 📷
 ![Screenshot](./images/screenshot-lg.png)
 ![Screenshot](./images/screenshot-sm.png)
