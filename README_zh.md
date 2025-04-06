@@ -2,10 +2,12 @@
     <img height="140" width="140" src="./public/logo.png">
     <h1>Beagle</h1>
     <p>一个在线音乐播放器，支持 Alist</p>
-    <a href="https://beagle-ashy-psi.vercel.app">Demo</a>
+    <a href="https://beagle-ashy-psi.vercel.app" target="blank"><strong>🌎 预览</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="https://github.com/JavanShen/beagle/releases" target="blank"><strong>📦 下载</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="https://github.com/JavanShen/beagle#deployment-" target="blank"><strong>🚀 部署</strong></a>
 </div>
 
-[![CI](https://github.com/JavanShen/beagle/actions/workflows/docker.yml/badge.svg?branch=main)](https://github.com/JavanShen/corgi/actions/workflows/ci.yml) ![Docker Pulls](https://img.shields.io/docker/pulls/oneboluo/beagle)
+[![CI](https://github.com/JavanShen/beagle/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/JavanShen/corgi/actions/workflows/ci.yml) ![Docker Pulls](https://img.shields.io/docker/pulls/oneboluo/beagle)
 
 [English](./README.md) | 中文
 
