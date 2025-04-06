@@ -60,6 +60,7 @@ jobs:
         run: pnpm install # change this to npm or pnpm depending on which one you use.
 
       - name: Create Release
+        id: create_release
         uses: softprops/action-gh-release@v2
         with:
           draft: true
