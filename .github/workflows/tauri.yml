@@ -7,7 +7,22 @@ on:
       - test-v*
 
 jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      release_id: ${{ steps.create_release.outputs.id }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          generate_release_notes: true
+
   publish-tauri:
+    needs: create-release
     permissions:
       contents: write
     strategy:
@@ -59,16 +74,9 @@ jobs:
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
         run: pnpm install # change this to npm or pnpm depending on which one you use.
 
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v2
-        with:
-          draft: true
-          generate_release_notes: true
-
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           args: ${{ matrix.args }}
-          releaseId: ${{ steps.create_release.outputs.id }}
+          releaseId: ${{ needs.create-release.outputs.release_id }}
