@@ -4,14 +4,14 @@
     <p>An online music player with Alist support</p>
     <a href="https://beagle-ashy-psi.vercel.app" target="blank"><strong>🌎 Demo</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a href="https://github.com/JavanShen/beagle/releases" target="blank"><strong>📦 Install</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
-    <a href="https://github.com/JavanShen/beagle#deployment-" target="blank"><strong>🚀 Deployment</strong></a>
+    <a href="#-deployment" target="blank"><strong>🚀 Deploy</strong></a>
 </div>
 
-[![CI](https://github.com/JavanShen/beagle/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/JavanShen/corgi/actions/workflows/ci.yml) ![Docker Pulls](https://img.shields.io/docker/pulls/oneboluo/beagle)
+![CI](https://github.com/JavanShen/beagle/actions/workflows/release.yml/badge.svg?branch=main) ![Docker Pulls](https://img.shields.io/docker/pulls/oneboluo/beagle)
 
 English | [中文](./README_zh.md)
 
-## Features 🌟
+## 🌟 Features
 - [x] Music lists
 - [x] Parsing music metadata
 - [x] Bottom player
@@ -26,15 +26,15 @@ English | [中文](./README_zh.md)
 - [ ] Configuration Sync
 - [ ] Fullscreen player
 
-## Deployment 🚀
-### Vercel 🛠️
+## 🚀 Deployments
+### 🛠️ Vercel
 [![vercel button](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FJavanShen%2Fbeagle&project-name=beagle&repository-name=beagle)
 
-### Docker 🐳
+### 🐳 Docker
 ```shell
 docker run -d -p 3028:80 oneboluo/beagle
 ```
 
-## Screenshots 📷
+## 📷 Screenshots
 ![Screenshot](./images/screenshot-lg.png)
 ![Screenshot](./images/screenshot-sm.png)
