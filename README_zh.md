@@ -4,7 +4,7 @@
     <p>一个在线音乐播放器，支持 Alist</p>
     <a href="https://beagle-ashy-psi.vercel.app" target="blank"><strong>🌎 预览</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a href="https://github.com/JavanShen/beagle/releases" target="blank"><strong>📦 下载</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
-    <a href="#-deployment" target="blank"><strong>🚀 部署</strong></a>
+    <a href="#-%E9%83%A8%E7%BD%B2" target="blank"><strong>🚀 部署</strong></a>
 </div>
 
 ![Github Actions Status](https://github.com/JavanShen/beagle/actions/workflows/release.yml/badge.svg?branch=main) ![Docker Pulls](https://img.shields.io/docker/pulls/oneboluo/beagle)
