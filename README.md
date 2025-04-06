@@ -4,7 +4,7 @@
     <p>An online music player with Alist support</p>
     <a href="https://beagle-ashy-psi.vercel.app" target="blank"><strong>🌎 Demo</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a href="https://github.com/JavanShen/beagle/releases" target="blank"><strong>📦 Install</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
-    <a href="#-deployment" target="blank"><strong>🚀 Deploy</strong></a>
+    <a href="#-deployments" target="blank"><strong>🚀 Deploy</strong></a>
 </div>
 
 ![CI](https://github.com/JavanShen/beagle/actions/workflows/release.yml/badge.svg?branch=main) ![Docker Pulls](https://img.shields.io/docker/pulls/oneboluo/beagle)
