@@ -29,8 +29,11 @@ const Player = () => {
     return () => {
       if ("mediaSession" in navigator) {
         navigator.mediaSession.metadata = null;
+        navigator.mediaSession.setActionHandler("play", null);
+        navigator.mediaSession.setActionHandler("pause", null);
         navigator.mediaSession.setActionHandler("nexttrack", null);
         navigator.mediaSession.setActionHandler("previoustrack", null);
+        navigator.mediaSession.setActionHandler("seekto", null);
       }
     };
   }, []);
@@ -83,6 +86,8 @@ const Player = () => {
       artwork: [{ src: coverUrl || "" }],
     });
 
+    navigator.mediaSession.setActionHandler("play", () => controls.play());
+    navigator.mediaSession.setActionHandler("pause", () => controls.pause());
     navigator.mediaSession.setActionHandler("nexttrack", () => next());
     navigator.mediaSession.setActionHandler("previoustrack", prev);
     navigator.mediaSession.setActionHandler("seekto", (val) => {
