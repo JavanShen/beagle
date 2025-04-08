@@ -1,4 +1,14 @@
-import { Card, Image, Spacer, Button, Slider, Skeleton } from "@heroui/react";
+import {
+  Card,
+  Image,
+  Spacer,
+  Button,
+  Slider,
+  Skeleton,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@heroui/react";
 import { UsePlayAudioReturn } from "@/hooks/usePlayAudio";
 import PlayIcon from "@/assets/play_arrow.svg?react";
 import PauseIcon from "@/assets/pause.svg?react";
@@ -10,6 +20,8 @@ import QueueIcon from "@/assets/queue_music.svg?react";
 import VolumeIcon from "@/assets/volume.svg?react";
 import MuteIcon from "@/assets/volume_mute.svg?react";
 import RepeatIcon from "@/assets/repeat_one.svg?react";
+// import { useResponsive } from "ahooks";
+import { useState } from "react";
 
 type MiniPlayerProps = UsePlayAudioReturn & {
   cover?: string;
@@ -25,6 +37,73 @@ type MiniPlayerProps = UsePlayAudioReturn & {
   setIsShuffle: (value: boolean) => void;
   setIsRepeat: (value: boolean) => void;
   setIsLoop: (value: boolean) => void;
+};
+
+const VolumeSlider = ({
+  volume,
+  updateVolume,
+}: {
+  volume: number;
+  updateVolume: (val: number) => void;
+}) => {
+  return (
+    <Slider
+      aria-label="volume control"
+      className="w-20"
+      size="sm"
+      maxValue={100}
+      minValue={0}
+      step={1}
+      hideThumb
+      value={volume}
+      onChange={(val) => updateVolume(val as number)}
+    />
+  );
+};
+
+const VolumeControl = ({
+  volume,
+  mute,
+  unmute,
+  updateVolume,
+}: {
+  volume: number | null;
+  mute: () => void;
+  unmute: () => void;
+  updateVolume: (val: number) => void;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  // const responsive = useResponsive();
+
+  return (
+    <div className="flex items-center">
+      <Popover isOpen={isOpen} placement="top">
+        <PopoverTrigger>
+          <Button
+            isIconOnly
+            size="sm"
+            radius="md"
+            variant="light"
+            onPress={volume ? mute : unmute}
+            onMouseOver={() => setIsOpen(true)}
+            onMouseLeave={() => setIsOpen(false)}
+          >
+            {volume ? (
+              <VolumeIcon height={20} width={20} />
+            ) : (
+              <MuteIcon height={20} width={20} />
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <VolumeSlider volume={volume || 0} updateVolume={updateVolume} />
+        </PopoverContent>
+      </Popover>
+      <div className="hidden md:block">
+        <VolumeSlider volume={volume || 0} updateVolume={updateVolume} />
+      </div>
+    </div>
+  );
 };
 
 const MiniPlayer = ({
@@ -185,32 +264,12 @@ const MiniPlayer = ({
             )}
           </Button>
           <Spacer />
-          <div className="flex items-center">
-            <Button
-              isIconOnly
-              size="sm"
-              radius="md"
-              variant="light"
-              onPress={volume ? mute : unmute}
-            >
-              {volume ? (
-                <VolumeIcon height={20} width={20} />
-              ) : (
-                <MuteIcon height={20} width={20} />
-              )}
-            </Button>
-            <Slider
-              aria-label="volume control"
-              className="hidden lg:block w-20"
-              size="sm"
-              maxValue={101}
-              minValue={0}
-              step={1}
-              hideThumb
-              value={volume || 0}
-              onChange={(val) => updateVolume(val as number)}
-            />
-          </div>
+          <VolumeControl
+            volume={volume}
+            mute={mute}
+            unmute={unmute}
+            updateVolume={updateVolume}
+          />
           <Spacer />
           <Button isIconOnly size="sm" radius="md" variant="light">
             <QueueIcon height={24} width={24} />
