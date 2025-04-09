@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import useStore from "@/store";
 import Player from "./Player";
 import Menu from "./Menu";
+import mime from "mime";
 
 const Layout = () => {
   const musicPath = useStore((state) => state.musicPath);
@@ -15,7 +16,12 @@ const Layout = () => {
 
     getFileList(musicPath, controller.signal).then((res) => {
       if (res.code === 200) {
-        setMusicList(res.data.content);
+        setMusicList(
+          res.data.content.filter(
+            (item) =>
+              !item.is_dir && /audio/.test(mime.getType(item.name) || ""),
+          ),
+        );
       }
     });
 
