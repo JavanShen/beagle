@@ -64,6 +64,9 @@ export const getFileList = (path: string, signal?: AbortSignal) =>
       path,
     },
     signal,
+    onDownloadProgress: (progressEvent) => {
+      console.log("list loaded:", progressEvent);
+    },
   });
 
 export type FileInfo = {

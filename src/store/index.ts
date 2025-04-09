@@ -14,6 +14,11 @@ type Metadata = {
   hasMeta?: boolean;
 };
 
+type FileInfo = {
+  name: string;
+  sign: string;
+};
+
 type BeagleState = {
   token: string;
   setToken: (token: string) => void;
@@ -26,12 +31,15 @@ type BeagleState = {
 
   musicMetaMap: Map<string, Metadata | null>;
   musicList: FileList["content"];
+  groups: Record<string, FileInfo[]>;
   playlist: number[];
   history: number[];
   setMusicList: (musicList: FileList["content"]) => void;
   setPlaylist: (playlist: number[]) => void;
   setHistory: (history: number[]) => void;
   addMusicMeta: (id: string, meta: Metadata | null) => void;
+  addGroup: (groupName: string, files: FileInfo[]) => void;
+  addFileToGroup: (groupName: string, file: FileInfo) => void;
 
   currentMusicIndex: number;
   currentMusicId: string;
@@ -71,6 +79,7 @@ const useStore = create<BeagleState>()(
       // 音乐&元数据&播放列表
       musicMetaMap: new Map(),
       musicList: [],
+      groups: { "All Music": [] },
       playlist: [],
       history: [],
       setHistory: (history) => set({ history }),
@@ -84,6 +93,19 @@ const useStore = create<BeagleState>()(
         set((state) => ({
           musicMetaMap: new Map(state.musicMetaMap).set(id, meta),
         })),
+      addGroup: (groupName, files) => {
+        set((state) => ({
+          groups: { ...state.groups, [groupName]: files },
+        }));
+      },
+      addFileToGroup: (groupName, file) => {
+        set((state) => {
+          const files = state.groups[groupName] || [];
+          return {
+            groups: { ...state.groups, [groupName]: [...files, file] },
+          };
+        });
+      },
 
       // 当前播放歌曲
       currentMusicIndex: -1,
