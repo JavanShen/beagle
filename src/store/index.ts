@@ -31,15 +31,18 @@ type BeagleState = {
 
   musicMetaMap: Map<string, Metadata | null>;
   musicList: FileList["content"];
-  groups: Record<string, FileInfo[]>;
   playlist: number[];
   history: number[];
   setMusicList: (musicList: FileList["content"]) => void;
   setPlaylist: (playlist: number[]) => void;
   setHistory: (history: number[]) => void;
   addMusicMeta: (id: string, meta: Metadata | null) => void;
+
+  currentGroup: string;
+  groups: Record<string, FileInfo[]>;
   addGroup: (groupName: string, files: FileInfo[]) => void;
   addFileToGroup: (groupName: string, file: FileInfo) => void;
+  setCurrentGroup: (groupName: string) => void;
 
   currentMusicIndex: number;
   currentMusicId: string;
@@ -79,7 +82,6 @@ const useStore = create<BeagleState>()(
       // 音乐&元数据&播放列表
       musicMetaMap: new Map(),
       musicList: [],
-      groups: { "All Music": [] },
       playlist: [],
       history: [],
       setHistory: (history) => set({ history }),
@@ -93,6 +95,10 @@ const useStore = create<BeagleState>()(
         set((state) => ({
           musicMetaMap: new Map(state.musicMetaMap).set(id, meta),
         })),
+
+      // 歌单管理
+      currentGroup: "All Music",
+      groups: { "All Music": [] },
       addGroup: (groupName, files) => {
         set((state) => ({
           groups: { ...state.groups, [groupName]: files },
@@ -106,6 +112,7 @@ const useStore = create<BeagleState>()(
           };
         });
       },
+      setCurrentGroup: (groupName) => set({ currentGroup: groupName }),
 
       // 当前播放歌曲
       currentMusicIndex: -1,

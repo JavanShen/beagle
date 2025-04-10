@@ -67,10 +67,11 @@ const Menu = () => {
   const currentMusicId = useStore((state) => state.currentMusicId);
   const totalMusicCount = useStore((state) => state.musicList.length);
   const groups = useStore((state) => state.groups);
-  console.log(groups);
+  const currentGroup = useStore((state) => state.currentGroup);
   const cover = useStore((state) =>
     state.musicMetaMap.get(currentMusicId),
   )?.coverUrl;
+  const setCurrentGroup = useStore((state) => state.setCurrentGroup);
 
   const logout = () => {
     useStore.getState().clearToken();
@@ -107,8 +108,10 @@ const Menu = () => {
         {Object.keys(groups).map((key) => {
           return (
             <li
-              className="flex items-center justify-start w-full px-4 bg-white bg-opacity-70"
+              key={key}
+              className={`flex items-center justify-start w-full px-4 bg-opacity-70 ${key === currentGroup ? "bg-white" : "bg-transparent"}`}
               style={{ height: 90 }}
+              onClick={() => setCurrentGroup(key)}
             >
               <Image isBlurred isZoomed height={70} width={70} src={cover} />
               <div className="flex flex-col ml-4">

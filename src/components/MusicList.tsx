@@ -6,15 +6,17 @@ import { parseMusicMeta } from "@/utils/meta";
 import { FixedSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FileList } from "@/request/fs";
+import ContextMenu, { ContextMenuRef } from "./ContextMenu";
 
 type ListItemProps = {
   musicId: string;
   fileName: string;
   style?: React.CSSProperties;
   onClick?: () => void;
+  onContextMenu?: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
 const ListItem = memo(
-  ({ musicId, fileName, style, onClick }: ListItemProps) => {
+  ({ musicId, fileName, style, onClick, onContextMenu }: ListItemProps) => {
     const metadata = useStore((state) => state.musicMetaMap.get(musicId));
     const isLoaded = metadata !== undefined;
     const {
@@ -44,6 +46,12 @@ const ListItem = memo(
         className={`flex items-center justify-between whitespace-nowrap px-5 rounded-lg ${isLoaded ? "hover:bg-gray-200/40 hover:cursor-pointer" : ""} transition-background`}
         style={{ ...style, height: 64 }}
         onClick={() => isLoaded && onClick?.()}
+        onContextMenu={(e) => {
+          if (onContextMenu) {
+            e.preventDefault();
+            onContextMenu(e);
+          }
+        }}
       >
         <div className="flex items-center w-full md:w-4/12">
           <Image
@@ -96,6 +104,7 @@ const MusicList = ({ musicList }: { musicList: FileList["content"] }) => {
   const setCurrentMusic = useStore((state) => state.setCurrentMusic);
   const isInitializedScroll = useRef(false);
   const listRef = useRef<FixedSizeList | null>(null);
+  const contextMenuRef = useRef<ContextMenuRef>(null);
 
   // 定位到当前播放音乐位置
   useEffect(() => {
@@ -135,6 +144,12 @@ const MusicList = ({ musicList }: { musicList: FileList["content"] }) => {
                       setCurrentMusic(sign, index, name);
                       updatePlaylist("select");
                     }}
+                    onContextMenu={(e) => {
+                      contextMenuRef.current?.open({
+                        x: e.clientX,
+                        y: e.clientY,
+                      });
+                    }}
                   ></ListItem>
                 );
               },
@@ -143,6 +158,15 @@ const MusicList = ({ musicList }: { musicList: FileList["content"] }) => {
           </FixedSizeList>
         )}
       </AutoSizer>
+      <ContextMenu
+        ref={contextMenuRef}
+        content={[
+          {
+            id: "group",
+            children: "Add to Playlist",
+          },
+        ]}
+      />
     </div>
   );
 };
