@@ -43,7 +43,7 @@ const ContextMenu = ({
       <DropdownTrigger>
         <div
           className="fixed opacity-0 h-0 w-0"
-          style={{ left: position.x + 10, top: position.y + 10 }}
+          style={{ left: position.x + 7, top: position.y + 7 }}
         ></div>
       </DropdownTrigger>
       <DropdownMenu>

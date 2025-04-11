@@ -46,15 +46,18 @@ const CreatePlaylist = ({
               />
             </ModalBody>
             <ModalFooter>
+              <Button color="danger" variant="light" onPress={() => onClose()}>
+                Cancel
+              </Button>
               <Button
                 onPress={() => {
                   addGroup(groupName, []);
                   onClose();
                 }}
+                color="primary"
               >
                 Create
               </Button>
-              <Button onPress={() => onClose()}>Cancel</Button>
             </ModalFooter>
           </>
         )}
@@ -64,13 +67,8 @@ const CreatePlaylist = ({
 };
 
 const Menu = () => {
-  const currentMusicId = useStore((state) => state.currentMusicId);
-  const totalMusicCount = useStore((state) => state.musicList.length);
   const groups = useStore((state) => state.groups);
   const currentGroup = useStore((state) => state.currentGroup);
-  const cover = useStore((state) =>
-    state.musicMetaMap.get(currentMusicId),
-  )?.coverUrl;
   const setCurrentGroup = useStore((state) => state.setCurrentGroup);
 
   const logout = () => {
@@ -109,18 +107,24 @@ const Menu = () => {
           return (
             <li
               key={key}
-              className={`flex items-center justify-start w-full px-4 bg-opacity-70 ${key === currentGroup ? "bg-white" : "bg-transparent"}`}
+              className={`flex items-center justify-start w-full px-4 bg-opacity-70 hover:bg-white cursor-pointer ${key === currentGroup ? "bg-white" : "bg-transparent"}`}
               style={{ height: 90 }}
               onClick={() => setCurrentGroup(key)}
             >
-              <Image isBlurred isZoomed height={70} width={70} src={cover} />
+              <Image
+                isBlurred
+                isZoomed
+                height={70}
+                width={70}
+                src={
+                  useStore.getState().musicMetaMap.get(groups[key]?.[0]?.sign)
+                    ?.coverUrl
+                }
+              />
               <div className="flex flex-col ml-4">
                 <span className="text-lg font-bold mb-2">{key}</span>
                 <span className="text-sm opacity-70">
-                  {(key === "All Music"
-                    ? totalMusicCount
-                    : groups[key]?.length) || 0}{" "}
-                  songs
+                  {groups[key]?.length || 0} songs
                 </span>
               </div>
             </li>

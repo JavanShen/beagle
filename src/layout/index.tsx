@@ -8,7 +8,7 @@ import mime from "mime";
 
 const Layout = () => {
   const musicPath = useStore((state) => state.musicPath);
-  const setMusicList = useStore((state) => state.setMusicList);
+  const addGroup = useStore((state) => state.addGroup);
 
   // 获取全部音乐列表
   useEffect(() => {
@@ -16,7 +16,8 @@ const Layout = () => {
 
     getFileList(musicPath, controller.signal).then((res) => {
       if (res.code === 200) {
-        setMusicList(
+        addGroup(
+          "All Music",
           res.data.content.filter(
             (item) =>
               !item.is_dir && /audio/.test(mime.getType(item.name) || ""),

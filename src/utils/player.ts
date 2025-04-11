@@ -15,13 +15,14 @@ export const secondsToMinutes = (seconds: number) => {
 
 export const updatePlaylist = (trigger?: "next" | "prev" | "select") => {
   const {
-    musicList,
+    getMusicList,
     isShuffle,
     isLoop,
     currentMusicIndex,
     setPlaylist,
     playlist,
   } = useStore.getState();
+  const musicList = getMusicList();
 
   if (musicList.length > 0) {
     let newPlaylist: number[] = [];

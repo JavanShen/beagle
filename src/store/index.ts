@@ -1,10 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { FileList } from "@/request/fs";
 
 const excludeKeys = ["musicList", "history", "musicMetaMap"];
 
-type Metadata = {
+export type Metadata = {
   title?: string;
   artist?: string;
   album?: string;
@@ -14,7 +13,7 @@ type Metadata = {
   hasMeta?: boolean;
 };
 
-type FileInfo = {
+export type FileInfo = {
   name: string;
   sign: string;
 };
@@ -30,10 +29,9 @@ type BeagleState = {
   setSource: (source: string) => void;
 
   musicMetaMap: Map<string, Metadata | null>;
-  musicList: FileList["content"];
+  getMusicList: () => FileInfo[];
   playlist: number[];
   history: number[];
-  setMusicList: (musicList: FileList["content"]) => void;
   setPlaylist: (playlist: number[]) => void;
   setHistory: (history: number[]) => void;
   addMusicMeta: (id: string, meta: Metadata | null) => void;
@@ -61,7 +59,7 @@ type BeagleState = {
 
 const useStore = create<BeagleState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       token: "",
       setToken: (token) => set({ token }),
       clearToken: () => set({ token: "" }),
@@ -81,13 +79,9 @@ const useStore = create<BeagleState>()(
 
       // 音乐&元数据&播放列表
       musicMetaMap: new Map(),
-      musicList: [],
       playlist: [],
       history: [],
       setHistory: (history) => set({ history }),
-      setMusicList: (musicList) => {
-        set({ musicList });
-      },
       setPlaylist: (playlist) => {
         set({ playlist });
       },
@@ -99,6 +93,7 @@ const useStore = create<BeagleState>()(
       // 歌单管理
       currentGroup: "All Music",
       groups: { "All Music": [] },
+      getMusicList: () => get().groups?.[get().currentGroup] || [],
       addGroup: (groupName, files) => {
         set((state) => ({
           groups: { ...state.groups, [groupName]: files },

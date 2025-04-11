@@ -1,11 +1,10 @@
 import { memo, useEffect, useRef, CSSProperties } from "react";
-import useStore from "@/store";
+import useStore, { FileInfo } from "@/store";
 import { Image, Skeleton } from "@heroui/react";
 import { secondsToMinutes, updatePlaylist } from "@/utils/player";
 import { parseMusicMeta } from "@/utils/meta";
 import { FixedSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { FileList } from "@/request/fs";
 import ContextMenu, { ContextMenuRef } from "./ContextMenu";
 
 type ListItemProps = {
@@ -100,7 +99,7 @@ const ListItem = memo(
   },
 );
 
-const MusicList = ({ musicList }: { musicList: FileList["content"] }) => {
+const MusicList = ({ musicList }: { musicList: FileInfo[] }) => {
   const setCurrentMusic = useStore((state) => state.setCurrentMusic);
   const isInitializedScroll = useRef(false);
   const listRef = useRef<FixedSizeList | null>(null);
