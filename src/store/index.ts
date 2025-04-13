@@ -40,6 +40,7 @@ type BeagleState = {
   groups: Record<string, FileInfo[]>;
   addGroup: (groupName: string, files: FileInfo[]) => void;
   addFileToGroup: (groupName: string, file: FileInfo) => void;
+  removeFileFromGroup: (groupName: string, fileId: string) => void;
   setCurrentGroup: (groupName: string) => void;
 
   currentMusicIndex: number;
@@ -98,6 +99,18 @@ const useStore = create<BeagleState>()(
         set((state) => ({
           groups: { ...state.groups, [groupName]: files },
         }));
+      },
+      removeFileFromGroup: (groupName, fileId) => {
+        set((state) => {
+          const files = state.groups[groupName] || [];
+          console.log(fileId);
+          return {
+            groups: {
+              ...state.groups,
+              [groupName]: files.filter((item) => item.sign !== fileId),
+            },
+          };
+        });
       },
       addFileToGroup: (groupName, file) => {
         set((state) => {

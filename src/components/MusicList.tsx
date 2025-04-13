@@ -5,7 +5,9 @@ import { secondsToMinutes, updatePlaylist } from "@/utils/player";
 import { parseMusicMeta } from "@/utils/meta";
 import { FixedSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import ContextMenu, { ContextMenuRef } from "./ContextMenu";
+import ContextMenu, { ContextMenuRef, Position } from "./ContextMenu";
+import AddIcon from "@/assets/add.svg?react";
+import PlaylistSelect, { PlaylistSelectRef } from "./PlaylistSelect";
 
 type ListItemProps = {
   musicId: string;
@@ -103,7 +105,12 @@ const MusicList = ({ musicList }: { musicList: FileInfo[] }) => {
   const setCurrentMusic = useStore((state) => state.setCurrentMusic);
   const isInitializedScroll = useRef(false);
   const listRef = useRef<FixedSizeList | null>(null);
+
+  const curActMusicId = useRef("");
+  const triggerPos = useRef<Position>({ x: 0, y: 0 });
   const contextMenuRef = useRef<ContextMenuRef>(null);
+
+  const playlistSelectRef = useRef<PlaylistSelectRef>(null);
 
   // 定位到当前播放音乐位置
   useEffect(() => {
@@ -144,6 +151,13 @@ const MusicList = ({ musicList }: { musicList: FileInfo[] }) => {
                       updatePlaylist("select");
                     }}
                     onContextMenu={(e) => {
+                      curActMusicId.current = sign;
+
+                      const pos = {
+                        x: e.clientX,
+                        y: e.clientY,
+                      };
+                      triggerPos.current = pos;
                       contextMenuRef.current?.open({
                         x: e.clientX,
                         y: e.clientY,
@@ -163,9 +177,20 @@ const MusicList = ({ musicList }: { musicList: FileInfo[] }) => {
           {
             id: "group",
             children: "Add to Playlist",
+            props: {
+              startContent: <AddIcon className="opacity-60" />,
+            },
+            onClick: () => {
+              contextMenuRef.current?.close();
+              playlistSelectRef.current?.open(
+                triggerPos.current,
+                curActMusicId.current,
+              );
+            },
           },
         ]}
       />
+      <PlaylistSelect ref={playlistSelectRef} />
     </div>
   );
 };
