@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { omit } from "lodash-es";
 
 const excludeKeys = ["musicList", "history", "musicMetaMap"];
 
@@ -39,6 +40,7 @@ type BeagleState = {
   currentGroup: string;
   groups: Record<string, FileInfo[]>;
   addGroup: (groupName: string, files: FileInfo[]) => void;
+  removeGroup: (groupName: string) => void;
   addFileToGroup: (groupName: string, file: FileInfo) => void;
   removeFileFromGroup: (groupName: string, fileId: string) => void;
   setCurrentGroup: (groupName: string) => void;
@@ -99,6 +101,9 @@ const useStore = create<BeagleState>()(
         set((state) => ({
           groups: { ...state.groups, [groupName]: files },
         }));
+      },
+      removeGroup: (groupName) => {
+        set((state) => ({ groups: { ...omit(state.groups, groupName) } }));
       },
       removeFileFromGroup: (groupName, fileId) => {
         set((state) => {

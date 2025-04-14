@@ -178,10 +178,10 @@ const MusicList = ({ musicList }: { musicList: FileInfo[] }) => {
             id: "group",
             children: "Add to Playlist",
             props: {
-              startContent: <AddIcon className="opacity-60" />,
+              startContent: <AddIcon />,
+              color: "primary",
             },
             onClick: () => {
-              contextMenuRef.current?.close();
               playlistSelectRef.current?.open(
                 triggerPos.current,
                 curActMusicId.current,

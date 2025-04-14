@@ -11,9 +11,11 @@ import {
 } from "@heroui/react";
 import LogoutIcon from "@/assets/logout.svg?react";
 import AddIcon from "@/assets/add.svg?react";
+import DelIcon from "@/assets/delete.svg?react";
 import useStore from "@/store";
 import { jumpLogin } from "@/utils/request";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import ContextMenu, { ContextMenuRef } from "@/components/ContextMenu";
 
 const CreatePlaylist = ({
   isOpen,
@@ -70,6 +72,10 @@ const Menu = () => {
   const groups = useStore((state) => state.groups);
   const currentGroup = useStore((state) => state.currentGroup);
   const setCurrentGroup = useStore((state) => state.setCurrentGroup);
+  const removeGroup = useStore((state) => state.removeGroup);
+
+  const curActGroup = useRef("");
+  const contextMenuRef = useRef<ContextMenuRef>(null);
 
   const logout = () => {
     useStore.getState().clearToken();
@@ -110,6 +116,15 @@ const Menu = () => {
               className={`flex items-center justify-start w-full px-4 bg-opacity-70 hover:bg-white cursor-pointer ${key === currentGroup ? "bg-white" : "bg-transparent"}`}
               style={{ height: 90 }}
               onClick={() => setCurrentGroup(key)}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                if (key === "All Music") return;
+                curActGroup.current = key;
+                contextMenuRef.current?.open({
+                  x: e.clientX,
+                  y: e.clientY,
+                });
+              }}
             >
               <Image
                 isBlurred
@@ -132,6 +147,22 @@ const Menu = () => {
         })}
       </ul>
       <CreatePlaylist isOpen={isOpen} onOpenChange={onOpenChange} />
+      <ContextMenu
+        ref={contextMenuRef}
+        content={[
+          {
+            id: "deleteGroup",
+            children: "Delete Playlist",
+            props: {
+              color: "danger",
+              startContent: <DelIcon />,
+            },
+            onClick: () => {
+              removeGroup(curActGroup.current);
+            },
+          },
+        ]}
+      />
     </div>
   );
 };

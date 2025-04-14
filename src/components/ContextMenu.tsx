@@ -27,11 +27,13 @@ const ContextMenu = ({
   ref,
   content = [],
   children,
+  closeOnSelect = true,
   popoverProps,
 }: {
   ref?: React.Ref<ContextMenuRef>;
   content?: ContextMenuItem[];
   children?: React.ReactNode;
+  closeOnSelect?: boolean;
   popoverProps?: PopoverProps;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -72,7 +74,12 @@ const ContextMenu = ({
                 {content.map((item) => (
                   <ListboxItem
                     key={item.id}
-                    onPress={() => item.onClick?.()}
+                    onPress={() => {
+                      if (closeOnSelect) {
+                        setIsOpen(false);
+                      }
+                      item.onClick?.();
+                    }}
                     {...item.props}
                   >
                     {item.children}
