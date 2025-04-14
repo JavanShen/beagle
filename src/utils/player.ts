@@ -13,28 +13,28 @@ export const secondsToMinutes = (seconds: number) => {
   return `${formatTime(seconds / 60)}:${formatTime(seconds % 60)}`;
 };
 
-export const updatePlaylist = (trigger?: "next" | "prev" | "select") => {
+export const updatePlayQuque = (trigger?: "next" | "prev" | "select") => {
   const {
     getMusicList,
     isShuffle,
     isLoop,
     currentMusicIndex,
-    setPlaylist,
-    playlist,
+    setPlayQueue,
+    playQueue,
   } = useStore.getState();
   const musicList = getMusicList();
 
   if (musicList.length > 0) {
-    let newPlaylist: number[] = [];
+    let newPlayQueue: number[] = [];
     if (isShuffle) {
-      newPlaylist =
+      newPlayQueue =
         trigger === "next"
           ? [
-              ...playlist.filter((item) => item !== currentMusicIndex),
+              ...playQueue.filter((item) => item !== currentMusicIndex),
               ...generateRandomArray(
-                Math.min(10, musicList.length) - playlist.length,
+                Math.min(10, musicList.length) - playQueue.length,
                 musicList.length - 1,
-                playlist.slice(1),
+                playQueue.slice(1),
               ),
             ]
           : generateRandomArray(
@@ -43,17 +43,17 @@ export const updatePlaylist = (trigger?: "next" | "prev" | "select") => {
               [currentMusicIndex],
             );
     } else {
-      newPlaylist = generateOrderedArray(
+      newPlayQueue = generateOrderedArray(
         isLoop ? 10 : Math.min(10, musicList.length),
         currentMusicIndex + 1,
-        musicList.length - 1,
+        musicList.length,
         isLoop,
       );
     }
 
-    setPlaylist(newPlaylist);
+    setPlayQueue(newPlayQueue);
 
-    const nextMusic = musicList[newPlaylist[0]];
+    const nextMusic = musicList[newPlayQueue[0]] || {};
     parseMusicMeta(nextMusic.sign, nextMusic.name);
   }
 };

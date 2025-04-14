@@ -16,6 +16,7 @@ import useStore from "@/store";
 import { jumpLogin } from "@/utils/request";
 import { useEffect, useState, useRef } from "react";
 import ContextMenu, { ContextMenuRef } from "@/components/ContextMenu";
+import { updatePlayQuque } from "@/utils/player";
 
 const CreatePlaylist = ({
   isOpen,
@@ -115,7 +116,10 @@ const Menu = () => {
               key={key}
               className={`flex items-center justify-start w-full px-4 bg-opacity-70 hover:bg-white cursor-pointer ${key === currentGroup ? "bg-white" : "bg-transparent"}`}
               style={{ height: 90 }}
-              onClick={() => setCurrentGroup(key)}
+              onClick={() => {
+                setCurrentGroup(key);
+                updatePlayQuque();
+              }}
               onContextMenu={(e) => {
                 e.preventDefault();
                 if (key === "All Music") return;

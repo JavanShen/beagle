@@ -1,7 +1,7 @@
 import { memo, useEffect, useRef, CSSProperties } from "react";
 import useStore, { FileInfo } from "@/store";
 import { Image, Skeleton } from "@heroui/react";
-import { secondsToMinutes, updatePlaylist } from "@/utils/player";
+import { secondsToMinutes, updatePlayQuque } from "@/utils/player";
 import { parseMusicMeta } from "@/utils/meta";
 import { FixedSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -148,7 +148,7 @@ const MusicList = ({ musicList }: { musicList: FileInfo[] }) => {
                     style={style}
                     onClick={() => {
                       setCurrentMusic(sign, index, name);
-                      updatePlaylist("select");
+                      updatePlayQuque("select");
                     }}
                     onContextMenu={(e) => {
                       curActMusicId.current = sign;

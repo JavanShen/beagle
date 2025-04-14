@@ -31,9 +31,9 @@ type BeagleState = {
 
   musicMetaMap: Map<string, Metadata | null>;
   getMusicList: () => FileInfo[];
-  playlist: number[];
+  playQueue: number[];
   history: number[];
-  setPlaylist: (playlist: number[]) => void;
+  setPlayQueue: (playQueue: number[]) => void;
   setHistory: (history: number[]) => void;
   addMusicMeta: (id: string, meta: Metadata | null) => void;
 
@@ -80,13 +80,13 @@ const useStore = create<BeagleState>()(
         });
       },
 
-      // 音乐&元数据&播放列表
+      // 音乐&元数据&播放队列
       musicMetaMap: new Map(),
-      playlist: [],
+      playQueue: [],
       history: [],
       setHistory: (history) => set({ history }),
-      setPlaylist: (playlist) => {
-        set({ playlist });
+      setPlayQueue: (playQueue) => {
+        set({ playQueue });
       },
       addMusicMeta: (id, meta) =>
         set((state) => ({
