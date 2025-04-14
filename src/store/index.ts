@@ -1,10 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { FileList } from "@/request/fs";
+import { omit } from "lodash-es";
 
 const excludeKeys = ["musicList", "history", "musicMetaMap"];
 
-type Metadata = {
+export type Metadata = {
   title?: string;
   artist?: string;
   album?: string;
@@ -12,6 +12,11 @@ type Metadata = {
   coverUrl?: string;
   rawUrl?: string;
   hasMeta?: boolean;
+};
+
+export type FileInfo = {
+  name: string;
+  sign: string;
 };
 
 type BeagleState = {
@@ -25,13 +30,20 @@ type BeagleState = {
   setSource: (source: string) => void;
 
   musicMetaMap: Map<string, Metadata | null>;
-  musicList: FileList["content"];
+  getMusicList: () => FileInfo[];
   playlist: number[];
   history: number[];
-  setMusicList: (musicList: FileList["content"]) => void;
   setPlaylist: (playlist: number[]) => void;
   setHistory: (history: number[]) => void;
   addMusicMeta: (id: string, meta: Metadata | null) => void;
+
+  currentGroup: string;
+  groups: Record<string, FileInfo[]>;
+  addGroup: (groupName: string, files: FileInfo[]) => void;
+  removeGroup: (groupName: string) => void;
+  addFileToGroup: (groupName: string, file: FileInfo) => void;
+  removeFileFromGroup: (groupName: string, fileId: string) => void;
+  setCurrentGroup: (groupName: string) => void;
 
   currentMusicIndex: number;
   currentMusicId: string;
@@ -50,7 +62,7 @@ type BeagleState = {
 
 const useStore = create<BeagleState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       token: "",
       setToken: (token) => set({ token }),
       clearToken: () => set({ token: "" }),
@@ -70,13 +82,9 @@ const useStore = create<BeagleState>()(
 
       // 音乐&元数据&播放列表
       musicMetaMap: new Map(),
-      musicList: [],
       playlist: [],
       history: [],
       setHistory: (history) => set({ history }),
-      setMusicList: (musicList) => {
-        set({ musicList });
-      },
       setPlaylist: (playlist) => {
         set({ playlist });
       },
@@ -84,6 +92,40 @@ const useStore = create<BeagleState>()(
         set((state) => ({
           musicMetaMap: new Map(state.musicMetaMap).set(id, meta),
         })),
+
+      // 歌单管理
+      currentGroup: "All Music",
+      groups: { "All Music": [] },
+      getMusicList: () => get().groups?.[get().currentGroup] || [],
+      addGroup: (groupName, files) => {
+        set((state) => ({
+          groups: { ...state.groups, [groupName]: files },
+        }));
+      },
+      removeGroup: (groupName) => {
+        set((state) => ({ groups: { ...omit(state.groups, groupName) } }));
+      },
+      removeFileFromGroup: (groupName, fileId) => {
+        set((state) => {
+          const files = state.groups[groupName] || [];
+          console.log(fileId);
+          return {
+            groups: {
+              ...state.groups,
+              [groupName]: files.filter((item) => item.sign !== fileId),
+            },
+          };
+        });
+      },
+      addFileToGroup: (groupName, file) => {
+        set((state) => {
+          const files = state.groups[groupName] || [];
+          return {
+            groups: { ...state.groups, [groupName]: [...files, file] },
+          };
+        });
+      },
+      setCurrentGroup: (groupName) => set({ currentGroup: groupName }),
 
       // 当前播放歌曲
       currentMusicIndex: -1,

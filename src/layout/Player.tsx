@@ -10,7 +10,7 @@ const Player = () => {
   const currentFileName = useStore((state) => state.currentFileName);
   const musicInfo = useStore((state) => state.musicMetaMap.get(currentMusicId));
   const musicMetaMap = useStore.getState().musicMetaMap;
-  const musicList = useStore((state) => state.musicList);
+  const musicList = useStore((state) => state.getMusicList());
   const history = useStore((state) => state.history);
   const playlist = useStore((state) => state.playlist);
   const isShuffle = useStore((state) => state.isShuffle);
@@ -61,7 +61,7 @@ const Player = () => {
     if (playlist.length === 0) return;
 
     const musicIndex = playlist[0];
-    const music = useStore.getState().musicList[musicIndex];
+    const music = useStore.getState().getMusicList()[musicIndex];
 
     setCurrentMusic(music.sign, musicIndex, music.name);
     updatePlaylist("next");
