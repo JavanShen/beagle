@@ -3,7 +3,7 @@ import useStore from "@/store";
 import usePlayAudio from "@/hooks/usePlayAudio";
 import MiniPlayer from "@/components/MiniPlayer";
 import { parseMusicMeta } from "@/utils/meta";
-import { updatePlaylist } from "@/utils/player";
+import { updatePlayQuque } from "@/utils/player";
 
 const Player = () => {
   const currentMusicId = useStore((state) => state.currentMusicId);
@@ -12,7 +12,7 @@ const Player = () => {
   const musicMetaMap = useStore.getState().musicMetaMap;
   const musicList = useStore((state) => state.getMusicList());
   const history = useStore((state) => state.history);
-  const playlist = useStore((state) => state.playlist);
+  const playQueue = useStore((state) => state.playQueue);
   const isShuffle = useStore((state) => state.isShuffle);
   const isRepeat = useStore((state) => state.isRepeat);
   const isLoop = useStore((state) => state.isLoop);
@@ -48,7 +48,7 @@ const Player = () => {
   }, [currentMusicId, currentFileName]);
 
   useEffect(() => {
-    updatePlaylist();
+    updatePlayQuque();
   }, [isShuffle, isLoop]);
 
   const next = (isEnded?: boolean) => {
@@ -56,15 +56,15 @@ const Player = () => {
       return controls.reload();
     }
 
-    const playlist = useStore.getState().playlist;
+    const playQueue = useStore.getState().playQueue;
 
-    if (playlist.length === 0) return;
+    if (playQueue.length === 0) return;
 
-    const musicIndex = playlist[0];
+    const musicIndex = playQueue[0];
     const music = useStore.getState().getMusicList()[musicIndex];
 
     setCurrentMusic(music.sign, musicIndex, music.name);
-    updatePlaylist("next");
+    updatePlayQuque("next");
   };
 
   const prev = () => {
@@ -106,7 +106,7 @@ const Player = () => {
     artist,
     cover: coverUrl,
     prevDisabled: history.length === 0,
-    nextDisabled: playlist.length === 0,
+    nextDisabled: playQueue.length === 0,
     next,
     prev,
     isLoop,

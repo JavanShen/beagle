@@ -17,13 +17,28 @@ export const generateRandomArray = (
   max: number,
   exclude: number[] = [],
 ) => {
-  if (length > max + 1 - exclude.length) return [];
-  const arr = Array.from({ length: max + 1 }, (_, i) => i).filter(
-    (i) => !exclude.includes(i),
-  );
-  for (let i = 0; i < length; i++) {
-    const j = i + Math.floor(Math.random() * (max + 1 - exclude.length - i));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+  const actualLen = max + 1 - exclude.length;
+  const splitNum = Math.ceil(length / actualLen);
+  let ans: number[] = [];
+
+  for (let count = 1; count <= splitNum; count++) {
+    const len =
+      length > actualLen
+        ? count * actualLen <= length
+          ? actualLen
+          : length - actualLen
+        : length;
+
+    const arr = Array.from({ length: max + 1 }, (_, i) => i).filter(
+      (i) => !exclude.includes(i),
+    );
+    for (let i = 0; i < len; i++) {
+      const j = i + Math.floor(Math.random() * (actualLen - i));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+
+    ans = [...ans, ...arr.slice(0, len)];
   }
-  return arr.slice(0, length);
+
+  return ans;
 };

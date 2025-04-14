@@ -5,26 +5,33 @@ import {
 } from "../src/utils/array.ts";
 
 describe("generateRandomArray", () => {
-  test("生成指定长度的数组", () => {
+  test("should generate an array of specified length.", () => {
     const array = generateRandomArray(5, 10);
     expect(array).toHaveLength(5);
   });
 
-  test("数组不重复", () => {
+  test("the array does not repeat(when the length is sufficient)", () => {
     const array = generateRandomArray(5, 4);
     expect(array).toStrictEqual(Array.from(new Set(array)));
   });
 
-  test("数组元素在指定范围内", () => {
+  test("array elements within the specified range", () => {
     const array = generateRandomArray(5, 4);
     expect(array.every((num) => num >= 0 && num <= 5)).toBe(true);
   });
 
-  test("数组元素不包含指定元素", () => {
+  test("the array elements do not contain the specified element", () => {
     const array = generateRandomArray(5, 6, [2, 4]);
     expect(
       array.every((num) => num >= 0 && num <= 6 && ![2, 4].includes(num)),
     ).toBe(true);
+  });
+
+  test("Complete when the array length is insufficient", () => {
+    const array = generateRandomArray(10, 4);
+    expect(array).toHaveLength(10);
+    expect(new Set(array.slice(0, 5))).toEqual(new Set([0, 1, 2, 3, 4]));
+    expect(new Set(array.slice(5, 10))).toEqual(new Set([0, 1, 2, 3, 4]));
   });
 });
 
