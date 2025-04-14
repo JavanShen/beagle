@@ -29,11 +29,11 @@ const Player = () => {
     return () => {
       if ("mediaSession" in navigator) {
         navigator.mediaSession.metadata = null;
-        navigator.mediaSession.setActionHandler("play", null);
-        navigator.mediaSession.setActionHandler("pause", null);
-        navigator.mediaSession.setActionHandler("nexttrack", null);
-        navigator.mediaSession.setActionHandler("previoustrack", null);
-        navigator.mediaSession.setActionHandler("seekto", null);
+        (
+          ["play", "pause", "nexttrack", "previoustrack", "seekto"] as const
+        ).forEach((eventName) =>
+          navigator.mediaSession.setActionHandler(eventName, null),
+        );
       }
     };
   }, []);
@@ -79,23 +79,26 @@ const Player = () => {
   const controls = usePlayAudio(rawUrl, undefined, next);
 
   // 设置媒体通知 https://developer.mozilla.org/en-US/docs/Web/API/Media_Session_API
-  if ("mediaSession" in navigator) {
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title,
-      artist,
-      artwork: [{ src: coverUrl || "" }],
-    });
+  useEffect(() => {
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title,
+        artist,
+        artwork: [{ src: coverUrl || "" }],
+      });
 
-    navigator.mediaSession.setActionHandler("play", () => controls.play());
-    navigator.mediaSession.setActionHandler("pause", () => controls.pause());
-    navigator.mediaSession.setActionHandler("nexttrack", () => next());
-    navigator.mediaSession.setActionHandler("previoustrack", prev);
-    navigator.mediaSession.setActionHandler("seekto", (val) => {
-      if (val.seekTime) {
-        controls.jump(val.seekTime);
-      }
-    });
-  }
+      navigator.mediaSession.setActionHandler("play", () => controls.play());
+      navigator.mediaSession.setActionHandler("pause", () => controls.pause());
+      navigator.mediaSession.setActionHandler("nexttrack", () => next());
+      navigator.mediaSession.setActionHandler("previoustrack", prev);
+      navigator.mediaSession.setActionHandler("seekto", (val) => {
+        if (val.seekTime) {
+          controls.jump(val.seekTime);
+        }
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [musicInfo]);
 
   const playerInfo = {
     ...controls,

@@ -54,10 +54,12 @@ const usePlayAudio = (
     });
 
     player?.bePaused(() => {
+      navigator.mediaSession.playbackState = "paused";
       setIsPlaying(false);
     });
 
     player?.bePlayed(() => {
+      navigator.mediaSession.playbackState = "playing";
       setIsPlaying(true);
     });
 
