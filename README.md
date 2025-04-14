@@ -1,13 +1,13 @@
 <div align="center">
     <img height="140" width="140" src="./public/logo.png">
     <h1>Beagle</h1>
-    <p>An online music player with Alist support</p>
+    <p>An music player with Alist support</p>
     <a href="https://beagle-ashy-psi.vercel.app" target="blank"><strong>🌎 Demo</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a href="https://github.com/JavanShen/beagle/releases" target="blank"><strong>📦 Install</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a href="#-deployments" target="blank"><strong>🚀 Deploy</strong></a>
 </div>
 
-![CI](https://github.com/JavanShen/beagle/actions/workflows/release.yml/badge.svg?branch=main) ![Docker Pulls](https://img.shields.io/docker/pulls/oneboluo/beagle)
+![CI](https://github.com/JavanShen/beagle/actions/workflows/release.yml/badge.svg) ![Docker Pulls](https://img.shields.io/docker/pulls/oneboluo/beagle)
 
 English | [中文](./README_zh.md)
 
@@ -19,9 +19,9 @@ English | [中文](./README_zh.md)
 - [x] Playback modes
 - [x] Responsive
 - [x] System Media Controls
+- [x] Cross-platform client
+- [x] Playlist
 - [ ] WebDAV support
-- [ ] Cross-platform client
-- [ ] Music Grouping
 - [ ] Music Search
 - [ ] Configuration Sync
 - [ ] Fullscreen player

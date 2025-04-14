@@ -1,13 +1,13 @@
 <div align="center">
     <img height="140" width="140" src="./public/logo.png">
     <h1>Beagle</h1>
-    <p>一个在线音乐播放器，支持 Alist</p>
+    <p>一个音乐播放器，支持 Alist</p>
     <a href="https://beagle-ashy-psi.vercel.app" target="blank"><strong>🌎 预览</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a href="https://github.com/JavanShen/beagle/releases" target="blank"><strong>📦 下载</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a href="#-%E9%83%A8%E7%BD%B2" target="blank"><strong>🚀 部署</strong></a>
 </div>
 
-![Github Actions Status](https://github.com/JavanShen/beagle/actions/workflows/release.yml/badge.svg?branch=main) ![Docker Pulls](https://img.shields.io/docker/pulls/oneboluo/beagle)
+![Github Actions Status](https://github.com/JavanShen/beagle/actions/workflows/release.yml/badge.svg) ![Docker Pulls](https://img.shields.io/docker/pulls/oneboluo/beagle)
 
 [English](./README.md) | 中文
 
@@ -19,9 +19,9 @@
 - [x] 播放模式
 - [x] 响应式
 - [x] 系统媒体控制
+- [x] 跨平台客户端
+- [x] 播放列表
 - [ ] WebDAV 支持
-- [ ] 跨平台客户端
-- [ ] 音乐分组
 - [ ] 音乐搜索
 - [ ] 配置同步
 - [ ] 全屏播放器
