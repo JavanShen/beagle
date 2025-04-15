@@ -1,5 +1,4 @@
 import { Card, Image, Spacer, Button, Slider, Skeleton } from "@heroui/react";
-import { UsePlayAudioReturn } from "@/hooks/usePlayAudio";
 import PlayIcon from "@/assets/play_arrow.svg?react";
 import PauseIcon from "@/assets/pause.svg?react";
 import NextIcon from "@/assets/skip_next.svg?react";
@@ -10,22 +9,7 @@ import QueueIcon from "@/assets/queue_music.svg?react";
 import VolumeIcon from "@/assets/volume.svg?react";
 import MuteIcon from "@/assets/volume_mute.svg?react";
 import RepeatIcon from "@/assets/repeat_one.svg?react";
-
-type MiniPlayerProps = UsePlayAudioReturn & {
-  cover?: string;
-  title?: string;
-  artist?: string;
-  nextDisabled?: boolean;
-  prevDisabled?: boolean;
-  isLoop?: boolean;
-  isShuffle?: boolean;
-  isRepeat?: boolean;
-  next: () => void;
-  prev: () => void;
-  setIsShuffle: (value: boolean) => void;
-  setIsRepeat: (value: boolean) => void;
-  setIsLoop: (value: boolean) => void;
-};
+import { PlayerProps } from "@/types/player";
 
 const MiniPlayer = ({
   cover,
@@ -54,7 +38,7 @@ const MiniPlayer = ({
   prev,
   play: onPlay,
   pause: onPause,
-}: MiniPlayerProps) => {
+}: PlayerProps) => {
   console.count("mini player rerender");
 
   return (
