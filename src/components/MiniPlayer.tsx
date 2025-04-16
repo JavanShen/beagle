@@ -53,7 +53,7 @@ const MiniPlayer = ({
     >
       <div className="flex items-center justify-between px-4 h-full w-full">
         <div className="flex items-center overflow-hidden flex-5">
-          <div onClick={() => onChangePlayer?.()}>
+          <div className="cursor-pointer" onClick={() => onChangePlayer?.()}>
             {cover ? (
               <Image src={cover} height={60} width={60} isBlurred alt="cover" />
             ) : (

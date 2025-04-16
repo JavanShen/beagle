@@ -100,7 +100,10 @@ const FullPlayer = ({
             )}
           </div>
           <div className="flex items-center justify-between my-7">
-            <div className="whitespace-nowrap overflow-hidden flex-1">
+            <div
+              style={{ flex: 8 }}
+              className="whitespace-nowrap overflow-hidden"
+            >
               <p className="text-lg font-semibold text-ellipsis overflow-hidden">
                 {title}
               </p>
@@ -108,7 +111,7 @@ const FullPlayer = ({
                 {artist}
               </p>
             </div>
-            <div className="items-center flex-1 hidden sm:flex">
+            <div style={{ flex: 5 }} className="items-center hidden sm:flex">
               <Button
                 isIconOnly
                 size="sm"
