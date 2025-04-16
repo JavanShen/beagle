@@ -1,5 +1,4 @@
 import { Card, Image, Spacer, Button, Slider, Skeleton } from "@heroui/react";
-import { UsePlayAudioReturn } from "@/hooks/usePlayAudio";
 import PlayIcon from "@/assets/play_arrow.svg?react";
 import PauseIcon from "@/assets/pause.svg?react";
 import NextIcon from "@/assets/skip_next.svg?react";
@@ -10,22 +9,7 @@ import QueueIcon from "@/assets/queue_music.svg?react";
 import VolumeIcon from "@/assets/volume.svg?react";
 import MuteIcon from "@/assets/volume_mute.svg?react";
 import RepeatIcon from "@/assets/repeat_one.svg?react";
-
-type MiniPlayerProps = UsePlayAudioReturn & {
-  cover?: string;
-  title?: string;
-  artist?: string;
-  nextDisabled?: boolean;
-  prevDisabled?: boolean;
-  isLoop?: boolean;
-  isShuffle?: boolean;
-  isRepeat?: boolean;
-  next: () => void;
-  prev: () => void;
-  setIsShuffle: (value: boolean) => void;
-  setIsRepeat: (value: boolean) => void;
-  setIsLoop: (value: boolean) => void;
-};
+import { PlayerProps } from "@/types/player";
 
 const MiniPlayer = ({
   cover,
@@ -54,26 +38,31 @@ const MiniPlayer = ({
   prev,
   play: onPlay,
   pause: onPause,
-}: MiniPlayerProps) => {
+  onChangePlayer,
+  ref,
+}: PlayerProps) => {
   console.count("mini player rerender");
 
   return (
     <Card
+      ref={ref}
       fullWidth
       isBlurred
       style={{ height: 80 }}
-      className="w-11/12 fixed bottom-4 z-50 left-1/2 -translate-x-1/2"
+      className="w-11/12 fixed bottom-4 z-50 mx-auto left-0 right-0 pointer-events-auto"
     >
       <div className="flex items-center justify-between px-4 h-full w-full">
         <div className="flex items-center overflow-hidden flex-5">
-          {cover ? (
-            <Image src={cover} height={60} width={60} isBlurred alt="cover" />
-          ) : (
-            <Skeleton
-              className="rounded-xl"
-              style={{ height: 60, width: 60 }}
-            />
-          )}
+          <div className="cursor-pointer" onClick={() => onChangePlayer?.()}>
+            {cover ? (
+              <Image src={cover} height={60} width={60} isBlurred alt="cover" />
+            ) : (
+              <Skeleton
+                className="rounded-xl"
+                style={{ height: 60, width: 60 }}
+              />
+            )}
+          </div>
 
           <div className="mx-4 whitespace-nowrap overflow-hidden flex-1">
             <p className="text-base font-semibold text-ellipsis overflow-hidden">
