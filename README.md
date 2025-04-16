@@ -5,6 +5,7 @@
     <a href="https://beagle-ashy-psi.vercel.app" target="blank"><strong>🌎 Demo</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a href="https://github.com/JavanShen/beagle/releases" target="blank"><strong>📦 Install</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a href="#-deployments" target="blank"><strong>🚀 Deploy</strong></a>
+    <p></p>
 </div>
 
 ![GitHub Release](https://img.shields.io/github/v/release/JavanShen/beagle) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/JavanShen/beagle/release.yml)
