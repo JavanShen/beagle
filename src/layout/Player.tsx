@@ -1,9 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import useStore from "@/store";
 import usePlayAudio from "@/hooks/usePlayAudio";
 import MiniPlayer from "@/components/MiniPlayer";
 import { parseMusicMeta } from "@/utils/meta";
 import { updatePlayQuque } from "@/utils/player";
+import FullPlayer from "@/components/FullPlayer";
+import { SwitchTransition, CSSTransition } from "react-transition-group";
+import "@/styles/playerTransition.css";
 
 const Player = () => {
   const currentMusicId = useStore((state) => state.currentMusicId);
@@ -21,6 +24,11 @@ const Player = () => {
   const setIsRepeat = useStore((state) => state.setIsRepeat);
   const setIsLoop = useStore((state) => state.setIsLoop);
   const setCurrentMusic = useStore((state) => state.setCurrentMusic);
+
+  const [curPlayer, setCurPlayer] = useState("mini");
+  const miniPlayerRef = useRef<HTMLDivElement>(null);
+  const fullPlayerRef = useRef<HTMLDivElement>(null);
+  const nodeRef = curPlayer === "mini" ? miniPlayerRef : fullPlayerRef;
 
   const { coverUrl, artist, title, rawUrl } = musicInfo || {};
 
@@ -117,7 +125,35 @@ const Player = () => {
     setIsLoop,
   };
 
-  return <MiniPlayer {...playerInfo} />;
+  return (
+    <SwitchTransition mode="out-in">
+      <CSSTransition
+        key={curPlayer}
+        nodeRef={nodeRef}
+        classNames="player"
+        addEndListener={(done) =>
+          nodeRef.current?.addEventListener("transitionend", done, false)
+        }
+      >
+        <div
+          className="h-full w-full fixed pointer-events-none z-30"
+          ref={nodeRef}
+        >
+          {curPlayer === "mini" ? (
+            <MiniPlayer
+              onChangePlayer={() => setCurPlayer("full")}
+              {...playerInfo}
+            />
+          ) : (
+            <FullPlayer
+              {...playerInfo}
+              onChangePlayer={() => setCurPlayer("mini")}
+            />
+          )}
+        </div>
+      </CSSTransition>
+    </SwitchTransition>
+  );
 };
 
 export default Player;

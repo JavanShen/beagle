@@ -14,4 +14,7 @@ export type PlayerProps = UsePlayAudioReturn & {
   setIsShuffle: (value: boolean) => void;
   setIsRepeat: (value: boolean) => void;
   setIsLoop: (value: boolean) => void;
+  onChangePlayer?: () => void;
+  style?: React.CSSProperties;
+  ref?: React.Ref<HTMLDivElement>;
 };

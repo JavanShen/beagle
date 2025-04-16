@@ -71,6 +71,7 @@ const Login = () => {
         <Input type="password" name="password" label="Password" />
         <Input type="text" name="OTP" label="OTP" />
         <Button
+          className="text-white"
           type="submit"
           color="primary"
           fullWidth

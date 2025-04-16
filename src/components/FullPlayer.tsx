@@ -8,7 +8,9 @@ import LoopIcon from "@/assets/repeat.svg?react";
 import VolumeIcon from "@/assets/volume.svg?react";
 import MuteIcon from "@/assets/volume_mute.svg?react";
 import RepeatIcon from "@/assets/repeat_one.svg?react";
+import DownIcon from "@/assets/down.svg?react";
 import { PlayerProps } from "@/types/player";
+import { useResponsive } from "ahooks";
 
 const FullPlayer = ({
   cover,
@@ -37,32 +39,67 @@ const FullPlayer = ({
   prev,
   play: onPlay,
   pause: onPause,
+  ref,
+  onChangePlayer,
 }: PlayerProps) => {
   console.count("Full player rerender");
+  const responsive = useResponsive();
+  const size = !responsive.sm
+    ? "85vw"
+    : !responsive.md
+      ? "60vw"
+      : !responsive.lg
+        ? "50vw"
+        : "35vw";
+  const maxSize = "500px";
 
   return (
-    <>
-      <img src={cover} className="h-full w-full fixed z-30 scale-150 blur-lg" />
+    <div
+      ref={ref}
+      className="fixed w-full h-full left-0 top-0 z-20 pointer-events-auto"
+    >
+      <img
+        src={cover}
+        style={{ transform: "scale(1.5)" }}
+        className="h-full w-full absolute left-0 top-0 z-20 blur-2xl"
+      />
+      <Button
+        className="absolute right-8 top-6 z-50"
+        isIconOnly
+        size="lg"
+        radius="md"
+        variant="light"
+        onPress={() => onChangePlayer?.()}
+      >
+        <DownIcon className="opacity-50" height={50} width={50} />
+      </Button>
       <Card
         fullWidth
         isBlurred
         radius="none"
-        style={{ zIndex: 55 }}
-        className="w-full h-full fixed left-0 top-0 justify-center items-center"
+        style={{ backgroundColor: "hsl(0deg 0% 100% / 40%)" }}
+        className="w-full h-full justify-center items-center z-40"
       >
         <div
-          style={{ width: "35vw", maxWidth: "500px" }}
+          style={{ width: size, maxWidth: maxSize }}
           className="flex flex-col items-stretch justify-between"
         >
           <div>
             {cover ? (
               <Image src={cover} isBlurred alt="cover" />
             ) : (
-              <Skeleton className="rounded-xl" />
+              <Skeleton
+                style={{
+                  height: size,
+                  width: size,
+                  maxWidth: maxSize,
+                  maxHeight: maxSize,
+                }}
+                className="rounded-xl"
+              />
             )}
           </div>
-
-          <div className="flex items-center justify-between my-5">
+          <div className="flex items-center justify-between my-7">
             <div className="whitespace-nowrap overflow-hidden flex-1">
               <p className="text-lg font-semibold text-ellipsis overflow-hidden">
                 {title}
@@ -71,7 +108,7 @@ const FullPlayer = ({
                 {artist}
               </p>
             </div>
-            <div className="flex items-center flex-1">
+            <div className="items-center flex-1 hidden sm:flex">
               <Button
                 isIconOnly
                 size="sm"
@@ -99,7 +136,7 @@ const FullPlayer = ({
               />
             </div>
           </div>
-          <div className="flex items-center mb-4">
+          <div className="flex items-center mb-6">
             <span className="text-sm opacity-65">{currentTimeText}</span>
             <Spacer />
             <Slider
@@ -144,15 +181,17 @@ const FullPlayer = ({
             <Spacer />
             <Button
               isIconOnly
-              size="md"
+              size="lg"
               radius="md"
               variant="light"
               isDisabled={prevDisabled}
               onPress={() => prev()}
             >
-              <PrevIcon height={30} width={30} />
+              <PrevIcon height={35} width={35} />
             </Button>
+            <Spacer />
             <Button
+              className="h-14 w-14"
               isIconOnly
               size="lg"
               radius="md"
@@ -160,20 +199,21 @@ const FullPlayer = ({
               onPress={isPlaying ? onPause : onPlay}
             >
               {isPlaying ? (
-                <PauseIcon height={42} width={42} />
+                <PauseIcon height={46} width={46} />
               ) : (
-                <PlayIcon height={60} width={60} />
+                <PlayIcon height={66} width={66} />
               )}
             </Button>
+            <Spacer />
             <Button
               isIconOnly
-              size="md"
+              size="lg"
               radius="md"
               variant="light"
               isDisabled={nextDisabled}
               onPress={() => next()}
             >
-              <NextIcon height={30} width={30} />
+              <NextIcon height={35} width={35} />
             </Button>
             <Spacer />
             <Button
@@ -192,7 +232,7 @@ const FullPlayer = ({
           </div>
         </div>
       </Card>
-    </>
+    </div>
   );
 };
 
