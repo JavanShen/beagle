@@ -7,7 +7,9 @@
     <a href="#-%E9%83%A8%E7%BD%B2" target="blank"><strong>🚀 部署</strong></a>
 </div>
 
-![Github Actions Status](https://github.com/JavanShen/beagle/actions/workflows/release.yml/badge.svg) ![Docker Pulls](https://img.shields.io/docker/pulls/oneboluo/beagle)
+![GitHub Release](https://img.shields.io/github/v/release/JavanShen/beagle) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/JavanShen/beagle/release.yml)
+ ![Docker Pulls](https://img.shields.io/docker/pulls/oneboluo/beagle)
+ ![GitHub License](https://img.shields.io/github/license/JavanShen/beagle)
 
 [English](./README.md) | 中文
 
@@ -21,10 +23,10 @@
 - [x] 系统媒体控制
 - [x] 跨平台客户端
 - [x] 播放列表
+- [x] 全屏播放器
 - [ ] WebDAV 支持
 - [ ] 音乐搜索
 - [ ] 配置同步
-- [ ] 全屏播放器
 
 ## 🚀 部署
 ### 🛠️ Vercel
@@ -37,4 +39,5 @@ docker run -d -p 3028:80 oneboluo/beagle
 
 ## 📷 截图
 ![Screenshot](./images/screenshot-lg.png)
+![Screenshot](./images/screenshot-lg-full-player.png)
 ![Screenshot](./images/screenshot-sm.png)

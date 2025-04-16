@@ -7,7 +7,10 @@
     <a href="#-deployments" target="blank"><strong>🚀 Deploy</strong></a>
 </div>
 
-![CI](https://github.com/JavanShen/beagle/actions/workflows/release.yml/badge.svg) ![Docker Pulls](https://img.shields.io/docker/pulls/oneboluo/beagle)
+![GitHub Release](https://img.shields.io/github/v/release/JavanShen/beagle) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/JavanShen/beagle/release.yml)
+ ![Docker Pulls](https://img.shields.io/docker/pulls/oneboluo/beagle)
+ ![GitHub License](https://img.shields.io/github/license/JavanShen/beagle)
+
 
 English | [中文](./README_zh.md)
 
@@ -21,10 +24,10 @@ English | [中文](./README_zh.md)
 - [x] System Media Controls
 - [x] Cross-platform client
 - [x] Playlist
+- [x] Fullscreen player
 - [ ] WebDAV support
 - [ ] Music Search
 - [ ] Configuration Sync
-- [ ] Fullscreen player
 
 ## 🚀 Deployments
 ### 🛠️ Vercel
@@ -37,4 +40,5 @@ docker run -d -p 3028:80 oneboluo/beagle
 
 ## 📷 Screenshots
 ![Screenshot](./images/screenshot-lg.png)
+![Screenshot](./images/screenshot-lg-full-player.png)
 ![Screenshot](./images/screenshot-sm.png)
