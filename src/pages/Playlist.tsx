@@ -1,10 +1,12 @@
 import MusicList from "@/components/MusicList";
-import useStore from "@/store";
+import usePlaylist from "@/hooks/usePlaylist";
 
 const Playlist = () => {
-  const musicList = useStore((state) => state.getMusicList());
+  const { playlist } = usePlaylist();
 
-  return <MusicList musicList={musicList} />;
+  console.log("my playlist rerenderererre");
+
+  return <MusicList musicList={playlist} />;
 };
 
 export default Playlist;

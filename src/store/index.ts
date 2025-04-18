@@ -30,7 +30,6 @@ type BeagleState = {
   setSource: (source: string) => void;
 
   musicMetaMap: Map<string, Metadata | null>;
-  getMusicList: () => FileInfo[];
   playQueue: number[];
   history: number[];
   setPlayQueue: (playQueue: number[]) => void;
@@ -62,7 +61,7 @@ type BeagleState = {
 
 const useStore = create<BeagleState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       token: "",
       setToken: (token) => set({ token }),
       clearToken: () => set({ token: "" }),
@@ -96,7 +95,6 @@ const useStore = create<BeagleState>()(
       // 歌单管理
       currentGroup: "All Music",
       groups: { "All Music": [] },
-      getMusicList: () => get().groups?.[get().currentGroup] || [],
       addGroup: (groupName, files) => {
         set((state) => ({
           groups: { ...state.groups, [groupName]: files },
