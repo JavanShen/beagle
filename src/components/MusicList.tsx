@@ -56,6 +56,7 @@ const ListItem = memo(
       >
         <div className="flex items-center w-full md:w-4/12">
           <Image
+            className="object-cover"
             isLoading={!isLoaded}
             width={50}
             height={50}
