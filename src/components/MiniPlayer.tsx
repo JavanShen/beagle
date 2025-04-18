@@ -55,7 +55,14 @@ const MiniPlayer = ({
         <div className="flex items-center overflow-hidden flex-5">
           <div className="cursor-pointer" onClick={() => onChangePlayer?.()}>
             {cover ? (
-              <Image src={cover} height={60} width={60} isBlurred alt="cover" />
+              <Image
+                className="object-cover"
+                src={cover}
+                height={60}
+                width={60}
+                isBlurred
+                alt="cover"
+              />
             ) : (
               <Skeleton
                 className="rounded-xl"

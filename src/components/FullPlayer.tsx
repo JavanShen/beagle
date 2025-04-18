@@ -53,6 +53,13 @@ const FullPlayer = ({
         : "35vw";
   const maxSize = "500px";
 
+  const coverSizeStyle: React.CSSProperties = {
+    height: size,
+    width: size,
+    maxWidth: maxSize,
+    maxHeight: maxSize,
+  };
+
   return (
     <div
       ref={ref}
@@ -86,17 +93,15 @@ const FullPlayer = ({
         >
           <div>
             {cover ? (
-              <Image src={cover} isBlurred alt="cover" />
-            ) : (
-              <Skeleton
-                style={{
-                  height: size,
-                  width: size,
-                  maxWidth: maxSize,
-                  maxHeight: maxSize,
-                }}
-                className="rounded-xl"
+              <Image
+                className="object-cover"
+                style={coverSizeStyle}
+                src={cover}
+                isBlurred
+                alt="cover"
               />
+            ) : (
+              <Skeleton style={coverSizeStyle} className="rounded-xl" />
             )}
           </div>
           <div className="flex items-center justify-between my-7">
