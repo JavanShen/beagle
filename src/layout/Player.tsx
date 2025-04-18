@@ -6,6 +6,7 @@ import { parseMusicMeta } from "@/utils/meta";
 import { updatePlayQuque } from "@/utils/player";
 import FullPlayer from "@/components/FullPlayer";
 import { SwitchTransition, CSSTransition } from "react-transition-group";
+import usePlaylist, { getPlaylist } from "@/hooks/usePlaylist";
 import "@/styles/playerTransition.css";
 
 const Player = () => {
@@ -13,7 +14,7 @@ const Player = () => {
   const currentFileName = useStore((state) => state.currentFileName);
   const musicInfo = useStore((state) => state.musicMetaMap.get(currentMusicId));
   const musicMetaMap = useStore.getState().musicMetaMap;
-  const musicList = useStore((state) => state.getMusicList());
+  const { playlist: musicList } = usePlaylist();
   const history = useStore((state) => state.history);
   const playQueue = useStore((state) => state.playQueue);
   const isShuffle = useStore((state) => state.isShuffle);
@@ -69,7 +70,7 @@ const Player = () => {
     if (playQueue.length === 0) return;
 
     const musicIndex = playQueue[0];
-    const music = useStore.getState().getMusicList()[musicIndex];
+    const music = getPlaylist()[musicIndex];
 
     setCurrentMusic(music.sign, musicIndex, music.name);
     updatePlayQuque("next");
