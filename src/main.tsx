@@ -18,8 +18,10 @@ configResponsive({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <HeroUIProvider>
-      <ToastProvider placement="top-right" />
-      <RouterProvider router={Router} />
+      <main>
+        <ToastProvider placement="top-right" />
+        <RouterProvider router={Router} />
+      </main>
     </HeroUIProvider>
   </StrictMode>,
 );

@@ -135,6 +135,7 @@ const FullPlayer = ({
                 aria-label="volume control"
                 className="flex-1"
                 size="sm"
+                color="foreground"
                 maxValue={100}
                 minValue={0}
                 step={1}
@@ -151,6 +152,7 @@ const FullPlayer = ({
               aria-label="music-progress"
               size="sm"
               radius="md"
+              color="foreground"
               hideThumb
               minValue={0}
               maxValue={duration}
