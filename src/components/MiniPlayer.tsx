@@ -146,11 +146,7 @@ const MiniPlayer = ({
             variant="light"
             onPress={() => setIsShuffle(!isShuffle)}
           >
-            <ShuffleIcon
-              fill={isShuffle ? "#006FED" : undefined}
-              height={20}
-              width={20}
-            />
+            <ShuffleIcon opacity={isShuffle ? 1 : 0.5} height={20} width={20} />
           </Button>
           <Spacer />
           <Button
@@ -171,13 +167,9 @@ const MiniPlayer = ({
             }}
           >
             {isRepeat ? (
-              <RepeatIcon fill="#006FED" height={20} width={20} />
+              <RepeatIcon height={20} width={20} />
             ) : (
-              <LoopIcon
-                fill={isLoop ? "#006FED" : undefined}
-                height={20}
-                width={20}
-              />
+              <LoopIcon opacity={isLoop ? 1 : 0.5} height={20} width={20} />
             )}
           </Button>
           <Spacer />
