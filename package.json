@@ -32,6 +32,7 @@
     "react-virtualized-auto-sizer": "^1.0.25",
     "react-window": "^1.8.11",
     "tailwindcss": "^3.4.17",
+    "webdav": "^5.8.0",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
