@@ -1,5 +1,6 @@
 import { memo, useEffect, useRef, CSSProperties } from "react";
-import useStore, { FileInfo } from "@/store";
+import useStore from "@/store";
+import { FileStat } from "webdav";
 import { Image, Skeleton } from "@heroui/react";
 import { secondsToMinutes, updatePlayQuque } from "@/utils/player";
 import { parseMusicMeta } from "@/utils/meta";
@@ -102,7 +103,7 @@ const ListItem = memo(
   },
 );
 
-const MusicList = ({ musicList }: { musicList: FileInfo[] }) => {
+const MusicList = ({ musicList }: { musicList: FileStat[] }) => {
   const setCurrentMusic = useStore((state) => state.setCurrentMusic);
   const isInitializedScroll = useRef(false);
   const listRef = useRef<FixedSizeList | null>(null);
@@ -139,20 +140,20 @@ const MusicList = ({ musicList }: { musicList: FileInfo[] }) => {
           >
             {memo(
               ({ index, style }: { index: number; style: CSSProperties }) => {
-                const { name, sign } = musicList[index] || {};
+                const { basename, etag } = musicList[index] || {};
 
                 return (
                   <ListItem
-                    key={sign}
-                    musicId={sign}
-                    fileName={name}
+                    key={etag}
+                    musicId={etag || ""}
+                    fileName={basename}
                     style={style}
                     onClick={() => {
-                      setCurrentMusic(sign, index, name);
+                      setCurrentMusic(etag || "", index, basename);
                       updatePlayQuque("select");
                     }}
                     onContextMenu={(e) => {
-                      curActMusicId.current = sign;
+                      curActMusicId.current = etag || "";
 
                       const pos = {
                         x: e.clientX,

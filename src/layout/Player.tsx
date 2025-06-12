@@ -72,7 +72,7 @@ const Player = () => {
     const musicIndex = playQueue[0];
     const music = getPlaylist()[musicIndex];
 
-    setCurrentMusic(music.sign, musicIndex, music.name);
+    setCurrentMusic(music.etag || "", musicIndex, music.basename);
     updatePlayQuque("next");
   };
 
@@ -82,7 +82,7 @@ const Player = () => {
     const musicIndex = history[history.length - 1];
     const music = musicList[musicIndex];
 
-    setCurrentMusic(music.sign, musicIndex, music.name);
+    setCurrentMusic(music.etag || "", musicIndex, music.basename);
   };
 
   const controls = usePlayAudio(rawUrl, undefined, next);

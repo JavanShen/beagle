@@ -21,7 +21,7 @@ const PlaylistSelect = ({ ref }: { ref?: React.Ref<PlaylistSelectRef> }) => {
         Object.keys(groups)
           .filter((item) => item !== "All Music")
           .map((item) =>
-            groups[item].find((i) => i.sign === musicId) ? item : null,
+            groups[item].find((i) => i.etag === musicId) ? item : null,
           )
           .filter((item) => item) as string[],
       );
@@ -65,7 +65,7 @@ const PlaylistSelect = ({ ref }: { ref?: React.Ref<PlaylistSelectRef> }) => {
           onSelectionChange={(keys) => {
             const selectedGroup = keys as Set<string>;
             const fileInfo = groups["All Music"].find(
-              (item) => item.sign === curMusicId.current,
+              (item) => item.etag === curMusicId.current,
             );
 
             if (fileInfo) {
@@ -73,14 +73,14 @@ const PlaylistSelect = ({ ref }: { ref?: React.Ref<PlaylistSelectRef> }) => {
                 .filter((item) => item !== "All Music")
                 .forEach((groupName) => {
                   const index = groups[groupName].findIndex(
-                    (item) => item.sign === curMusicId.current,
+                    (item) => item.etag === curMusicId.current,
                   );
 
                   if (selectedGroup.has(groupName) && index === -1) {
                     addFileToGroup(groupName, fileInfo);
                   } else if (index > -1 && !selectedGroup.has(groupName)) {
                     console.log("remove now");
-                    removeFileFromGroup(groupName, fileInfo.sign);
+                    removeFileFromGroup(groupName, fileInfo.etag || "");
                   }
                 });
             }

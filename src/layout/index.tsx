@@ -7,20 +7,22 @@ import Menu from "./Menu";
 import mime from "mime";
 
 const Layout = () => {
-  const musicPath = useStore((state) => state.musicPath);
+  const source = useStore((state) => state.source);
   const addGroup = useStore((state) => state.addGroup);
 
   // 获取全部音乐列表
   useEffect(() => {
     const controller = new AbortController();
 
-    getFileList(musicPath, controller.signal).then((res) => {
-      if (res.code === 200) {
+    getFileList("/", controller.signal).then((res) => {
+      console.log(res);
+      if (Array.isArray(res)) {
         addGroup(
           "All Music",
-          res.data.content.filter(
+          res.filter(
             (item) =>
-              !item.is_dir && /audio/.test(mime.getType(item.name) || ""),
+              item.type === "file" &&
+              /audio/.test(mime.getType(item.basename) || ""),
           ),
         );
       }
@@ -30,7 +32,7 @@ const Layout = () => {
       controller.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [musicPath]);
+  }, [source]);
 
   return (
     <div className="absolute h-full w-full flex flex-row">

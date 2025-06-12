@@ -1,7 +1,7 @@
 <div align="center">
     <img height="140" width="140" src="./public/logo.png">
     <h1>Beagle</h1>
-    <p>An music player with Alist support</p>
+    <p>An music player with WebDAV support</p>
     <a href="https://beagle-ashy-psi.vercel.app" target="blank"><strong>🌎 Demo</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a href="https://github.com/JavanShen/beagle/releases" target="blank"><strong>📦 Install</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a href="#-deployments" target="blank"><strong>🚀 Deploy</strong></a>
@@ -26,7 +26,7 @@ English | [中文](./README_zh.md)
 - [x] Cross-platform client
 - [x] Playlist
 - [x] Fullscreen player
-- [ ] WebDAV support
+- [x] WebDAV support
 - [ ] Music Search
 - [ ] Configuration Sync
 

@@ -2,11 +2,12 @@ import { getFileStream } from "@/request/fs";
 import { parseWebStream } from "music-metadata";
 import useStore from "@/store";
 import { isAxiosError } from "axios";
+import { getWebdavClient } from "./request";
 
 export const parseID3 = async (filePath: string, signal?: AbortSignal) => {
   const stream = await getFileStream(filePath, signal);
   const id3 = await parseWebStream(stream);
-  stream.cancel();
+  stream?.cancel();
   return id3;
 };
 
@@ -15,10 +16,12 @@ export const parseMusicMeta = async (
   fileName: string,
   signal?: AbortSignal,
 ) => {
-  const { musicMetaMap, musicPath, origin, addMusicMeta } = useStore.getState();
+  console.log(sign, fileName);
+
+  const { musicMetaMap, addMusicMeta } = useStore.getState();
   if (musicMetaMap.has(sign) || !sign) return;
 
-  const joinUrl = `${origin}/p${encodeURI(musicPath)}/${encodeURIComponent(fileName)}?sign=${sign}`;
+  const joinUrl = `/${fileName}`;
   try {
     const id3 = await parseID3(joinUrl, signal);
 
@@ -30,6 +33,8 @@ export const parseMusicMeta = async (
         )
       : undefined;
 
+    const rawUrl = await getWebdavClient().getFileDownloadLink(joinUrl);
+
     const metadata = {
       title,
       artist,
@@ -37,7 +42,7 @@ export const parseMusicMeta = async (
       coverUrl,
       duration: id3?.format.duration,
       hasMeta: id3 ? true : false,
-      rawUrl: joinUrl,
+      rawUrl,
     };
 
     addMusicMeta(sign, metadata);

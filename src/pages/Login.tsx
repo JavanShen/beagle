@@ -1,5 +1,5 @@
 import { Form, Input, Button, Tooltip } from "@heroui/react";
-import { login } from "@/request/user";
+import { updateWebdavClient, getWebdavClient } from "@/utils/request";
 import useStore from "@/store";
 import { useNavigate } from "react-router";
 import { useRequest } from "ahooks";
@@ -8,15 +8,24 @@ import TipIcon from "@/assets/help.svg?react";
 const Login = () => {
   const source = useStore((state) => state.source);
   const setSource = useStore((state) => state.setSource);
-  const setToken = useStore((state) => state.setToken);
+  const setAccount = useStore((state) => state.setAccount);
 
   const navigate = useNavigate();
 
   const { loading: isLoginLoading, run: onLogin } = useRequest(
-    async (user, pwd, otp) => {
-      // 允许无账号登录
-      if (user && pwd) {
-        return await login(user, pwd, otp);
+    async (source, username, password) => {
+      // 允许无账号
+      if (username && password) {
+        updateWebdavClient(source, {
+          username,
+          password,
+        });
+
+        return {
+          username,
+          password,
+          isValid: await getWebdavClient().exists("/"),
+        };
       } else {
         navigate("/", { replace: true });
       }
@@ -24,8 +33,8 @@ const Login = () => {
     {
       manual: true,
       onSuccess: (res) => {
-        if (res?.code === 200) {
-          setToken(res.data.token);
+        if (res?.isValid) {
+          setAccount(res.username, res.password);
           navigate("/", {
             replace: true,
           });
@@ -39,11 +48,10 @@ const Login = () => {
     const formData = new FormData(event.currentTarget);
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
-    const otp = formData.get("OTP") as string;
     const sourceURL = formData.get("source") as string;
 
     setSource(sourceURL);
-    onLogin(username, password, otp);
+    onLogin(sourceURL, username, password);
   };
 
   return (
@@ -58,7 +66,7 @@ const Login = () => {
           label="Source URL"
           defaultValue={source}
           endContent={
-            <Tooltip content="URL pointing to the music folder in alist, like https://example.com/alist/music">
+            <Tooltip content="URL pointing to the music folder in WebDAV, like https://example.com/webdav/music">
               <TipIcon
                 className="opacity-60 cursor-default"
                 height={24}
@@ -69,7 +77,6 @@ const Login = () => {
         />
         <Input type="text" name="username" label="Username" />
         <Input type="password" name="password" label="Password" />
-        <Input type="text" name="OTP" label="OTP" />
         <Button
           className="text-white"
           type="submit"
@@ -77,7 +84,7 @@ const Login = () => {
           fullWidth
           isLoading={isLoginLoading}
         >
-          Login
+          Connect
         </Button>
       </Form>
     </div>

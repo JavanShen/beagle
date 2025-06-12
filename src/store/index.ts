@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { omit } from "lodash-es";
+import { FileStat } from "webdav";
 
 const excludeKeys = ["musicList", "history", "musicMetaMap"];
 
@@ -14,15 +15,11 @@ export type Metadata = {
   hasMeta?: boolean;
 };
 
-export type FileInfo = {
-  name: string;
-  sign: string;
-};
-
 type BeagleState = {
-  token: string;
-  setToken: (token: string) => void;
-  clearToken: () => void;
+  account: string;
+  password: string;
+  setAccount: (acc: string, pwd: string) => void;
+  clearAccount: () => void;
 
   source: string;
   origin: string;
@@ -37,10 +34,10 @@ type BeagleState = {
   addMusicMeta: (id: string, meta: Metadata | null) => void;
 
   currentGroup: string;
-  groups: Record<string, FileInfo[]>;
-  addGroup: (groupName: string, files: FileInfo[]) => void;
+  groups: Record<string, FileStat[]>;
+  addGroup: (groupName: string, files: FileStat[]) => void;
   removeGroup: (groupName: string) => void;
-  addFileToGroup: (groupName: string, file: FileInfo) => void;
+  addFileToGroup: (groupName: string, file: FileStat) => void;
   removeFileFromGroup: (groupName: string, fileId: string) => void;
   setCurrentGroup: (groupName: string) => void;
 
@@ -62,9 +59,11 @@ type BeagleState = {
 const useStore = create<BeagleState>()(
   persist(
     (set) => ({
-      token: "",
-      setToken: (token) => set({ token }),
-      clearToken: () => set({ token: "" }),
+      account: "",
+      password: "",
+      setAccount: (acc: string, pwd: string) =>
+        set({ account: acc, password: pwd }),
+      clearAccount: () => set({ account: "", password: "" }),
 
       // 音乐源
       source: "",
@@ -110,7 +109,7 @@ const useStore = create<BeagleState>()(
           return {
             groups: {
               ...state.groups,
-              [groupName]: files.filter((item) => item.sign !== fileId),
+              [groupName]: files.filter((item) => item.etag !== fileId),
             },
           };
         });
@@ -150,6 +149,7 @@ const useStore = create<BeagleState>()(
     }),
     {
       name: "beagle-store",
+      version: 2,
       partialize: (state) =>
         Object.fromEntries(
           Object.entries(state).filter(([key]) => !excludeKeys.includes(key)),

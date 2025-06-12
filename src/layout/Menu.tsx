@@ -79,7 +79,7 @@ const Menu = () => {
   const contextMenuRef = useRef<ContextMenuRef>(null);
 
   const logout = () => {
-    useStore.getState().clearToken();
+    useStore.getState().clearAccount();
     jumpLogin();
   };
 
@@ -136,8 +136,9 @@ const Menu = () => {
                 height={70}
                 width={70}
                 src={
-                  useStore.getState().musicMetaMap.get(groups[key]?.[0]?.sign)
-                    ?.coverUrl
+                  useStore
+                    .getState()
+                    .musicMetaMap.get(groups[key]?.[0]?.etag || "")?.coverUrl
                 }
               />
               <div className="flex flex-col ml-4">
