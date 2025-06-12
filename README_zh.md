@@ -1,7 +1,7 @@
 <div align="center">
     <img height="140" width="140" src="./public/logo.png">
     <h1>Beagle</h1>
-    <p>一个音乐播放器，支持 Alist</p>
+    <p>一个音乐播放器，支持 WebDAV</p>
     <a href="https://beagle-ashy-psi.vercel.app" target="blank"><strong>🌎 预览</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a href="https://github.com/JavanShen/beagle/releases" target="blank"><strong>📦 下载</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a href="#-%E9%83%A8%E7%BD%B2" target="blank"><strong>🚀 部署</strong></a>
@@ -25,7 +25,7 @@
 - [x] 跨平台客户端
 - [x] 播放列表
 - [x] 全屏播放器
-- [ ] WebDAV 支持
+- [x] WebDAV 支持
 - [ ] 音乐搜索
 - [ ] 配置同步
 
