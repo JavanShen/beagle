@@ -1,11 +1,6 @@
 import { createClient, WebDAVClient, WebDAVClientError } from "webdav";
 import { addToast } from "@heroui/react";
 import useStore from "@/store";
-import router from "@/routes";
-
-export const jumpLogin = () => {
-  router.navigate("/login", { replace: true });
-};
 
 export const showErrorMsg = (errorMsg: string) => {
   addToast({
