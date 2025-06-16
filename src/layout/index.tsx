@@ -1,10 +1,36 @@
 import { Outlet } from "react-router";
 import { getFileList } from "@/request/fs";
+import { Listbox, ListboxItem } from "@heroui/react";
 import { useEffect } from "react";
 import useStore from "@/store";
 import Player from "./Player";
 import Menu from "./Menu";
 import mime from "mime";
+import MusicIcon from "@/assets/music.svg?react";
+import NiceModal from "@ebay/nice-modal-react";
+import AddSource from "@/components/AddSource";
+
+const Start = ({ onAction }: { onAction?: (key: string) => void }) => {
+  return (
+    <div className="w-full h-full flex justify-center items-center">
+      <div className="w-full max-w-[260px] border-small px-1 py-2 rounded-small">
+        <Listbox
+          aria-label="Actions"
+          variant="flat"
+          onAction={(key) => onAction?.(key as string)}
+        >
+          <ListboxItem
+            key="connect"
+            description="Add music source"
+            startContent={<MusicIcon />}
+          >
+            Add Source
+          </ListboxItem>
+        </Listbox>
+      </div>
+    </div>
+  );
+};
 
 const Layout = () => {
   const source = useStore((state) => state.source);
@@ -40,7 +66,11 @@ const Layout = () => {
         <Menu />
       </menu>
       <main className="h-full flex-1">
-        <Outlet />
+        {source ? (
+          <Outlet />
+        ) : (
+          <Start onAction={() => NiceModal.show(AddSource)} />
+        )}
       </main>
       <Player />
     </div>
