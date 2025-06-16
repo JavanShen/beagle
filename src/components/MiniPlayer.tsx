@@ -26,6 +26,7 @@ const MiniPlayer = ({
   isLoop,
   isShuffle,
   isRepeat,
+  isEmpty,
   setIsShuffle,
   setIsRepeat,
   setIsLoop,
@@ -53,24 +54,25 @@ const MiniPlayer = ({
     >
       <div className="flex items-center justify-between px-4 h-full w-full">
         <div className="flex items-center overflow-hidden flex-5">
-          <div className="cursor-pointer" onClick={() => onChangePlayer?.()}>
-            {cover ? (
-              <Image
-                className="object-cover"
-                src={cover}
-                height={60}
-                width={60}
-                isBlurred
-                alt="cover"
-              />
-            ) : (
-              <Skeleton
-                className="rounded-xl"
-                style={{ height: 60, width: 60 }}
-              />
-            )}
-          </div>
-
+          {!isEmpty && (
+            <div className="cursor-pointer" onClick={() => onChangePlayer?.()}>
+              {cover ? (
+                <Image
+                  className="object-cover"
+                  src={cover}
+                  height={60}
+                  width={60}
+                  isBlurred
+                  alt="cover"
+                />
+              ) : (
+                <Skeleton
+                  className="rounded-xl"
+                  style={{ height: 60, width: 60 }}
+                />
+              )}
+            </div>
+          )}
           <div className="mx-4 whitespace-nowrap overflow-hidden flex-1">
             <p className="text-base font-semibold text-ellipsis overflow-hidden">
               {title}
@@ -92,6 +94,7 @@ const MiniPlayer = ({
             <PrevIcon />
           </Button>
           <Button
+            isDisabled={isEmpty}
             isIconOnly
             size="lg"
             radius="md"
@@ -120,6 +123,7 @@ const MiniPlayer = ({
           </span>
           <Spacer className="hidden sm:inline" />
           <Slider
+            isDisabled={isEmpty}
             aria-label="music-progress"
             size="sm"
             className="hidden sm:block"

@@ -5,6 +5,7 @@ import { ToastProvider } from "@heroui/react";
 import { RouterProvider } from "react-router";
 import Router from "@/routes";
 import { configResponsive } from "ahooks";
+import NiceModal from "@ebay/nice-modal-react";
 import "./index.css";
 
 configResponsive({
@@ -17,11 +18,13 @@ configResponsive({
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <HeroUIProvider>
-      <main>
-        <ToastProvider placement="top-right" />
-        <RouterProvider router={Router} />
-      </main>
-    </HeroUIProvider>
+    <NiceModal.Provider>
+      <HeroUIProvider>
+        <main>
+          <ToastProvider placement="top-right" />
+          <RouterProvider router={Router} />
+        </main>
+      </HeroUIProvider>
+    </NiceModal.Provider>
   </StrictMode>,
 );

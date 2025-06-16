@@ -12,6 +12,7 @@
     "version": "node scripts/sync-version.js"
   },
   "dependencies": {
+    "@ebay/nice-modal-react": "^1.2.13",
     "@heroui/react": "^2.7.4",
     "@heroui/system": "^2.4.11",
     "@heroui/theme": "^2.4.11",

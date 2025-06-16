@@ -28,21 +28,19 @@ const withErrorHandling = <T extends (...args: any[]) => Promise<any> | any>(
 ) => {
   return async (...args: Parameters<T>) => {
     try {
-      if (!useStore.getState().source) {
-        jumpLogin();
-      }
-
       const result = await fn(...args);
 
       return result;
     } catch (error) {
       const { status, message } = error as WebDAVClientError;
-      if (status === 401 || status === 403) {
-        jumpLogin();
-      }
 
       // ignore abort errors
-      if ((error as { code: number })?.code !== 20) {
+      if (
+        useStore.getState().source &&
+        (error as { code: number })?.code !== 20 &&
+        status !== 401 &&
+        status !== 403
+      ) {
         showErrorMsg(message);
       }
       return null;
