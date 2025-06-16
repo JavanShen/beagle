@@ -1,7 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import Layout from "@/layout";
 import Playlist from "@/pages/Playlist";
-import Login from "@/pages/Login";
 
 const router = createBrowserRouter([
   {
@@ -13,10 +12,6 @@ const router = createBrowserRouter([
         Component: Playlist,
       },
     ],
-  },
-  {
-    path: "/login",
-    Component: Login,
   },
 ]);
 

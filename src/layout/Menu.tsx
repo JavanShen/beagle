@@ -9,11 +9,9 @@ import {
   useDisclosure,
   Input,
 } from "@heroui/react";
-import LogoutIcon from "@/assets/logout.svg?react";
 import AddIcon from "@/assets/add.svg?react";
 import DelIcon from "@/assets/delete.svg?react";
 import useStore from "@/store";
-import { jumpLogin } from "@/utils/request";
 import { useEffect, useState, useRef } from "react";
 import ContextMenu, { ContextMenuRef } from "@/components/ContextMenu";
 import { updatePlayQuque } from "@/utils/player";
@@ -78,26 +76,11 @@ const Menu = () => {
   const curActGroup = useRef("");
   const contextMenuRef = useRef<ContextMenuRef>(null);
 
-  const logout = () => {
-    useStore.getState().clearAccount();
-    jumpLogin();
-  };
-
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
     <div className="w-full h-full">
       <div className="flex items-center justify-between mb-4 mx-2">
-        <Button
-          isIconOnly
-          size="sm"
-          radius="md"
-          variant="light"
-          title="logout"
-          onPress={logout}
-        >
-          <LogoutIcon className="opacity-70" height={24} width={24} />
-        </Button>
         <Button
           isIconOnly
           size="sm"
