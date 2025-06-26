@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import Layout from "@/layout";
 import Playlist from "@/pages/Playlist";
+import Settings from "@/pages/Settings";
 
 const router = createBrowserRouter([
   {
@@ -10,6 +11,10 @@ const router = createBrowserRouter([
       {
         index: true,
         Component: Playlist,
+      },
+      {
+        path: "/settings",
+        Component: Settings,
       },
     ],
   },
