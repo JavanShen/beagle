@@ -1,8 +1,9 @@
 import useStore from "@/store";
+import { useParams } from "react-router";
 
 const usePlaylist = () => {
   const groups = useStore((state) => state.groups);
-  const currentGroup = useStore((state) => state.currentGroup);
+  const currentGroup = useParams()?.groupId || "";
 
   return {
     playlist: groups?.[currentGroup] || [],

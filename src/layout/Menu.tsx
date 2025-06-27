@@ -23,7 +23,7 @@ import useStore from "@/store";
 import { useEffect, useState, useRef } from "react";
 import ContextMenu, { ContextMenuRef } from "@/components/ContextMenu";
 import { updatePlayQuque } from "@/utils/player";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { FileStat } from "webdav";
 import IconWrapper from "@/components/IconWrapper";
 
@@ -81,9 +81,11 @@ const CreatePlaylist = ({
 const Menu = () => {
   const navigate = useNavigate();
 
+  const currentGroup = useParams()?.groupId;
+  const setCurrentGroup = (groupId: string) => {
+    navigate(`/playlist/${groupId}`);
+  };
   const groups = useStore((state) => state.groups);
-  const currentGroup = useStore((state) => state.currentGroup);
-  const setCurrentGroup = useStore((state) => state.setCurrentGroup);
   const removeGroup = useStore((state) => state.removeGroup);
 
   const curActGroup = useRef("");
@@ -177,7 +179,7 @@ const Menu = () => {
                   </span>
                 </div>
               </div>
-              <WaveIcon className="fill-primary" />
+              {key === currentGroup && <WaveIcon className="fill-primary" />}
             </li>
           );
         })}
