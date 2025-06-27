@@ -10,6 +10,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
+        path: "/playlist/:groupId?",
         Component: Playlist,
       },
       {

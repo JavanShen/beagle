@@ -9,6 +9,8 @@ const usePlayAudio = (
   loaded?: () => void,
   ended?: (isEnded?: boolean) => void,
 ) => {
+  console.log("current music rawurl", source);
+
   const [currentTime, setCurrentTime] = useState(0);
   const [currentTimeText, setCurrentTimeText] = useState("00:00");
   const [duration, setDuration] = useState(0);

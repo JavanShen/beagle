@@ -91,7 +91,7 @@ const Layout = () => {
         <Menu />
       </menu>
       <main className="h-full flex-1">
-        {source || location.pathname !== "/" ? (
+        {source || !/^\/(playlist)?(\/[^/]*)?$/.test(location.pathname) ? (
           <Outlet />
         ) : (
           <Start onAction={(key) => actions[key]?.()} />

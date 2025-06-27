@@ -16,8 +16,6 @@ export const parseMusicMeta = async (
   fileName: string,
   signal?: AbortSignal,
 ) => {
-  console.log(sign, fileName);
-
   const { musicMetaMap, addMusicMeta } = useStore.getState();
   if (musicMetaMap.has(sign) || !sign) return;
 
