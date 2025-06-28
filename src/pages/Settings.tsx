@@ -20,6 +20,7 @@ const Group = ({
 
 const Settings = () => {
   const account = useStore((state) => state.account);
+  const resetState = useStore((state) => state.reset);
 
   return (
     <div className="p-14">
@@ -40,7 +41,7 @@ const Settings = () => {
                   isIconOnly
                   variant="flat"
                 >
-                  <DeleteIcon className="h-5 w-5" />
+                  <DeleteIcon className="h-5 w-5" onClick={resetState} />
                 </Button>
               </div>
             </div>
