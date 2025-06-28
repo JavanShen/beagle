@@ -16,6 +16,8 @@ export type Metadata = {
 };
 
 type BeagleState = {
+  reset: () => void;
+
   account: string;
   password: string;
   setAccount: (acc: string, pwd: string) => void;
@@ -56,19 +58,56 @@ type BeagleState = {
   setIsLoop: (isLoop: boolean) => void;
 };
 
+type PureState = {
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  [P in keyof BeagleState as BeagleState[P] extends (...args: any[]) => void
+    ? never
+    : P]: BeagleState[P];
+};
+
+const initialState: PureState = {
+  // 账号信息
+  account: "",
+  password: "",
+
+  // 音乐源
+  source: "",
+  origin: "",
+  musicPath: "",
+
+  // 音乐&元数据&播放队列
+  musicMetaMap: new Map(),
+  playQueue: [],
+  history: [],
+
+  // 歌单管理
+  currentGroup: "All Music",
+  groups: { "All Music": [] },
+
+  // 当前播放歌曲
+  currentMusicIndex: -1,
+  currentMusicId: "",
+  currentFileName: "",
+
+  // 播放信息
+  isShuffle: false,
+  isLoop: false,
+  isRepeat: false,
+  volume: 100,
+};
+
 const useStore = create<BeagleState>()(
   persist(
     (set) => ({
-      account: "",
-      password: "",
+      ...initialState,
+
+      reset: () => set(initialState),
+
       setAccount: (acc: string, pwd: string) =>
         set({ account: acc, password: pwd }),
       clearAccount: () => set({ account: "", password: "" }),
 
       // 音乐源
-      source: "",
-      origin: "",
-      musicPath: "",
       setSource: (source) => {
         const url = new URL(source);
         set({
@@ -79,9 +118,6 @@ const useStore = create<BeagleState>()(
       },
 
       // 音乐&元数据&播放队列
-      musicMetaMap: new Map(),
-      playQueue: [],
-      history: [],
       setHistory: (history) => set({ history }),
       setPlayQueue: (playQueue) => {
         set({ playQueue });
@@ -92,8 +128,6 @@ const useStore = create<BeagleState>()(
         })),
 
       // 歌单管理
-      currentGroup: "All Music",
-      groups: { "All Music": [] },
       addGroup: (groupName, files) => {
         set((state) => ({
           groups: { ...state.groups, [groupName]: files },
@@ -125,9 +159,6 @@ const useStore = create<BeagleState>()(
       setCurrentGroup: (groupName) => set({ currentGroup: groupName }),
 
       // 当前播放歌曲
-      currentMusicIndex: -1,
-      currentMusicId: "",
-      currentFileName: "",
       setCurrentMusic: (id, index, fileName) => {
         set((state) => ({
           currentMusicId: id,
@@ -138,10 +169,6 @@ const useStore = create<BeagleState>()(
       },
 
       // 播放信息
-      isShuffle: false,
-      isLoop: false,
-      isRepeat: false,
-      volume: 100,
       setVolume: (volume) => set({ volume }),
       setIsRepeat: (isRepeat) => set({ isRepeat }),
       setIsShuffle: (isShuffle) => set({ isShuffle }),
