@@ -146,7 +146,9 @@ const FullPlayer = ({
             </div>
           </div>
           <div className="flex items-center mb-6">
-            <span className="text-sm opacity-65">{currentTimeText}</span>
+            <span className="text-sm opacity-65 whitespace-nowrap">
+              {currentTimeText}
+            </span>
             <Spacer />
             <Slider
               aria-label="music-progress"
@@ -162,7 +164,9 @@ const FullPlayer = ({
               onChangeEnd={(val) => jump(val as number)}
             />
             <Spacer />
-            <span className="text-sm opacity-65">{durationText}</span>
+            <span className="text-sm opacity-65 whitespace-nowrap">
+              {durationText}
+            </span>
           </div>
           <div className="flex justify-center items-center">
             <Button

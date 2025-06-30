@@ -9,14 +9,49 @@ const usePlayAudio = (
   loaded?: () => void,
   ended?: (isEnded?: boolean) => void,
 ) => {
+  const username = useStore((state) => state.account);
+  const password = useStore((state) => state.password);
+
   const [currentTime, setCurrentTime] = useState(0);
-  const [currentTimeText, setCurrentTimeText] = useState("00:00");
+  const [currentTimeText, setCurrentTimeText] = useState("-:--");
   const [duration, setDuration] = useState(0);
-  const [durationText, setDurationText] = useState("00:00");
+  const [durationText, setDurationText] = useState("-:--");
   const volume = useStore((state) => state.volume);
   const setVolume = useStore((state) => state.setVolume);
   const player = useMemo(
-    () => new Player(undefined, { volume }),
+    () =>
+      new Player({
+        src: [""],
+        volume: volume ? volume / 100 : 1,
+        xhr: {
+          headers: {
+            Authorization: "Basic " + btoa(`${username}:${password}`),
+          },
+        },
+        onload: () => {
+          setDuration(Math.floor(player.duration));
+          setDurationText(player.durationText);
+          setIsCanPlay(true);
+          loaded?.();
+        },
+        timeUpdate: (curTime, curTimeText) => {
+          if (!isManualUpdating.current && player) {
+            setCurrentTime(Math.floor(curTime));
+            setCurrentTimeText(curTimeText);
+          }
+        },
+        onpause: () => {
+          navigator.mediaSession.playbackState = "paused";
+          setIsPlaying(false);
+        },
+        onplay: () => {
+          navigator.mediaSession.playbackState = "playing";
+          setIsPlaying(true);
+        },
+        onend: () => {
+          ended?.(true);
+        },
+      }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
@@ -39,34 +74,6 @@ const usePlayAudio = (
   }, [source]);
 
   useEffect(() => {
-    player?.canPlay(() => {
-      setDuration(Math.floor(player.duration || 0));
-      setDurationText(player.durationText || "00:00");
-      setIsCanPlay(true);
-      loaded?.();
-    });
-
-    player?.timeUpdate(() => {
-      if (!isManualUpdating.current && player) {
-        setCurrentTime(Math.floor(player.currentTime));
-        setCurrentTimeText(player.currentTimeText);
-      }
-    });
-
-    player?.bePaused(() => {
-      navigator.mediaSession.playbackState = "paused";
-      setIsPlaying(false);
-    });
-
-    player?.bePlayed(() => {
-      navigator.mediaSession.playbackState = "playing";
-      setIsPlaying(true);
-    });
-
-    player?.onEnded(() => {
-      ended?.(true);
-    });
-
     return () => {
       player?.destroy();
     };

@@ -115,7 +115,7 @@ const MiniPlayer = ({
             <NextIcon />
           </Button>
           <Spacer className="hidden sm:inline" />
-          <span className="text-sm opacity-65 hidden sm:inline">
+          <span className="text-sm opacity-65 hidden whitespace-nowrap sm:inline">
             {currentTimeText}
           </span>
           <Spacer className="hidden sm:inline" />
@@ -133,7 +133,7 @@ const MiniPlayer = ({
             onChangeEnd={(val) => jump(val as number)}
           />
           <Spacer className="hidden sm:inline" />
-          <span className="text-sm opacity-65 hidden sm:inline">
+          <span className="text-sm opacity-65 hidden whitespace-nowrap sm:inline">
             {durationText}
           </span>
           <Spacer />
