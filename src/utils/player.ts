@@ -2,6 +2,7 @@ import useStore from "@/store";
 import { generateRandomArray, generateOrderedArray } from "./array";
 import { parseMusicMeta } from "./meta";
 import { getPlaylist } from "@/hooks/usePlaylist";
+import { Howl, HowlOptions } from "howler";
 
 const zeroFill = (num: number) => {
   if (num < 10 && num >= 0) return `0${num}`;
@@ -53,88 +54,102 @@ export const updatePlayQuque = (trigger?: "next" | "prev" | "select") => {
   }
 };
 
-export type PlayerInitData = {
-  volume?: number | null;
+type PlayerOptions = HowlOptions & {
+  timeUpdate?: (currentTime: number, currentTimeText: string) => void;
 };
+export default class Player {
+  sound: Howl;
+  options: HowlOptions;
+  timeUpdate: PlayerOptions["timeUpdate"];
+  timer?: number;
 
-export default class Player extends Audio {
-  controllers: AbortController[];
+  constructor(options: PlayerOptions) {
+    const { timeUpdate, ...opt } = options;
+    this.options = opt;
+    this.timeUpdate = timeUpdate;
 
-  constructor(source?: string, initData: PlayerInitData = {}) {
-    super(source);
-    super.preload = "auto";
-    this.setVolume(initData.volume || 100);
-
-    this.controllers = [];
+    this.sound = new Howl(opt);
   }
 
-  private addControllerEventListener<K extends keyof HTMLMediaElementEventMap>(
-    eventType: K,
-    fn: (this: HTMLMediaElement, ev: HTMLMediaElementEventMap[K]) => unknown,
-  ) {
-    const controller = new AbortController();
-    super.addEventListener(eventType, fn, {
-      signal: controller.signal,
-    });
-    this.controllers.push(controller);
-  }
-
-  loadedData(fn: () => void) {
-    this.addControllerEventListener("loadeddata", fn);
-  }
-
-  timeUpdate(fn: () => void) {
-    this.addControllerEventListener("timeupdate", fn);
-  }
-
-  canPlay(fn: () => void) {
-    this.addControllerEventListener("canplay", fn);
-  }
-
-  bePlayed(fn: () => void) {
-    this.addControllerEventListener("play", fn);
-  }
-
-  bePaused(fn: () => void) {
-    this.addControllerEventListener("pause", fn);
-  }
-
-  onEnded(fn: () => void) {
-    this.addControllerEventListener("ended", fn);
+  private _updateTime() {
+    clearInterval(this.timer);
+    this.timer = setInterval(() => {
+      this.timeUpdate?.(this.currentTime, this.currentTimeText);
+    }, 1000) as unknown as number;
   }
 
   mute() {
-    super.muted = true;
+    this.sound.mute(true);
+    this.options.mute = true;
   }
 
   unmute() {
-    super.muted = false;
+    this.sound.mute(false);
+    this.options.mute = false;
   }
 
   setVolume(val: number) {
     const volume = Math.min(Math.max(0, val), 100) / 100;
-    super.volume = volume;
+    this.sound.volume(volume);
+  }
+
+  play() {
+    this.sound.play();
+    this._updateTime();
+  }
+
+  pause() {
+    this.sound.pause();
+    clearInterval(this.timer);
   }
 
   playAudio(source: string) {
-    super.src = source;
-    super.load();
+    const mute = this.muted;
+    const volume = this.volume;
+
+    console.log(mute, volume);
+
+    this.sound.unload();
+    this.sound = new Howl({
+      ...this.options,
+      volume,
+      mute,
+      src: source,
+    });
+    this._updateTime();
   }
 
   reload() {
-    super.load();
+    this.sound.seek(0);
   }
 
   destroy() {
-    this.controllers.forEach((controller) => controller.abort());
-    this.controllers = [];
-    super.pause();
-    super.src = "";
-    super.remove();
+    this.sound.unload();
+    clearInterval(this.timer);
+  }
+
+  get muted() {
+    return this.options.mute;
+  }
+
+  get volume() {
+    return this.sound.volume();
+  }
+
+  get duration() {
+    return this.sound.duration();
   }
 
   get durationText() {
     return secondsToMinutes(this.duration);
+  }
+
+  get currentTime() {
+    return this.sound.seek();
+  }
+
+  set currentTime(val: number) {
+    this.sound.seek(val);
   }
 
   get currentTimeText() {

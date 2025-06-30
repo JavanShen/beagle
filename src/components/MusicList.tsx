@@ -40,8 +40,6 @@ const ListItem = memo(
       }
     }, [musicId, fileName]);
 
-    console.count("playlist item reload" + fileName);
-
     return (
       <div
         key={musicId}
@@ -124,8 +122,6 @@ const MusicList = ({ musicList }: { musicList: FileStat[] }) => {
       );
     }
   }, [musicList.length]);
-
-  console.count("playlist rerender");
 
   return (
     <div className="w-full h-full px-4">
