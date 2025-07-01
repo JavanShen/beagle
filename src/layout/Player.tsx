@@ -124,6 +124,7 @@ const Player = () => {
     setIsShuffle,
     setIsRepeat,
     setIsLoop,
+    isEmpty: !currentMusicId,
   };
 
   return (

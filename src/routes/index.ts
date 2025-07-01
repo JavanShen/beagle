@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import Layout from "@/layout";
 import Playlist from "@/pages/Playlist";
-import Login from "@/pages/Login";
+import Settings from "@/pages/Settings";
 
 const router = createBrowserRouter([
   {
@@ -10,13 +10,14 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
+        path: "/playlist/:groupId?",
         Component: Playlist,
       },
+      {
+        path: "/settings",
+        Component: Settings,
+      },
     ],
-  },
-  {
-    path: "/login",
-    Component: Login,
   },
 ]);
 

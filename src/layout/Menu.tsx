@@ -8,15 +8,26 @@ import {
   ModalFooter,
   useDisclosure,
   Input,
+  Avatar,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@heroui/react";
-import LogoutIcon from "@/assets/logout.svg?react";
+import WaveIcon from "@/assets/wave.svg?react";
 import AddIcon from "@/assets/add.svg?react";
 import DelIcon from "@/assets/delete.svg?react";
+import SettingsIcon from "@/assets/settings.svg?react";
+import MusicNoteIcon from "@/assets/music-note.svg?react";
+import MoreIcon from "@/assets/more.svg?react";
+import CloudIcon from "@/assets/cloud.svg?react";
 import useStore from "@/store";
-import { jumpLogin } from "@/utils/request";
 import { useEffect, useState, useRef } from "react";
 import ContextMenu, { ContextMenuRef } from "@/components/ContextMenu";
 import { updatePlayQuque } from "@/utils/player";
+import { useNavigate, useParams } from "react-router";
+import { FileStat } from "webdav";
+import IconWrapper from "@/components/IconWrapper";
 
 const CreatePlaylist = ({
   isOpen,
@@ -70,34 +81,62 @@ const CreatePlaylist = ({
 };
 
 const Menu = () => {
+  const navigate = useNavigate();
+
+  const account = useStore((state) => state.account);
+
+  const currentGroup = useParams()?.groupId;
+  const setCurrentGroup = (groupId: string) => {
+    navigate(`/playlist/${groupId}`);
+  };
   const groups = useStore((state) => state.groups);
-  const currentGroup = useStore((state) => state.currentGroup);
-  const setCurrentGroup = useStore((state) => state.setCurrentGroup);
   const removeGroup = useStore((state) => state.removeGroup);
 
   const curActGroup = useRef("");
   const contextMenuRef = useRef<ContextMenuRef>(null);
 
-  const logout = () => {
-    useStore.getState().clearAccount();
-    jumpLogin();
-  };
-
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  const getCover = (group: FileStat[]) => {
+    return useStore.getState().musicMetaMap.get(group?.[0]?.etag || "")
+      ?.coverUrl;
+  };
+
   return (
-    <div className="w-full h-full">
-      <div className="flex items-center justify-between mb-4 mx-2">
-        <Button
-          isIconOnly
-          size="sm"
-          radius="md"
-          variant="light"
-          title="logout"
-          onPress={logout}
-        >
-          <LogoutIcon className="opacity-70" height={24} width={24} />
-        </Button>
+    <div className="w-full h-full px-4 py-2">
+      <div className="flex items-center justify-end mb-8">
+        <Dropdown placement="bottom-start">
+          <DropdownTrigger>
+            {account ? (
+              <Avatar
+                className="cursor-pointer"
+                isBordered
+                icon={<CloudIcon className="fill-white" />}
+                radius="sm"
+                size="sm"
+                isFocusable
+                color="primary"
+              />
+            ) : (
+              <Button isIconOnly size="sm" variant="light">
+                <MoreIcon />
+              </Button>
+            )}
+          </DropdownTrigger>
+          <DropdownMenu>
+            <DropdownItem
+              key="settings"
+              startContent={<SettingsIcon height={20} width={20} />}
+              onPress={() => navigate("/settings")}
+            >
+              Settings
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      </div>
+
+      <div className="flex items-center justify-between mb-2">
+        <span className="opacity-80 font-bold">My Playlist</span>
         <Button
           isIconOnly
           size="sm"
@@ -114,7 +153,9 @@ const Menu = () => {
           return (
             <li
               key={key}
-              className={`flex items-center justify-start w-full px-4 bg-opacity-70 hover:bg-white cursor-pointer ${key === currentGroup ? "bg-white" : "bg-transparent"}`}
+              className={
+                "flex items-center justify-between w-full px-4 rounded-small hover:bg-gray-200/40 cursor-pointer"
+              }
               style={{ height: 90 }}
               onClick={() => {
                 setCurrentGroup(key);
@@ -130,23 +171,26 @@ const Menu = () => {
                 });
               }}
             >
-              <Image
-                isBlurred
-                isZoomed
-                height={70}
-                width={70}
-                src={
-                  useStore
-                    .getState()
-                    .musicMetaMap.get(groups[key]?.[0]?.etag || "")?.coverUrl
-                }
-              />
-              <div className="flex flex-col ml-4">
-                <span className="text-lg font-bold mb-2">{key}</span>
-                <span className="text-sm opacity-70">
-                  {groups[key]?.length || 0} songs
-                </span>
+              <div className="flex items-center justify-start">
+                {getCover(groups[key]) ? (
+                  <Image height={70} width={70} src={getCover(groups[key])} />
+                ) : (
+                  <IconWrapper className="h-[70px] w-[70px] bg-gray-50">
+                    <MusicNoteIcon className="fill-gray-500" />
+                  </IconWrapper>
+                )}
+                <div className="flex flex-col ml-4">
+                  <span
+                    className={`text-lg mb-2 ${key === currentGroup ? "text-primary" : ""}`}
+                  >
+                    {key}
+                  </span>
+                  <span className="text-sm opacity-70">
+                    {groups[key]?.length || 0} songs
+                  </span>
+                </div>
               </div>
+              {key === currentGroup && <WaveIcon className="fill-primary" />}
             </li>
           );
         })}

@@ -9,6 +9,7 @@ export type PlayerProps = UsePlayAudioReturn & {
   isLoop?: boolean;
   isShuffle?: boolean;
   isRepeat?: boolean;
+  isEmpty?: boolean;
   next: () => void;
   prev: () => void;
   setIsShuffle: (value: boolean) => void;
