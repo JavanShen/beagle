@@ -139,7 +139,6 @@ const useStore = create<BeagleState>()(
       removeFileFromGroup: (groupName, fileId) => {
         set((state) => {
           const files = state.groups[groupName] || [];
-          console.log(fileId);
           return {
             groups: {
               ...state.groups,

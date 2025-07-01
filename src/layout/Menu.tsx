@@ -19,6 +19,8 @@ import AddIcon from "@/assets/add.svg?react";
 import DelIcon from "@/assets/delete.svg?react";
 import SettingsIcon from "@/assets/settings.svg?react";
 import MusicNoteIcon from "@/assets/music-note.svg?react";
+import MoreIcon from "@/assets/more.svg?react";
+import CloudIcon from "@/assets/cloud.svg?react";
 import useStore from "@/store";
 import { useEffect, useState, useRef } from "react";
 import ContextMenu, { ContextMenuRef } from "@/components/ContextMenu";
@@ -81,6 +83,8 @@ const CreatePlaylist = ({
 const Menu = () => {
   const navigate = useNavigate();
 
+  const account = useStore((state) => state.account);
+
   const currentGroup = useParams()?.groupId;
   const setCurrentGroup = (groupId: string) => {
     navigate(`/playlist/${groupId}`);
@@ -103,14 +107,21 @@ const Menu = () => {
       <div className="flex items-center justify-end mb-8">
         <Dropdown placement="bottom-start">
           <DropdownTrigger>
-            <Avatar
-              className="cursor-pointer"
-              isBordered
-              radius="sm"
-              size="sm"
-              isFocusable
-              name="W"
-            />
+            {account ? (
+              <Avatar
+                className="cursor-pointer"
+                isBordered
+                icon={<CloudIcon className="fill-white" />}
+                radius="sm"
+                size="sm"
+                isFocusable
+                color="primary"
+              />
+            ) : (
+              <Button isIconOnly size="sm" variant="light">
+                <MoreIcon />
+              </Button>
+            )}
           </DropdownTrigger>
           <DropdownMenu>
             <DropdownItem
