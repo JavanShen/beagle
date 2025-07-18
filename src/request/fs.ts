@@ -9,5 +9,5 @@ export const getFileStream = async (path: string, signal?: AbortSignal) => {
     signal,
   });
 
-  return res.body as unknown as ReadableStream<ArrayBuffer>;
+  return res.body as unknown as ReadableStream<Uint8Array>;
 };
