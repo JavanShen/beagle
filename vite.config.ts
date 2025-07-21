@@ -13,6 +13,14 @@ export default defineConfig({
       "@": resolve("src"),
     },
   },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
+    },
+  },
   esbuild: {
     drop: process.env.NODE_ENV === "production" ? ["console", "debugger"] : [],
   },

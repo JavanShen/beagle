@@ -9,9 +9,6 @@ const usePlayAudio = (
   loaded?: () => void,
   ended?: (isEnded?: boolean) => void,
 ) => {
-  const username = useStore((state) => state.account);
-  const password = useStore((state) => state.password);
-
   const [currentTime, setCurrentTime] = useState(0);
   const [currentTimeText, setCurrentTimeText] = useState("-:--");
   const [duration, setDuration] = useState(0);
@@ -23,11 +20,7 @@ const usePlayAudio = (
       new Player({
         src: [""],
         volume: volume ? volume / 100 : 1,
-        xhr: {
-          headers: {
-            Authorization: "Basic " + btoa(`${username}:${password}`),
-          },
-        },
+        html5: true,
         onload: () => {
           setDuration(Math.floor(player.duration));
           setDurationText(player.durationText);

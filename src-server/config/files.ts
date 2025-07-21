@@ -1,0 +1,7 @@
+import path from "path";
+
+export default {
+  coversDirPath: path.join(__dirname, "../covers"),
+  coversRoute: "/covers",
+  frontendOutput: path.join(__dirname, "../../dist"),
+};

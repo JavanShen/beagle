@@ -1,11 +1,16 @@
-import { WebDAVCredentialAttributes } from "../models/webdav";
+import { SourceCreationAttributes } from "../models/sources";
 
 export {};
 
 declare global {
   namespace Express {
     interface Request {
-      credential: WebDAVCredentialAttributes;
+      source: SourceCreationAttributes;
+    }
+
+    interface Response {
+      success: (data: unknown, message?: string) => void;
+      error: (message?: string, code?: number) => void;
     }
   }
 }

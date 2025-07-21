@@ -10,41 +10,32 @@ import {
   Tab,
   Tabs,
 } from "@heroui/react";
-import { updateWebdavClient, getWebdavClient } from "@/utils/request";
 import useStore from "@/store";
 import { useRequest } from "ahooks";
 import TipIcon from "@/assets/help.svg?react";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
+import { addSource } from "@/request/sources";
 
 const AddSource = NiceModal.create(() => {
   const modal = useModal();
   const source = useStore((state) => state.source);
   const setSource = useStore((state) => state.setSource);
-  const setAccount = useStore((state) => state.setAccount);
+  const setToken = useStore((state) => state.setToken);
 
   const { loading: isLoginLoading, run: onLogin } = useRequest(
     async (source, username, password) => {
-      // 允许无账号
-      if (username && password) {
-        updateWebdavClient(source, {
-          username,
-          password,
-        });
-
-        return {
-          username,
-          password,
-          isValid: await getWebdavClient().exists("/"),
-        };
-      } else {
-        modal.hide();
-      }
+      return await addSource({
+        source,
+        username,
+        password,
+        type: "dav",
+      });
     },
     {
       manual: true,
       onSuccess: (res) => {
-        if (res?.isValid) {
-          setAccount(res.username, res.password);
+        if (res.code === 200) {
+          setToken(res.data.token);
           modal.hide();
         }
       },

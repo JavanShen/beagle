@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, CSSProperties } from "react";
 import useStore from "@/store";
-import { FileStat } from "webdav";
+import { MusicListItem } from "@/request/music";
 import { Image, Skeleton } from "@heroui/react";
 import { secondsToMinutes, updatePlayQuque } from "@/utils/player";
 import { parseMusicMeta } from "@/utils/meta";
@@ -13,12 +13,20 @@ import PlaylistSelect, { PlaylistSelectRef } from "./PlaylistSelect";
 type ListItemProps = {
   musicId: string;
   fileName: string;
+  etag: string | null;
   style?: React.CSSProperties;
   onClick?: () => void;
   onContextMenu?: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
 const ListItem = memo(
-  ({ musicId, fileName, style, onClick, onContextMenu }: ListItemProps) => {
+  ({
+    musicId,
+    fileName,
+    etag,
+    style,
+    onClick,
+    onContextMenu,
+  }: ListItemProps) => {
     const metadata = useStore((state) => state.musicMetaMap.get(musicId));
     const isLoaded = metadata !== undefined;
     const {
@@ -32,13 +40,13 @@ const ListItem = memo(
     useEffect(() => {
       if (musicId && fileName) {
         const controller = new AbortController();
-        parseMusicMeta(musicId, fileName, controller.signal);
+        parseMusicMeta(musicId, fileName, etag, controller.signal);
 
         return () => {
           controller.abort();
         };
       }
-    }, [musicId, fileName]);
+    }, [musicId, fileName, etag]);
 
     return (
       <div
@@ -101,7 +109,7 @@ const ListItem = memo(
   },
 );
 
-const MusicList = ({ musicList }: { musicList: FileStat[] }) => {
+const MusicList = ({ musicList }: { musicList: MusicListItem[] }) => {
   const setCurrentMusic = useStore((state) => state.setCurrentMusic);
   const isInitializedScroll = useRef(false);
   const listRef = useRef<FixedSizeList | null>(null);
@@ -136,20 +144,21 @@ const MusicList = ({ musicList }: { musicList: FileStat[] }) => {
           >
             {memo(
               ({ index, style }: { index: number; style: CSSProperties }) => {
-                const { basename, etag } = musicList[index] || {};
+                const { basename, sign, etag } = musicList[index] || {};
 
                 return (
                   <ListItem
-                    key={etag}
-                    musicId={etag || ""}
+                    key={sign}
+                    musicId={sign || ""}
                     fileName={basename}
+                    etag={etag}
                     style={style}
                     onClick={() => {
-                      setCurrentMusic(etag || "", index, basename);
+                      setCurrentMusic(sign || "", index, basename, etag);
                       updatePlayQuque("select");
                     }}
                     onContextMenu={(e) => {
-                      curActMusicId.current = etag || "";
+                      curActMusicId.current = sign || "";
 
                       const pos = {
                         x: e.clientX,

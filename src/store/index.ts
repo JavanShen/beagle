@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { omit } from "lodash-es";
-import { FileStat } from "webdav";
+import { MusicListItem } from "@/request/music";
 
 const excludeKeys = ["musicList", "history", "musicMetaMap"];
 
@@ -18,10 +18,9 @@ export type Metadata = {
 type BeagleState = {
   reset: () => void;
 
-  account: string;
-  password: string;
-  setAccount: (acc: string, pwd: string) => void;
-  clearAccount: () => void;
+  token: string;
+  setToken: (token: string) => void;
+  clearToken: () => void;
 
   source: string;
   origin: string;
@@ -36,17 +35,23 @@ type BeagleState = {
   addMusicMeta: (id: string, meta: Metadata | null) => void;
 
   currentGroup: string;
-  groups: Record<string, FileStat[]>;
-  addGroup: (groupName: string, files: FileStat[]) => void;
+  groups: Record<string, MusicListItem[]>;
+  addGroup: (groupName: string, files: MusicListItem[]) => void;
   removeGroup: (groupName: string) => void;
-  addFileToGroup: (groupName: string, file: FileStat) => void;
+  addFileToGroup: (groupName: string, file: MusicListItem) => void;
   removeFileFromGroup: (groupName: string, fileId: string) => void;
   setCurrentGroup: (groupName: string) => void;
 
   currentMusicIndex: number;
   currentMusicId: string;
   currentFileName: string;
-  setCurrentMusic: (id: string, index: number, fileName: string) => void;
+  currentMusicEtag: string | null;
+  setCurrentMusic: (
+    id: string,
+    index: number,
+    fileName: string,
+    etag: string | null,
+  ) => void;
 
   isShuffle: boolean;
   isLoop: boolean;
@@ -67,8 +72,7 @@ type PureState = {
 
 const initialState: PureState = {
   // 账号信息
-  account: "",
-  password: "",
+  token: "",
 
   // 音乐源
   source: "",
@@ -88,6 +92,7 @@ const initialState: PureState = {
   currentMusicIndex: -1,
   currentMusicId: "",
   currentFileName: "",
+  currentMusicEtag: null,
 
   // 播放信息
   isShuffle: false,
@@ -103,9 +108,8 @@ const useStore = create<BeagleState>()(
 
       reset: () => set(initialState),
 
-      setAccount: (acc: string, pwd: string) =>
-        set({ account: acc, password: pwd }),
-      clearAccount: () => set({ account: "", password: "" }),
+      setToken: (token) => set({ token }),
+      clearToken: () => set({ token: "" }),
 
       // 音乐源
       setSource: (source) => {
@@ -142,7 +146,7 @@ const useStore = create<BeagleState>()(
           return {
             groups: {
               ...state.groups,
-              [groupName]: files.filter((item) => item.etag !== fileId),
+              [groupName]: files.filter((item) => item.sign !== fileId),
             },
           };
         });
@@ -158,11 +162,12 @@ const useStore = create<BeagleState>()(
       setCurrentGroup: (groupName) => set({ currentGroup: groupName }),
 
       // 当前播放歌曲
-      setCurrentMusic: (id, index, fileName) => {
+      setCurrentMusic: (id, index, fileName, etag) => {
         set((state) => ({
           currentMusicId: id,
           currentMusicIndex: index,
           currentFileName: fileName,
+          currentMusicEtag: etag,
           history: [...state.history, index],
         }));
       },

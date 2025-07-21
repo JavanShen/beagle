@@ -1,22 +1,18 @@
 import { DataTypes, Model, Optional, Sequelize } from "sequelize";
 
-export type WebDAVCredentialAttributes = {
+export type SourceAttributes = {
   id: number;
   source: string;
-  username: string;
-  password: string;
+  username?: string;
+  password?: string;
+  type: "dav" | "smb" | "ftp";
 };
 
-type WebDAVCredentialCreationAttributes = Optional<
-  WebDAVCredentialAttributes,
-  "id"
->;
+export type SourceCreationAttributes = Optional<SourceAttributes, "id">;
 
-export const getWebDAVCredential = (sequelize: Sequelize) =>
-  sequelize.define<
-    Model<WebDAVCredentialAttributes, WebDAVCredentialCreationAttributes>
-  >(
-    "WebDAVCredential",
+export const getSources = (sequelize: Sequelize) =>
+  sequelize.define<Model<SourceAttributes, SourceCreationAttributes>>(
+    "Sources",
     {
       id: {
         type: DataTypes.INTEGER,
@@ -26,19 +22,21 @@ export const getWebDAVCredential = (sequelize: Sequelize) =>
       source: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        // unique: true,
       },
       username: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
+        // unique: true,
       },
       password: {
         type: DataTypes.STRING,
+      },
+      type: {
+        type: DataTypes.ENUM("dav", "smb", "ftp"),
         allowNull: false,
       },
     },
     {
-      tableName: "webdav_credentials",
+      tableName: "sources",
     },
   );

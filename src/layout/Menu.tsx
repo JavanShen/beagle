@@ -26,8 +26,8 @@ import { useEffect, useState, useRef } from "react";
 import ContextMenu, { ContextMenuRef } from "@/components/ContextMenu";
 import { updatePlayQuque } from "@/utils/player";
 import { useNavigate, useParams } from "react-router";
-import { FileStat } from "webdav";
 import IconWrapper from "@/components/IconWrapper";
+import { MusicListItem } from "@/request/music";
 
 const CreatePlaylist = ({
   isOpen,
@@ -83,7 +83,7 @@ const CreatePlaylist = ({
 const Menu = () => {
   const navigate = useNavigate();
 
-  const account = useStore((state) => state.account);
+  const token = useStore((state) => state.token);
 
   const currentGroup = useParams()?.groupId;
   const setCurrentGroup = (groupId: string) => {
@@ -97,8 +97,8 @@ const Menu = () => {
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const getCover = (group: FileStat[]) => {
-    return useStore.getState().musicMetaMap.get(group?.[0]?.etag || "")
+  const getCover = (group: MusicListItem[]) => {
+    return useStore.getState().musicMetaMap.get(group?.[0]?.sign || "")
       ?.coverUrl;
   };
 
@@ -107,7 +107,7 @@ const Menu = () => {
       <div className="flex items-center justify-end mb-8">
         <Dropdown placement="bottom-start">
           <DropdownTrigger>
-            {account ? (
+            {token ? (
               <Avatar
                 className="cursor-pointer"
                 isBordered

@@ -1,43 +1,34 @@
-import { getFileStream } from "@/request/fs";
-import { parseWebStream } from "music-metadata";
+import { getMusicMeta } from "@/request/music";
 import useStore from "@/store";
 import { isAxiosError } from "axios";
-
-export const parseID3 = async (filePath: string, signal?: AbortSignal) => {
-  const stream = await getFileStream(filePath, signal);
-  const id3 = await parseWebStream(stream);
-  stream?.cancel();
-  return id3;
-};
 
 export const parseMusicMeta = async (
   sign: string,
   fileName: string,
+  etag: string | null,
   signal?: AbortSignal,
 ) => {
-  const { musicMetaMap, addMusicMeta, source } = useStore.getState();
+  const { musicMetaMap, addMusicMeta } = useStore.getState();
   if (musicMetaMap.has(sign) || !sign) return;
 
   const joinUrl = `/${fileName}`;
   try {
-    const id3 = await parseID3(joinUrl, signal);
+    const res = await getMusicMeta(joinUrl, signal);
 
-    const { title, artist, picture, album } = id3?.common || {};
-    const coverInfo = picture?.[0];
-    const coverUrl = coverInfo
-      ? URL.createObjectURL(
-          new Blob([coverInfo.data], { type: coverInfo.type }),
-        )
-      : undefined;
+    const { title, artist, coverUrl, album, duration } = res.data || {};
 
     const metadata = {
       title,
       artist,
       album,
       coverUrl,
-      duration: id3?.format.duration,
-      hasMeta: id3 ? true : false,
-      rawUrl: source + joinUrl,
+      duration,
+      hasMeta: res.data ? true : false,
+      rawUrl:
+        location.origin +
+        "/api/music/file" +
+        joinUrl +
+        `?sign=${sign}&etag=${etag}`,
     };
 
     addMusicMeta(sign, metadata);
@@ -47,7 +38,6 @@ export const parseMusicMeta = async (
     if (isAxiosError(error) && error?.code !== "ERR_CANCELED") {
       addMusicMeta(sign, {});
     }
-    console.log(error);
   }
   return null;
 };

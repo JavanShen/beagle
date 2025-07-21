@@ -3,10 +3,14 @@ dotenv.config();
 import express from "express";
 import { sequelize } from "./models";
 import auth from "./middlewares/auth";
+import responseHandler from "./middlewares/response";
 import { sourcesRouter, musicRouter } from "./routes";
+import fs from "fs/promises";
+import filesConfig from "./config/files";
+import history from "connect-history-api-fallback";
 
 export const app = express();
-app.use(express.json()).use(auth);
+app.use(express.json()).use(responseHandler).use(auth).use(history());
 
 if (process.env.NODE_ENV === "development") {
   app.use((req, _res, next) => {
@@ -17,10 +21,16 @@ if (process.env.NODE_ENV === "development") {
   });
 }
 
-app.use("/sources", sourcesRouter);
-app.use("/music", musicRouter);
+await fs.mkdir(filesConfig.coversDirPath, { recursive: true });
+app.use(filesConfig.coversRoute, express.static(filesConfig.coversDirPath));
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(filesConfig.frontendOutput));
+}
 
-sequelize.sync();
+app.use("/api/sources", sourcesRouter);
+app.use("/api/music", musicRouter);
+
+await sequelize.sync();
 
 app.listen(3000, () => {
   console.log("Server started on port 3000");

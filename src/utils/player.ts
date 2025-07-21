@@ -50,7 +50,7 @@ export const updatePlayQuque = (trigger?: "next" | "prev" | "select") => {
     setPlayQueue(newPlayQueue);
 
     const nextMusic = musicList[newPlayQueue[0]] || {};
-    parseMusicMeta(nextMusic.etag || "", nextMusic.basename);
+    parseMusicMeta(nextMusic.sign || "", nextMusic.basename, nextMusic.etag);
   }
 };
 

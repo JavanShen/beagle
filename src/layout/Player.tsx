@@ -12,6 +12,7 @@ import "@/styles/playerTransition.css";
 const Player = () => {
   const currentMusicId = useStore((state) => state.currentMusicId);
   const currentFileName = useStore((state) => state.currentFileName);
+  const currentEtag = useStore((state) => state.currentMusicEtag);
   const musicInfo = useStore((state) => state.musicMetaMap.get(currentMusicId));
   const musicMetaMap = useStore.getState().musicMetaMap;
   const { playlist: musicList } = usePlaylist();
@@ -50,7 +51,7 @@ const Player = () => {
   // 获取播放音乐的信息
   useEffect(() => {
     if (!musicMetaMap.has(currentMusicId)) {
-      parseMusicMeta(currentMusicId, currentFileName);
+      parseMusicMeta(currentMusicId, currentFileName, currentEtag);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -72,7 +73,7 @@ const Player = () => {
     const musicIndex = playQueue[0];
     const music = getPlaylist()[musicIndex];
 
-    setCurrentMusic(music.etag || "", musicIndex, music.basename);
+    setCurrentMusic(music.sign || "", musicIndex, music.basename, music.etag);
     updatePlayQuque("next");
   };
 
@@ -82,7 +83,7 @@ const Player = () => {
     const musicIndex = history[history.length - 1];
     const music = musicList[musicIndex];
 
-    setCurrentMusic(music.etag || "", musicIndex, music.basename);
+    setCurrentMusic(music.sign || "", musicIndex, music.basename, music.etag);
   };
 
   const controls = usePlayAudio(rawUrl, undefined, next);

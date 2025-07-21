@@ -21,7 +21,7 @@ const PlaylistSelect = ({ ref }: { ref?: React.Ref<PlaylistSelectRef> }) => {
         Object.keys(groups)
           .filter((item) => item !== "All Music")
           .map((item) =>
-            groups[item].find((i) => i.etag === musicId) ? item : null,
+            groups[item].find((i) => i.sign === musicId) ? item : null,
           )
           .filter((item) => item) as string[],
       );
@@ -42,30 +42,10 @@ const PlaylistSelect = ({ ref }: { ref?: React.Ref<PlaylistSelectRef> }) => {
           variant="flat"
           selectionMode="multiple"
           selectedKeys={selectedKeys}
-          // onAction={(val) => {
-          //   const groupName = val as string;
-          //   const newSet = new Set([...selectedKeys]);
-
-          //   console.log(val);
-
-          //   if (newSet.has(groupName)) {
-          //     newSet.delete(groupName);
-          //     removeFileFromGroup(groupName, curMusicId.current);
-          //   } else {
-          //     const fileInfo = groups["All Music"].find(
-          //       (item) => item.sign === curMusicId.current,
-          //     );
-          //     newSet.add(groupName);
-          //     if (fileInfo) {
-          //       addFileToGroup(groupName, fileInfo);
-          //     }
-          //   }
-          //   setSelectedKeys(newSet);
-          // }}
           onSelectionChange={(keys) => {
             const selectedGroup = keys as Set<string>;
             const fileInfo = groups["All Music"].find(
-              (item) => item.etag === curMusicId.current,
+              (item) => item.sign === curMusicId.current,
             );
 
             if (fileInfo) {
@@ -73,14 +53,14 @@ const PlaylistSelect = ({ ref }: { ref?: React.Ref<PlaylistSelectRef> }) => {
                 .filter((item) => item !== "All Music")
                 .forEach((groupName) => {
                   const index = groups[groupName].findIndex(
-                    (item) => item.etag === curMusicId.current,
+                    (item) => item.sign === curMusicId.current,
                   );
 
                   if (selectedGroup.has(groupName) && index === -1) {
                     addFileToGroup(groupName, fileInfo);
                   } else if (index > -1 && !selectedGroup.has(groupName)) {
                     console.log("remove now");
-                    removeFileFromGroup(groupName, fileInfo.etag || "");
+                    removeFileFromGroup(groupName, fileInfo.sign || "");
                   }
                 });
             }

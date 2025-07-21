@@ -1,5 +1,5 @@
 import { Outlet } from "react-router";
-import { getFileList } from "@/request/fs";
+import { getMusicList } from "@/request/music";
 import { Listbox, ListboxItem } from "@heroui/react";
 import { useEffect } from "react";
 import useStore from "@/store";
@@ -51,7 +51,7 @@ const Start = ({ onAction }: { onAction?: (key: string) => void }) => {
 };
 
 const Layout = () => {
-  const source = useStore((state) => state.source);
+  const token = useStore((state) => state.token);
   const addGroup = useStore((state) => state.addGroup);
 
   const location = useLocation();
@@ -66,11 +66,11 @@ const Layout = () => {
   useEffect(() => {
     const controller = new AbortController();
 
-    getFileList("/", controller.signal).then((res) => {
-      if (Array.isArray(res)) {
+    getMusicList(controller.signal).then((res) => {
+      if (Array.isArray(res.data)) {
         addGroup(
           "All Music",
-          res.filter(
+          res.data.filter(
             (item) =>
               item.type === "file" &&
               /audio/.test(mime.getType(item.basename) || ""),
@@ -83,7 +83,7 @@ const Layout = () => {
       controller.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [source]);
+  }, [token]);
 
   return (
     <div className="absolute h-full w-full flex flex-row">
@@ -91,7 +91,7 @@ const Layout = () => {
         <Menu />
       </menu>
       <main className="h-full flex-1">
-        {source || !/^\/(playlist)?(\/[^/]*)?$/.test(location.pathname) ? (
+        {token || !/^\/(playlist)?(\/[^/]*)?$/.test(location.pathname) ? (
           <Outlet />
         ) : (
           <Start onAction={(key) => actions[key]?.()} />

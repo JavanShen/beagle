@@ -1,16 +1,50 @@
 import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../routes/sources";
-import { WebDAVCredential } from "../models";
+import { Sources } from "../models";
 import { Request, Response, NextFunction } from "express";
-import { WebDAVCredentialAttributes } from "../models/webdav";
+import { SourceCreationAttributes } from "../models/sources";
 import { updateClient } from "../webdav";
+import crypto from "crypto";
 
-const whiteList = ["/sources/addSource"];
+const whiteList = ["/api/sources/addSource", /\/covers\/.*/];
+
+const signList = [/\/api\/music\/file\/.*/];
+
+const isInclude = (list: (string | RegExp)[], str: string) =>
+  list.some((path) =>
+    typeof path === "string" ? path === str : path.test(str),
+  );
 
 export default async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (whiteList.includes(req.path)) {
+    if (
+      whiteList.some((path) =>
+        typeof path === "string" ? path === req.path : path.test(req.path),
+      )
+    ) {
       next();
+      return;
+    }
+
+    if (isInclude(signList, req.path)) {
+      const { sign, etag } = req.query;
+      const fileName = decodeURIComponent(req.path.match(/[^/]+$/)?.[0] || "");
+
+      const computedSign = crypto
+        .createHmac("sha256", SECRET_KEY)
+        .update(`${fileName}|${etag}`)
+        .digest("hex");
+
+      if (
+        crypto.timingSafeEqual(
+          Buffer.from(sign as string),
+          Buffer.from(computedSign),
+        )
+      ) {
+        next();
+      } else {
+        res.error("invalid sign", 403);
+      }
       return;
     }
 
@@ -25,20 +59,20 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     // 验证token
     const decoded = jwt.verify(token!, SECRET_KEY) as unknown as { id: number };
 
-    const credential = (await WebDAVCredential.findByPk(decoded.id, {
+    const source = (await Sources.findByPk(decoded.id, {
       raw: true,
-    })) as unknown as WebDAVCredentialAttributes;
-    if (!credential) {
+    })) as unknown as SourceCreationAttributes;
+    if (!source) {
       res.status(404).json({ message: "凭证不存在" });
       return;
     }
 
-    const { source, username, password } = credential;
+    const { source: url, username, password } = source;
 
-    updateClient(source, { username, password });
+    updateClient(url, { username, password });
 
     // 将凭证信息附加到请求对象
-    req.credential = credential;
+    req.source = source;
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
