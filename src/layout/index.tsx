@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import useStore from "@/store";
 import Player from "./Player";
 import Menu from "./Menu";
-import mime from "mime";
 import AudioFileIcon from "@/assets/headphones.svg?react";
 import SettingsIcon from "@/assets/settings.svg?react";
 import NiceModal from "@ebay/nice-modal-react";
@@ -67,16 +66,7 @@ const Layout = () => {
     const controller = new AbortController();
 
     getMusicList(controller.signal).then((res) => {
-      if (Array.isArray(res.data)) {
-        addGroup(
-          "All Music",
-          res.data.filter(
-            (item) =>
-              item.type === "file" &&
-              /audio/.test(mime.getType(item.basename) || ""),
-          ),
-        );
-      }
+      addGroup("All Music", res.data);
     });
 
     return () => {

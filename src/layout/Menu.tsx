@@ -28,6 +28,8 @@ import { updatePlayQuque } from "@/utils/player";
 import { useNavigate, useParams } from "react-router";
 import IconWrapper from "@/components/IconWrapper";
 import { MusicListItem } from "@/request/music";
+import { useRequest } from "ahooks";
+import { createPlaylist } from "@/request/playlist";
 
 const CreatePlaylist = ({
   isOpen,
@@ -36,8 +38,21 @@ const CreatePlaylist = ({
   isOpen: boolean;
   onOpenChange: () => void;
 }) => {
-  const addGroup = useStore((state) => state.addGroup);
   const [groupName, setGroupName] = useState("");
+
+  const { run: create, loading } = useRequest(
+    async () => {
+      return await createPlaylist({ title: groupName });
+    },
+    {
+      manual: true,
+      onSuccess: (res) => {
+        if (res.code === 200) {
+          onOpenChange();
+        }
+      },
+    },
+  );
 
   useEffect(() => {
     if (!isOpen) {
@@ -63,13 +78,7 @@ const CreatePlaylist = ({
               <Button color="danger" variant="light" onPress={() => onClose()}>
                 Cancel
               </Button>
-              <Button
-                onPress={() => {
-                  addGroup(groupName, []);
-                  onClose();
-                }}
-                color="primary"
-              >
+              <Button isLoading={loading} onPress={create} color="primary">
                 Create
               </Button>
             </ModalFooter>

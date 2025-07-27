@@ -32,7 +32,7 @@ const Sources = () => {
   return token ? (
     <>
       {sources?.map((source) => (
-        <Card shadow="sm" className="w-96">
+        <Card shadow="sm" className="w-96" key={source.id}>
           <div className="flex justify-between p-4 items-center">
             <span>{source.username}</span>
             <div className="flex items-center gap-4">

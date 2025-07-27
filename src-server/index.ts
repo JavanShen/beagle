@@ -4,7 +4,7 @@ import express from "express";
 import { sequelize } from "./models";
 import auth from "./middlewares/auth";
 import responseHandler from "./middlewares/response";
-import { sourcesRouter, musicRouter } from "./routes";
+import { sourcesRouter, musicRouter, playlistRouter } from "./routes";
 import fs from "fs/promises";
 import filesConfig from "./config/files";
 import history from "connect-history-api-fallback";
@@ -29,8 +29,9 @@ if (process.env.NODE_ENV === "production") {
 
 app.use("/api/sources", sourcesRouter);
 app.use("/api/music", musicRouter);
+app.use("/api/playlist", playlistRouter);
 
-await sequelize.sync();
+await sequelize.sync({ force: true });
 
 app.listen(3000, () => {
   console.log("Server started on port 3000");

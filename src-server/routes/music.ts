@@ -4,29 +4,74 @@ import { parseStream } from "music-metadata";
 import mime from "mime";
 import fs from "fs/promises";
 import path from "path";
-import { MusicMeta } from "../models";
+import { MusicMeta, MusicInfo } from "../models";
 import filesConfig from "../config/files";
 import { FileStat } from "webdav";
 import crypto from "crypto";
 import { SECRET_KEY } from "./sources";
+import { omit } from "lodash-es";
+import { MusicInfo as MusicInfoType } from "../../types/music";
 
 export const musicRouter = express.Router();
 
 musicRouter.get("/getMusicList", async (_req, res) => {
-  const musicList = (await client.getDirectoryContents("/")) as FileStat[];
-  res.success(
-    musicList.map((item) => ({
-      ...item,
+  const newMusicList = ((await client.getDirectoryContents("/")) as FileStat[])
+    .filter(
+      (item) =>
+        item.type === "file" && /audio/.test(mime.getType(item.basename) || ""),
+    )
+    .map((item) => ({
+      ...omit(item, ["props", "type"]),
       sign: crypto
         .createHmac("sha256", SECRET_KEY)
         .update(`${item.basename}|${item.etag}`)
         .digest("hex"),
-    })),
+    }));
+
+  const originMusicList = (await MusicInfo.findAll({
+    raw: true,
+  })) as unknown as MusicInfoType[];
+
+  const addItems: MusicInfoType[] = [];
+  const delItems: MusicInfoType[] = [];
+
+  const newMusicListSet = new Set<string>(
+    newMusicList.map((item) => item.sign),
   );
+  const originMusicListSet = new Set<string>(
+    originMusicList.map((item) => item.sign),
+  );
+
+  newMusicList.forEach((item) => {
+    if (!originMusicListSet.has(item.sign)) {
+      addItems.push(item);
+    }
+  });
+
+  originMusicList.forEach((item) => {
+    if (!newMusicListSet.has(item.sign)) {
+      delItems.push(item);
+    }
+  });
+
+  await MusicInfo.destroy({
+    where: { sign: delItems.map((item) => item.sign) },
+  });
+  await MusicInfo.bulkCreate(addItems);
+
+  const musicList = await MusicInfo.findAll({
+    include: {
+      model: MusicMeta,
+      attributes: ["title", "artist", "album", "coverUrl"],
+      as: "metadata",
+    },
+  });
+
+  res.success(musicList);
 });
 
 musicRouter.post("/getMusicMeta", async (req, res) => {
-  const { path: filePath } = req.body;
+  const { path: filePath, sign } = req.body;
 
   const cache = await MusicMeta.findOne({ where: { path: filePath } });
 
@@ -63,6 +108,7 @@ musicRouter.post("/getMusicMeta", async (req, res) => {
 
   const musicMeta = await MusicMeta.create(
     {
+      musicFileSign: sign,
       path: filePath,
       title,
       artist,

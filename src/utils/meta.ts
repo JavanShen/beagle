@@ -13,7 +13,7 @@ export const parseMusicMeta = async (
 
   const joinUrl = `/${fileName}`;
   try {
-    const res = await getMusicMeta(joinUrl, signal);
+    const res = await getMusicMeta(joinUrl, sign, signal);
 
     const { title, artist, coverUrl, album, duration } = res.data || {};
 

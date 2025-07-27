@@ -1,5 +1,6 @@
 import { request } from "@/utils/request";
 import { FileStat } from "webdav";
+import { MusicMeta } from "../../types/music";
 
 export type MusicListItem = FileStat & { sign: string };
 export const getMusicList = (signal?: AbortSignal) =>
@@ -9,19 +10,14 @@ export const getMusicList = (signal?: AbortSignal) =>
     signal,
   });
 
-type MusicMeta = {
-  id: number;
-  title?: string;
-  artist?: string;
-  album?: string;
-  coverUrl?: string;
-  path: string;
-  duration?: number;
-};
-export const getMusicMeta = async (path: string, signal?: AbortSignal) =>
+export const getMusicMeta = async (
+  path: string,
+  sign: string,
+  signal?: AbortSignal,
+) =>
   request<MusicMeta>({
     method: "POST",
     url: "/api/music/getMusicMeta",
-    data: { path },
+    data: { path, sign },
     signal,
   });

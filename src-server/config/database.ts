@@ -8,20 +8,24 @@ type Config = {
   test: Options;
 };
 
+const generalConfig: Options = {
+  dialect: "sqlite",
+};
+
 const config: Config = {
   development: {
+    ...generalConfig,
     storage: "./database.sqlite",
-    dialect: "sqlite",
     logging: console.log,
   },
   production: {
+    ...generalConfig,
     storage: process.env.DB_PATH || "/var/db/prod.sqlite",
-    dialect: "sqlite",
     logging: false,
   },
   test: {
+    ...generalConfig,
     storage: ":memory:",
-    dialect: "sqlite",
   },
 };
 

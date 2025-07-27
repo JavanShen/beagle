@@ -1,26 +1,49 @@
-import { Sequelize, DataTypes, Model, Optional } from "sequelize";
+import { Sequelize, DataTypes, Model } from "sequelize";
+import { MusicInfo, MusicMeta } from "../../types/music";
 
-export type MusicMetaAttributes = {
-  id: number;
-  title?: string;
-  artist?: string;
-  album?: string;
-  coverUrl?: string;
-  path: string;
-  duration?: number;
-};
-
-type MusicMetaCreationAttributes = Optional<MusicMetaAttributes, "id">;
+export const getMusicInfo = (sequelize: Sequelize) =>
+  sequelize.define<Model<MusicInfo>>(
+    "MusicInfo",
+    {
+      filename: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      basename: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      lastmod: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      size: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      etag: {
+        type: DataTypes.STRING,
+      },
+      mime: {
+        type: DataTypes.STRING,
+      },
+      sign: {
+        primaryKey: true,
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+    },
+    {
+      timestamps: false,
+      tableName: "music_info",
+    },
+  );
 
 export const getMusicMeta = (sequelize: Sequelize) =>
-  sequelize.define<Model<MusicMetaAttributes, MusicMetaCreationAttributes>>(
+  sequelize.define<Model<MusicMeta, MusicMeta & { musicFileSign: string }>>(
     "MusicMeta",
     {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
       title: {
         type: DataTypes.STRING,
       },
