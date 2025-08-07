@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { omit } from "lodash-es";
 import { MusicListItem } from "@/request/music";
+import { Playlist } from "types/playlist";
 
 const excludeKeys = ["musicList", "history", "musicMetaMap"];
 
@@ -27,20 +27,17 @@ type BeagleState = {
   musicPath: string;
   setSource: (source: string) => void;
 
+  playlists: Playlist[];
+  setPlaylists: (playlists: Playlist[]) => void;
+
+  musicList: MusicListItem[];
   musicMetaMap: Map<string, Metadata | null>;
   playQueue: number[];
   history: number[];
   setPlayQueue: (playQueue: number[]) => void;
   setHistory: (history: number[]) => void;
   addMusicMeta: (id: string, meta: Metadata | null) => void;
-
-  currentGroup: string;
-  groups: Record<string, MusicListItem[]>;
-  addGroup: (groupName: string, files: MusicListItem[]) => void;
-  removeGroup: (groupName: string) => void;
-  addFileToGroup: (groupName: string, file: MusicListItem) => void;
-  removeFileFromGroup: (groupName: string, fileId: string) => void;
-  setCurrentGroup: (groupName: string) => void;
+  setMusicList: (musicList: MusicListItem[]) => void;
 
   currentMusicIndex: number;
   currentMusicId: string;
@@ -79,14 +76,14 @@ const initialState: PureState = {
   origin: "",
   musicPath: "",
 
+  // 歌单
+  playlists: [],
+
   // 音乐&元数据&播放队列
+  musicList: [],
   musicMetaMap: new Map(),
   playQueue: [],
   history: [],
-
-  // 歌单管理
-  currentGroup: "All Music",
-  groups: { "All Music": [] },
 
   // 当前播放歌曲
   currentMusicIndex: -1,
@@ -111,6 +108,8 @@ const useStore = create<BeagleState>()(
       setToken: (token) => set({ token }),
       clearToken: () => set({ token: "" }),
 
+      setPlaylists: (playlists) => set({ playlists }),
+
       // 音乐源
       setSource: (source) => {
         const url = new URL(source);
@@ -130,36 +129,7 @@ const useStore = create<BeagleState>()(
         set((state) => ({
           musicMetaMap: new Map(state.musicMetaMap).set(id, meta),
         })),
-
-      // 歌单管理
-      addGroup: (groupName, files) => {
-        set((state) => ({
-          groups: { ...state.groups, [groupName]: files },
-        }));
-      },
-      removeGroup: (groupName) => {
-        set((state) => ({ groups: { ...omit(state.groups, groupName) } }));
-      },
-      removeFileFromGroup: (groupName, fileId) => {
-        set((state) => {
-          const files = state.groups[groupName] || [];
-          return {
-            groups: {
-              ...state.groups,
-              [groupName]: files.filter((item) => item.sign !== fileId),
-            },
-          };
-        });
-      },
-      addFileToGroup: (groupName, file) => {
-        set((state) => {
-          const files = state.groups[groupName] || [];
-          return {
-            groups: { ...state.groups, [groupName]: [...files, file] },
-          };
-        });
-      },
-      setCurrentGroup: (groupName) => set({ currentGroup: groupName }),
+      setMusicList: (musicList) => set({ musicList }),
 
       // 当前播放歌曲
       setCurrentMusic: (id, index, fileName, etag) => {

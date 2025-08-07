@@ -10,7 +10,7 @@ import filesConfig from "./config/files";
 import history from "connect-history-api-fallback";
 
 export const app = express();
-app.use(express.json()).use(responseHandler).use(auth).use(history());
+app.use(express.json()).use(responseHandler).use(auth);
 
 if (process.env.NODE_ENV === "development") {
   app.use((req, _res, next) => {
@@ -31,7 +31,9 @@ app.use("/api/sources", sourcesRouter);
 app.use("/api/music", musicRouter);
 app.use("/api/playlist", playlistRouter);
 
-await sequelize.sync({ force: true });
+app.use(history());
+
+await sequelize.sync({ force: false });
 
 app.listen(3000, () => {
   console.log("Server started on port 3000");

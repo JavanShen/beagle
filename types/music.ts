@@ -1,7 +1,9 @@
 import { FileStat } from "webdav";
+import { Playlist } from "./playlist";
 
 export type MusicInfo = Omit<FileStat, "type" | "props"> & {
   sign: string;
+  playlists: Pick<Playlist, "id" | "title">[];
 };
 
 export type MusicMeta = {

@@ -7,7 +7,7 @@ export const getPlaylists = () =>
     url: "/api/playlist/list",
   });
 
-export const createPlaylist = (data: Omit<Playlist, "id">) =>
+export const createPlaylist = (data: Omit<Playlist, "id" | "musicCount">) =>
   request<Playlist>({
     method: "POST",
     url: "/api/playlist/create",
@@ -18,5 +18,12 @@ export const deletePlaylist = (id: string) =>
   request<void>({
     method: "DELETE",
     url: "/api/playlist/delete",
-    params: { id },
+    data: { id },
+  });
+
+export const addMusicToPlaylist = (playlistId: string, musicId: string) =>
+  request<void>({
+    method: "POST",
+    url: "/api/playlist/addMusic",
+    data: { playlistId, musicId },
   });

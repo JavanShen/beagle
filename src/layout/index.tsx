@@ -1,7 +1,5 @@
 import { Outlet } from "react-router";
-import { getMusicList } from "@/request/music";
 import { Listbox, ListboxItem } from "@heroui/react";
-import { useEffect } from "react";
 import useStore from "@/store";
 import Player from "./Player";
 import Menu from "./Menu";
@@ -11,6 +9,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import AddSource from "@/components/AddSource";
 import { useLocation, useNavigate } from "react-router";
 import IconWrapper from "@/components/IconWrapper";
+import useFetchMusicList from "@/hooks/useMusicList";
 
 const Start = ({ onAction }: { onAction?: (key: string) => void }) => {
   return (
@@ -51,7 +50,6 @@ const Start = ({ onAction }: { onAction?: (key: string) => void }) => {
 
 const Layout = () => {
   const token = useStore((state) => state.token);
-  const addGroup = useStore((state) => state.addGroup);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -61,19 +59,7 @@ const Layout = () => {
     connect: () => NiceModal.show(AddSource),
   };
 
-  // 获取全部音乐列表
-  useEffect(() => {
-    const controller = new AbortController();
-
-    getMusicList(controller.signal).then((res) => {
-      addGroup("All Music", res.data);
-    });
-
-    return () => {
-      controller.abort();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  useFetchMusicList();
 
   return (
     <div className="absolute h-full w-full flex flex-row">

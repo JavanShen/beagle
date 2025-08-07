@@ -3,4 +3,5 @@ export type Playlist = {
   title: string;
   description?: string;
   coverUrl?: string;
+  musicCount: number;
 };

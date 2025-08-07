@@ -1,7 +1,6 @@
 import useStore from "@/store";
 import { generateRandomArray, generateOrderedArray } from "./array";
 import { parseMusicMeta } from "./meta";
-import { getPlaylist } from "@/hooks/usePlaylist";
 import { Howl, HowlOptions } from "howler";
 
 const zeroFill = (num: number) => {
@@ -18,7 +17,7 @@ export const secondsToMinutes = (seconds: number) => {
 export const updatePlayQuque = (trigger?: "next" | "prev" | "select") => {
   const { isShuffle, isLoop, currentMusicIndex, setPlayQueue, playQueue } =
     useStore.getState();
-  const musicList = getPlaylist();
+  const musicList = useStore.getState().musicList;
 
   if (musicList.length > 0) {
     let newPlayQueue: number[] = [];

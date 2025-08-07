@@ -1,8 +1,9 @@
 import { Sequelize, DataTypes, Model } from "sequelize";
 import { MusicInfo, MusicMeta } from "../../types/music";
 
+export type MusicInfoAttributes = Omit<MusicInfo, "playlists">;
 export const getMusicInfo = (sequelize: Sequelize) =>
-  sequelize.define<Model<MusicInfo>>(
+  sequelize.define<Model<MusicInfoAttributes, MusicInfoAttributes>>(
     "MusicInfo",
     {
       filename: {

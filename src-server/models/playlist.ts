@@ -1,7 +1,7 @@
 import { Sequelize, DataTypes, Model, Optional } from "sequelize";
 import { Playlist } from "../../types/playlist";
 
-export type PlaylistAttributes = Playlist;
+export type PlaylistAttributes = Omit<Playlist, "musicCount">;
 
 type PlaylistCreationAttributes = Optional<PlaylistAttributes, "id">;
 

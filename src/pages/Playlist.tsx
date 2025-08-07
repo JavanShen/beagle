@@ -1,10 +1,10 @@
 import MusicList from "@/components/MusicList";
-import usePlaylist from "@/hooks/usePlaylist";
+import useStore from "@/store";
 
 const Playlist = () => {
-  const { playlist } = usePlaylist();
+  const musicList = useStore((state) => state.musicList);
 
-  return <MusicList musicList={playlist} />;
+  return <MusicList musicList={musicList} />;
 };
 
 export default Playlist;

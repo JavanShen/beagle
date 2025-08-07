@@ -25,25 +25,49 @@ MusicMeta.belongsTo(MusicInfo, {
   foreignKey: "musicFileSign",
 });
 
-const MusicPlaylist = sequelize.define("MusicPlaylist", {
-  musicId: {
-    type: DataTypes.STRING,
-    primaryKey: true,
-    references: {
-      model: MusicInfo,
-      key: "sign",
+const MusicPlaylist = sequelize.define(
+  "MusicPlaylist",
+  {
+    MusicInfoSign: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+      references: {
+        model: MusicInfo,
+        key: "sign",
+      },
+    },
+    PlaylistId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      references: {
+        model: Playlist,
+        key: "id",
+      },
     },
   },
-  playlistId: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    references: {
-      model: Playlist,
-      key: "id",
-    },
+  {
+    tableName: "music_playlists",
   },
+);
+MusicInfo.belongsToMany(Playlist, {
+  through: MusicPlaylist,
+  as: "playlists",
+  foreignKey: "MusicInfoSign",
+  otherKey: "PlaylistId",
 });
-MusicInfo.belongsToMany(Playlist, { through: MusicPlaylist });
-Playlist.belongsToMany(MusicInfo, { through: MusicPlaylist });
+Playlist.belongsToMany(MusicInfo, {
+  through: MusicPlaylist,
+  as: "musicInfos",
+  foreignKey: "PlaylistId",
+  otherKey: "MusicInfoSign",
+});
 
-export { sequelize, Sequelize, Sources, MusicMeta, MusicInfo, Playlist };
+export {
+  sequelize,
+  Sequelize,
+  Sources,
+  MusicMeta,
+  MusicInfo,
+  Playlist,
+  MusicPlaylist,
+};

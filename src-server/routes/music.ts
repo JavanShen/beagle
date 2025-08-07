@@ -4,17 +4,19 @@ import { parseStream } from "music-metadata";
 import mime from "mime";
 import fs from "fs/promises";
 import path from "path";
-import { MusicMeta, MusicInfo } from "../models";
+import { MusicMeta, MusicInfo, Playlist } from "../models";
 import filesConfig from "../config/files";
 import { FileStat } from "webdav";
 import crypto from "crypto";
 import { SECRET_KEY } from "./sources";
 import { omit } from "lodash-es";
-import { MusicInfo as MusicInfoType } from "../../types/music";
+import { MusicInfoAttributes } from "../models/music";
 
 export const musicRouter = express.Router();
 
-musicRouter.get("/getMusicList", async (_req, res) => {
+musicRouter.get("/getMusicList", async (req, res) => {
+  const { playlistId } = req.query;
+
   const newMusicList = ((await client.getDirectoryContents("/")) as FileStat[])
     .filter(
       (item) =>
@@ -30,10 +32,10 @@ musicRouter.get("/getMusicList", async (_req, res) => {
 
   const originMusicList = (await MusicInfo.findAll({
     raw: true,
-  })) as unknown as MusicInfoType[];
+  })) as unknown as MusicInfoAttributes[];
 
-  const addItems: MusicInfoType[] = [];
-  const delItems: MusicInfoType[] = [];
+  const addItems: MusicInfoAttributes[] = [];
+  const delItems: MusicInfoAttributes[] = [];
 
   const newMusicListSet = new Set<string>(
     newMusicList.map((item) => item.sign),
@@ -59,15 +61,54 @@ musicRouter.get("/getMusicList", async (_req, res) => {
   });
   await MusicInfo.bulkCreate(addItems);
 
-  const musicList = await MusicInfo.findAll({
-    include: {
-      model: MusicMeta,
-      attributes: ["title", "artist", "album", "coverUrl"],
-      as: "metadata",
-    },
-  });
+  if (playlistId) {
+    const playlistWithMusic = await Playlist.findByPk(playlistId as string, {
+      include: [
+        {
+          model: MusicInfo,
+          as: "musicInfos",
+          through: {
+            attributes: [],
+          },
+          include: [
+            {
+              model: MusicMeta,
+              as: "metadata",
+            },
+            {
+              model: Playlist,
+              as: "playlists",
+              attributes: ["id", "title"],
+              through: {
+                attributes: [],
+              },
+            },
+          ],
+        },
+      ],
+    });
 
-  res.success(musicList);
+    res.success(playlistWithMusic?.["musicInfos"] || []);
+  } else {
+    const musicList = await MusicInfo.findAll({
+      include: [
+        {
+          model: MusicMeta,
+          as: "metadata",
+        },
+        {
+          model: Playlist,
+          as: "playlists",
+          attributes: ["id", "title"],
+          through: {
+            attributes: [],
+          },
+        },
+      ],
+    });
+
+    res.success(musicList);
+  }
 });
 
 musicRouter.post("/getMusicMeta", async (req, res) => {
@@ -120,6 +161,22 @@ musicRouter.post("/getMusicMeta", async (req, res) => {
   );
 
   res.success(musicMeta);
+});
+
+musicRouter.post("/updatePlaylists", async (req, res) => {
+  const { playlistIds, sign } = req.body;
+
+  const music = await MusicInfo.findByPk(sign);
+  const playlists = await Playlist.findAll({
+    where: {
+      id: playlistIds,
+    },
+  });
+
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  await (music as any).setPlaylists(playlists);
+
+  res.success(null);
 });
 
 musicRouter.use("/file", async (req, res) => {
