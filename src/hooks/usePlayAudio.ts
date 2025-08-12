@@ -21,6 +21,7 @@ const usePlayAudio = (
         src: [""],
         volume: volume ? volume / 100 : 1,
         html5: true,
+        preload: "metadata",
         onload: () => {
           setDuration(Math.floor(player.duration));
           setDurationText(player.durationText);

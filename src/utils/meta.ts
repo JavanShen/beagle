@@ -2,14 +2,22 @@ import { getMusicMeta } from "@/request/music";
 import useStore from "@/store";
 import { isAxiosError } from "axios";
 
+export const getMusicUrl = (
+  fileName?: string,
+  sign?: string,
+  etag?: string | null,
+) =>
+  fileName && sign
+    ? `${location.origin}/api/music/file/${fileName}?sign=${sign}&etag=${etag}`
+    : "";
+
 export const parseMusicMeta = async (
-  sign: string,
-  fileName: string,
-  etag: string | null,
+  sign?: string,
+  fileName?: string,
   signal?: AbortSignal,
 ) => {
   const { musicMetaMap, addMusicMeta } = useStore.getState();
-  if (musicMetaMap.has(sign) || !sign) return;
+  if (!sign || !fileName || musicMetaMap.has(sign)) return;
 
   const joinUrl = `/${fileName}`;
   try {
@@ -23,21 +31,13 @@ export const parseMusicMeta = async (
       album,
       coverUrl,
       duration,
-      hasMeta: res.data ? true : false,
-      rawUrl:
-        location.origin +
-        "/api/music/file" +
-        joinUrl +
-        `?sign=${sign}&etag=${etag}`,
+      path: joinUrl,
     };
 
     addMusicMeta(sign, metadata);
-
-    return metadata;
-  } catch (error: unknown) {
+  } catch (error) {
     if (isAxiosError(error) && error?.code !== "ERR_CANCELED") {
-      addMusicMeta(sign, {});
+      addMusicMeta(sign, null);
     }
   }
-  return null;
 };

@@ -13,20 +13,12 @@ import PlaylistSelect, { PlaylistSelectRef } from "./PlaylistSelect";
 type ListItemProps = {
   musicId: string;
   fileName: string;
-  etag: string | null;
   style?: React.CSSProperties;
   onClick?: () => void;
   onContextMenu?: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
 const ListItem = memo(
-  ({
-    musicId,
-    fileName,
-    etag,
-    style,
-    onClick,
-    onContextMenu,
-  }: ListItemProps) => {
+  ({ musicId, fileName, style, onClick, onContextMenu }: ListItemProps) => {
     const metadata = useStore((state) => state.musicMetaMap.get(musicId));
     const isLoaded = metadata !== undefined;
     const {
@@ -38,15 +30,15 @@ const ListItem = memo(
     } = metadata || {};
 
     useEffect(() => {
-      if (musicId && fileName) {
+      if (musicId && fileName && !isLoaded) {
         const controller = new AbortController();
-        parseMusicMeta(musicId, fileName, etag, controller.signal);
+        parseMusicMeta(musicId, fileName, controller.signal);
 
         return () => {
           controller.abort();
         };
       }
-    }, [musicId, fileName, etag]);
+    }, [musicId, fileName, isLoaded]);
 
     return (
       <div
@@ -144,17 +136,16 @@ const MusicList = ({ musicList }: { musicList: MusicListItem[] }) => {
           >
             {memo(
               ({ index, style }: { index: number; style: CSSProperties }) => {
-                const { basename, sign, etag } = musicList[index] || {};
+                const { basename, sign } = musicList[index] || {};
 
                 return (
                   <ListItem
                     key={sign}
                     musicId={sign || ""}
                     fileName={basename}
-                    etag={etag}
                     style={style}
                     onClick={() => {
-                      setCurrentMusic(sign || "", index, basename, etag);
+                      setCurrentMusic(musicList[index], index);
                       updatePlayQuque("select");
                     }}
                     onContextMenu={(e) => {

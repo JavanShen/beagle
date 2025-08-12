@@ -2,18 +2,9 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { MusicListItem } from "@/request/music";
 import { Playlist } from "types/playlist";
+import { MusicInfo, MusicMeta } from "types/music";
 
 const excludeKeys = ["musicList", "history", "musicMetaMap"];
-
-export type Metadata = {
-  title?: string;
-  artist?: string;
-  album?: string;
-  duration?: number;
-  coverUrl?: string;
-  rawUrl?: string;
-  hasMeta?: boolean;
-};
 
 type BeagleState = {
   reset: () => void;
@@ -30,25 +21,19 @@ type BeagleState = {
   playlists: Playlist[];
   setPlaylists: (playlists: Playlist[]) => void;
 
+  musicMetaMap: Map<string, MusicMeta | null>;
   musicList: MusicListItem[];
-  musicMetaMap: Map<string, Metadata | null>;
   playQueue: number[];
   history: number[];
   setPlayQueue: (playQueue: number[]) => void;
   setHistory: (history: number[]) => void;
-  addMusicMeta: (id: string, meta: Metadata | null) => void;
   setMusicList: (musicList: MusicListItem[]) => void;
+  addMusicMeta: (sign: string, meta: MusicMeta | null) => void;
+  setMusicMetaMap: (musicMetaMap: Map<string, MusicMeta | null>) => void;
 
   currentMusicIndex: number;
-  currentMusicId: string;
-  currentFileName: string;
-  currentMusicEtag: string | null;
-  setCurrentMusic: (
-    id: string,
-    index: number,
-    fileName: string,
-    etag: string | null,
-  ) => void;
+  currentMusic: MusicInfo | null;
+  setCurrentMusic: (musicInfo: MusicInfo, index: number) => void;
 
   isShuffle: boolean;
   isLoop: boolean;
@@ -79,17 +64,15 @@ const initialState: PureState = {
   // 歌单
   playlists: [],
 
-  // 音乐&元数据&播放队列
+  // 音乐&播放队列
   musicList: [],
-  musicMetaMap: new Map(),
   playQueue: [],
   history: [],
+  musicMetaMap: new Map(),
 
   // 当前播放歌曲
   currentMusicIndex: -1,
-  currentMusicId: "",
-  currentFileName: "",
-  currentMusicEtag: null,
+  currentMusic: null,
 
   // 播放信息
   isShuffle: false,
@@ -120,24 +103,23 @@ const useStore = create<BeagleState>()(
         });
       },
 
-      // 音乐&元数据&播放队列
+      // 音乐&播放队列
       setHistory: (history) => set({ history }),
       setPlayQueue: (playQueue) => {
         set({ playQueue });
       },
-      addMusicMeta: (id, meta) =>
-        set((state) => ({
-          musicMetaMap: new Map(state.musicMetaMap).set(id, meta),
-        })),
       setMusicList: (musicList) => set({ musicList }),
+      addMusicMeta: (sign, meta) =>
+        set((state) => ({
+          musicMetaMap: new Map(state.musicMetaMap).set(sign, meta),
+        })),
+      setMusicMetaMap: (musicMetaMap) => set({ musicMetaMap }),
 
       // 当前播放歌曲
-      setCurrentMusic: (id, index, fileName, etag) => {
+      setCurrentMusic: (musicInfo, index) => {
         set((state) => ({
-          currentMusicId: id,
           currentMusicIndex: index,
-          currentFileName: fileName,
-          currentMusicEtag: etag,
+          currentMusic: musicInfo,
           history: [...state.history, index],
         }));
       },
@@ -150,7 +132,7 @@ const useStore = create<BeagleState>()(
     }),
     {
       name: "beagle-store",
-      version: 2,
+      version: 3,
       partialize: (state) =>
         Object.fromEntries(
           Object.entries(state).filter(([key]) => !excludeKeys.includes(key)),

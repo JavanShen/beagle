@@ -6,19 +6,28 @@ import { useParams } from "react-router";
 
 const useFetchMusicList = () => {
   const currentPlaylist = useParams()?.playlistId || "";
-  console.log("currentPlaylist change", currentPlaylist);
+
   const setMusicList = useStore((state) => state.setMusicList);
+  const setMusicMetaMap = useStore((state) => state.setMusicMetaMap);
 
   const { run: fetchMusicList } = useRequest(
     async (signal: AbortSignal) => {
-      setMusicList(
-        (
-          await getMusicList(
-            currentPlaylist === "All Music" ? "" : currentPlaylist,
-            signal,
-          )
-        ).data,
+      const musicList = (
+        await getMusicList(
+          currentPlaylist === "All Music" ? "" : currentPlaylist,
+          signal,
+        )
+      ).data;
+
+      setMusicMetaMap(
+        musicList.reduce((prev, cur) => {
+          if (cur.metadata) {
+            prev.set(cur.sign, cur.metadata);
+          }
+          return prev;
+        }, new Map()),
       );
+      setMusicList(musicList);
     },
     {
       manual: true,

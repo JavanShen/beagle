@@ -2,18 +2,17 @@ import { useEffect, useState, useRef } from "react";
 import useStore from "@/store";
 import usePlayAudio from "@/hooks/usePlayAudio";
 import MiniPlayer from "@/components/MiniPlayer";
-import { parseMusicMeta } from "@/utils/meta";
+import { getMusicUrl, parseMusicMeta } from "@/utils/meta";
 import { updatePlayQuque } from "@/utils/player";
 import FullPlayer from "@/components/FullPlayer";
 import { SwitchTransition, CSSTransition } from "react-transition-group";
 import "@/styles/playerTransition.css";
 
 const Player = () => {
-  const currentMusicId = useStore((state) => state.currentMusicId);
-  const currentFileName = useStore((state) => state.currentFileName);
-  const currentEtag = useStore((state) => state.currentMusicEtag);
-  const musicInfo = useStore((state) => state.musicMetaMap.get(currentMusicId));
-  const musicMetaMap = useStore.getState().musicMetaMap;
+  const currentMusic = useStore((state) => state.currentMusic);
+  const musicInfo = useStore((state) =>
+    state.musicMetaMap.get(currentMusic?.sign || ""),
+  );
   const history = useStore((state) => state.history);
   const playQueue = useStore((state) => state.playQueue);
   const isShuffle = useStore((state) => state.isShuffle);
@@ -30,7 +29,7 @@ const Player = () => {
   const fullPlayerRef = useRef<HTMLDivElement>(null);
   const nodeRef = curPlayer === "mini" ? miniPlayerRef : fullPlayerRef;
 
-  const { coverUrl, artist, title, rawUrl } = musicInfo || {};
+  const { coverUrl, artist, title } = musicInfo || {};
 
   // 销毁后清理媒体通知
   useEffect(() => {
@@ -48,12 +47,9 @@ const Player = () => {
 
   // 获取播放音乐的信息
   useEffect(() => {
-    if (!musicMetaMap.has(currentMusicId)) {
-      parseMusicMeta(currentMusicId, currentFileName, currentEtag);
-    }
-
+    parseMusicMeta(currentMusic?.sign, currentMusic?.basename);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentMusicId, currentFileName]);
+  }, [currentMusic?.sign]);
 
   useEffect(() => {
     updatePlayQuque();
@@ -71,7 +67,7 @@ const Player = () => {
     const musicIndex = playQueue[0];
     const music = useStore.getState().musicList[musicIndex];
 
-    setCurrentMusic(music.sign || "", musicIndex, music.basename, music.etag);
+    setCurrentMusic(music, musicIndex);
     updatePlayQuque("next");
   };
 
@@ -81,10 +77,14 @@ const Player = () => {
     const musicIndex = history[history.length - 1];
     const music = useStore.getState().musicList[musicIndex];
 
-    setCurrentMusic(music.sign || "", musicIndex, music.basename, music.etag);
+    setCurrentMusic(music, musicIndex);
   };
 
-  const controls = usePlayAudio(rawUrl, undefined, next);
+  const controls = usePlayAudio(
+    getMusicUrl(currentMusic?.basename, currentMusic?.sign, currentMusic?.etag),
+    undefined,
+    next,
+  );
 
   // 设置媒体通知 https://developer.mozilla.org/en-US/docs/Web/API/Media_Session_API
   useEffect(() => {
@@ -106,11 +106,11 @@ const Player = () => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [musicInfo]);
+  }, [currentMusic?.sign]);
 
   const playerInfo = {
     ...controls,
-    title: title || currentFileName,
+    title: title || currentMusic?.basename,
     artist,
     cover: coverUrl,
     prevDisabled: history.length === 0,
@@ -123,7 +123,7 @@ const Player = () => {
     setIsShuffle,
     setIsRepeat,
     setIsLoop,
-    isEmpty: !currentMusicId,
+    isEmpty: !currentMusic?.sign,
   };
 
   return (
