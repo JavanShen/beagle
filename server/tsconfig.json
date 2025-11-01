@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023"],
+    "module": "CommonJS",
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "outDir": "dist",
+
+    "strict": true,
+    "esModuleInterop": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "importsNotUsedAsValues": "remove",
+    "preserveValueImports": false
+  }
+}

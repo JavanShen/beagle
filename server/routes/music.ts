@@ -88,7 +88,8 @@ musicRouter.get("/getMusicList", async (req, res) => {
       ],
     });
 
-    res.success(playlistWithMusic?.["musicInfos"] || []);
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    res.success((playlistWithMusic as any)?.["musicInfos"] || []);
   } else {
     const musicList = await MusicInfo.findAll({
       include: [

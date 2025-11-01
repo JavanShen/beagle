@@ -7,7 +7,10 @@ import { getPlaylist } from "./playlist";
 import databaseConfig from "../config/database";
 
 const sequelize = new Sequelize(
-  databaseConfig[process.env.NODE_ENV || "production"],
+  databaseConfig[
+    (process.env.NODE_ENV as "production" | "development" | "test") ||
+      "production"
+  ],
 );
 
 const Sources = getSources(sequelize);

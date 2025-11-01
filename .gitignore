@@ -24,4 +24,3 @@ dist-ssr
 *.sw?
 
 database.sqlite
-src-server/covers

@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [react(), svgr()],
   resolve: {
     alias: {
-      "@": resolve("src"),
+      "@": resolve("./"),
     },
   },
   server: {

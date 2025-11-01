@@ -29,7 +29,7 @@ sourcesRouter.post("/removeSource", async (req, res) => {
   res.success(null, "Source removed successfully");
 });
 
-sourcesRouter.get("/getSourceList", async (req, res) => {
+sourcesRouter.get("/getSourceList", async (_req, res) => {
   const sources = await Sources.findAll({
     attributes: ["id", "username", "type"],
   });

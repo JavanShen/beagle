@@ -1,0 +1,18 @@
+{
+  "name": "server",
+  "private": true,
+  "version": "1.1.0",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development vite-node index.ts",
+    "build": "tsc",
+    "preview": "pnpm build && cross-env NODE_ENV=test node dist/server/index.js"
+  },
+  "dependencies": {
+    "webdav": "^5.8.0",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7",
+    "connect-history-api-fallback": "^2.0.0",
+    "express": "^5.1.0",
+    "express-jwt": "^8.5.1"
+  }
+}

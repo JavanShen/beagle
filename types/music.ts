@@ -1,5 +1,5 @@
-import { FileStat } from "webdav";
-import { Playlist } from "./playlist";
+import type { FileStat } from "webdav";
+import type { Playlist } from "./playlist";
 
 export type MusicInfo = Omit<FileStat, "type" | "props"> & {
   sign: string;

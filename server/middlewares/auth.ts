@@ -75,7 +75,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     req.source = source;
     next();
   } catch (error) {
-    if (error.name === "TokenExpiredError") {
+    if ((error as { name: string }).name === "TokenExpiredError") {
       res.status(401).json({ message: "访问令牌已过期" });
       return;
     }
