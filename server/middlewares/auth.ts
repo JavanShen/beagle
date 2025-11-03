@@ -6,7 +6,14 @@ import { SourceCreationAttributes } from "../models/sources";
 import { updateClient } from "../webdav";
 import crypto from "crypto";
 
-const whiteList = ["/api/sources/addSource", /\/covers\/.*/];
+const whiteList = [
+  "/api/sources/addSource",
+  /\/covers\/.*/,
+  "/",
+  "/settings",
+  /^\/playlist\/.*/,
+  /\.\w+$/,
+];
 
 const signList = [/\/api\/music\/file\/.*/];
 

@@ -13,7 +13,7 @@ export const app = express();
 const init = async () => {
   app.use(express.json()).use(responseHandler).use(auth);
 
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV !== "production") {
     app.use((req, _res, next) => {
       console.log(
         `[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`,
@@ -22,17 +22,22 @@ const init = async () => {
     });
   }
 
-  await fs.mkdir(filesConfig.coversDirPath, { recursive: true });
-  app.use(filesConfig.coversRoute, express.static(filesConfig.coversDirPath));
-
   app.use("/api/sources", sourcesRouter);
   app.use("/api/music", musicRouter);
   app.use("/api/playlist", playlistRouter);
 
-  if (process.env.NODE_ENV === "production") {
+  app.use(history());
+
+  await fs.mkdir(filesConfig.coversDirPath, { recursive: true });
+  app.use(filesConfig.coversRoute, express.static(filesConfig.coversDirPath));
+
+  if (
+    process.env.NODE_ENV === "production" ||
+    process.env.NODE_ENV === "test"
+  ) {
+    console.log("now is test", filesConfig.frontendOutput);
     app.use(express.static(filesConfig.frontendOutput));
   }
-  app.use(history());
 
   await sequelize.sync({ force: false });
 

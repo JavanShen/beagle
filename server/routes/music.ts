@@ -30,6 +30,8 @@ musicRouter.get("/getMusicList", async (req, res) => {
         .digest("hex"),
     }));
 
+  console.log("new MusicList", newMusicList);
+
   const originMusicList = (await MusicInfo.findAll({
     raw: true,
   })) as unknown as MusicInfoAttributes[];

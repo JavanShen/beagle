@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { MusicListItem } from "@/request/music";
-import { Playlist } from "types/playlist";
-import { MusicInfo, MusicMeta } from "types/music";
+import { Playlist } from "../../types/playlist";
+import { MusicInfo, MusicMeta } from "../../types/music";
 
 const excludeKeys = ["musicList", "history", "musicMetaMap"];
 

@@ -8,10 +8,11 @@
     "dev:app": "pnpm --filter app dev",
     "dev": "concurrently \"pnpm dev:server\" \"pnpm dev:app\"",
     "build:server": "pnpm --filter server build",
-    "build": "tsc -b && vite build",
+    "build:app": "pnpm --filter app build",
+    "build": "pnpm build:server && pnpm build:app",
     "lint": "eslint .",
     "preview:server": "pnpm --filter server preview",
-    "preview": "vite preview",
+    "preview": "pnpm build:app && pnpm preview:server",
     "test": "vitest",
     "version": "node scripts/sync-version.js"
   },
@@ -45,7 +46,8 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "sequelize-cli": "^6.6.3",
     "typescript": "~5.7.2",
-    "typescript-eslint": "^8.24.1"
+    "typescript-eslint": "^8.24.1",
+    "vitest": "^3.0.9"
   },
   "pnpm": {
     "ignoredBuiltDependencies": [

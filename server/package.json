@@ -14,5 +14,8 @@
     "connect-history-api-fallback": "^2.0.0",
     "express": "^5.1.0",
     "express-jwt": "^8.5.1"
+  },
+  "devDependencies": {
+    "vite-node": "^3.2.4"
   }
 }
