@@ -2,7 +2,7 @@ import { expect, test, describe } from "vitest";
 import {
   generateRandomArray,
   generateOrderedArray,
-} from "../src/utils/array.ts";
+} from "../app/utils/array.ts";
 
 describe("generateRandomArray", () => {
   test("should generate an array of specified length.", () => {

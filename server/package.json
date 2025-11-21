@@ -1,0 +1,23 @@
+{
+  "name": "server",
+  "private": true,
+  "version": "1.1.0",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development vite-node index.ts",
+    "build": "tsc",
+    "build:standalone": "tsc --outDir dist-bundle && node copy-modules.js",
+    "preview": "pnpm build && cross-env NODE_ENV=test node dist/server/index.js"
+  },
+  "dependencies": {
+    "connect-history-api-fallback": "^2.0.0",
+    "express": "^5.1.0",
+    "express-jwt": "^8.5.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7",
+    "webdav": "^5.8.0"
+  },
+  "devDependencies": {
+    "vite-node": "^3.2.4"
+  }
+}

@@ -1,0 +1,85 @@
+# 依赖目录
+**/node_modules/
+node_modules/
+
+# 构建输出目录
+**/dist/
+**/build/
+dist/
+build/
+
+# 日志文件
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# 运行时文件
+*.pid
+*.pid.lock
+*.seed
+*.pid.lock
+
+# 代码覆盖率目录
+coverage/
+**/coverage/
+*.lcov
+.nyc_output/
+
+# 缓存目录
+.cache/
+**/.cache/
+.parcel-cache/
+**/.parcel-cache/
+.vscode/
+.idea/
+*.tsbuildinfo
+
+# 环境变量文件
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# 系统文件
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+README.md
+
+# 文档文件
+**/*.md
+**/*.txt
+
+# 测试文件
+**/__tests__/
+**/*.test.ts
+**/*.spec.ts
+**/*.test.js
+**/*.spec.js
+jest.config.*
+vitest.config.*
+
+# pnpm 相关
+.pnpm-store/
+.pnpm-debug.log
+
+# Docker 自身文件
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose.*.yml
+
+# 临时文件和备份
+*.tmp
+*.temp
+*.bak
+*.backup

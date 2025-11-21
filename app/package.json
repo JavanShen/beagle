@@ -1,0 +1,35 @@
+{
+  "name": "app",
+  "private": true,
+  "version": "1.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build"
+  },
+  "dependencies": {
+    "@ebay/nice-modal-react": "^1.2.13",
+    "@heroui/react": "^2.7.4",
+    "@heroui/system": "^2.4.11",
+    "@heroui/theme": "^2.4.11",
+    "@types/react-transition-group": "^4.4.12",
+    "@types/react-window": "^1.8.8",
+    "ahooks": "^3.8.5",
+    "immer": "^10.1.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router": "^7.3.0",
+    "react-transition-group": "^4.4.5",
+    "react-virtualized-auto-sizer": "^1.0.25",
+    "react-window": "^1.8.11",
+    "tailwindcss": "^3.4.17",
+    "zustand": "^5.0.3",
+    "howler": "^2.2.4"
+  },
+  "devDependencies": {
+    "vite-plugin-svgr": "^4.3.0",
+    "postcss-100vh-fix": "^2.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.21"
+  }
+}
