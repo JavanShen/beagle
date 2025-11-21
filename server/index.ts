@@ -10,6 +10,8 @@ import filesConfig from "./config/files";
 import history from "connect-history-api-fallback";
 
 export const app = express();
+export const isElectron = process.env.ELECTRON === "true";
+
 const init = async () => {
   app.use(express.json()).use(responseHandler).use(auth);
 
@@ -32,10 +34,9 @@ const init = async () => {
   app.use(filesConfig.coversRoute, express.static(filesConfig.coversDirPath));
 
   if (
-    process.env.NODE_ENV === "production" ||
-    process.env.NODE_ENV === "test"
+    !isElectron &&
+    (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test")
   ) {
-    console.log("now is test", filesConfig.frontendOutput);
     app.use(express.static(filesConfig.frontendOutput));
   }
 

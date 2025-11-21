@@ -1,0 +1,28 @@
+{
+  "appId": "com.apine.beagle",
+  "productName": "Beagle",
+  "directories": {
+    "output": "./release"
+  },
+  "files": ["dist/**/*", "node_modules/**/*"],
+  "extraResources": [
+    {
+      "from": "../server/dist-bundle/server",
+      "to": "server"
+    },
+    {
+      "from": "../app/dist",
+      "to": "app",
+      "filter": ["**/*"]
+    }
+  ],
+  "mac": {
+    "category": "public.app-category.productivity"
+  },
+  "win": {
+    "target": "nsis"
+  },
+  "linux": {
+    "target": "AppImage"
+  }
+}

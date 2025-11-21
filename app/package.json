@@ -27,10 +27,7 @@
     "howler": "^2.2.4"
   },
   "devDependencies": {
-    "vite": "^6.2.0",
     "vite-plugin-svgr": "^4.3.0",
-    "esbuild": "0.25.2",
-    "globals": "^15.15.0",
     "postcss-100vh-fix": "^2.0.0",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.21"

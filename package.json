@@ -6,10 +6,13 @@
   "scripts": {
     "dev:server": "pnpm --filter server dev",
     "dev:app": "pnpm --filter app dev",
-    "dev": "concurrently \"pnpm dev:server\" \"pnpm dev:app\"",
+    "dev:electron": "pnpm build:server && concurrently \"pnpm dev:app\" \"pnpm --filter electron dev\"",
+    "dev": "concurrently \"pnpm dev:server\" \"pnpm dev:app\" \"pnpm dev:electron\"",
     "build:server": "pnpm --filter server build",
     "build:app": "pnpm --filter app build",
+    "build:electron": "pnpm --filter electron build",
     "build": "pnpm build:server && pnpm build:app",
+    "pack:electron": "pnpm build:app && pnpm --filter server build:standalone && pnpm --filter electron package",
     "lint": "eslint .",
     "preview:server": "pnpm --filter server preview",
     "preview": "pnpm build:app && pnpm preview:server",
@@ -47,13 +50,17 @@
     "sequelize-cli": "^6.6.3",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
-    "vitest": "^3.0.9"
+    "vitest": "^3.0.9",
+    "vite": "^6.2.0",
+    "esbuild": "0.25.2",
+    "globals": "^15.15.0"
   },
   "pnpm": {
     "ignoredBuiltDependencies": [
       "sqlite3"
     ],
     "onlyBuiltDependencies": [
+      "electron",
       "sqlite3"
     ]
   }
