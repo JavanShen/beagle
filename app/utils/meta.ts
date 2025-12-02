@@ -1,6 +1,9 @@
 import { getMusicMeta } from "@/request/music";
 import useStore from "@/store";
 import { isAxiosError } from "axios";
+import pLimit from "p-limit";
+
+const limit = pLimit(5);
 
 export const getMusicUrl = (
   fileName?: string,
@@ -21,7 +24,7 @@ export const parseMusicMeta = async (
 
   const joinUrl = `/${fileName}`;
   try {
-    const res = await getMusicMeta(joinUrl, sign, signal);
+    const res = await limit(() => getMusicMeta(joinUrl, sign, signal));
 
     const { title, artist, coverUrl, album, duration } = res.data || {};
 

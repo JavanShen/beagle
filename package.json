@@ -7,7 +7,7 @@
     "dev:server": "pnpm --filter server dev",
     "dev:app": "pnpm --filter app dev",
     "dev:electron": "pnpm build:server && concurrently \"pnpm dev:app\" \"pnpm --filter electron dev\"",
-    "dev": "concurrently \"pnpm dev:server\" \"pnpm dev:app\" \"pnpm dev:electron\"",
+    "dev": "concurrently \"pnpm dev:server\" \"pnpm dev:app\"",
     "build:server": "pnpm --filter server build",
     "build:app": "pnpm --filter app build",
     "build:electron": "pnpm --filter electron build",
@@ -28,6 +28,7 @@
     "lodash-es": "^4.17.21",
     "mime": "^4.0.7",
     "music-metadata": "^11.6.1",
+    "p-limit": "^7.2.0",
     "query-string": "^9.2.2",
     "webdav": "^5.8.0"
   },
@@ -44,16 +45,16 @@
     "@types/react-dom": "^19.0.4",
     "concurrently": "^9.2.0",
     "cross-env": "^10.1.0",
+    "esbuild": "0.25.2",
     "eslint": "^9.21.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^15.15.0",
     "sequelize-cli": "^6.6.3",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
-    "vitest": "^3.0.9",
     "vite": "^6.2.0",
-    "esbuild": "0.25.2",
-    "globals": "^15.15.0"
+    "vitest": "^3.0.9"
   },
   "pnpm": {
     "ignoredBuiltDependencies": [
