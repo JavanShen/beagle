@@ -7,6 +7,7 @@ import { useParams } from "react-router";
 const useFetchMusicList = () => {
   const currentPlaylist = useParams()?.playlistId || "";
 
+  const token = useStore((state) => state.token);
   const setMusicList = useStore((state) => state.setMusicList);
   const setMusicMetaMap = useStore((state) => state.setMusicMetaMap);
 
@@ -41,7 +42,7 @@ const useFetchMusicList = () => {
       controller.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPlaylist]);
+  }, [currentPlaylist, token]);
 };
 
 export default useFetchMusicList;

@@ -10,11 +10,7 @@ export default async (_req: Request, res: Response, next: NextFunction) => {
   };
 
   res.error = (message = "请求失败", code = 500) => {
-    res.status(code).json({
-      code,
-      data: null,
-      message,
-    });
+    res.status(code).send(message);
   };
   next();
 };

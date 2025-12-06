@@ -4,10 +4,6 @@ import useStore from "@/store";
 
 const service = axios.create();
 
-const clearToken = () => {
-  useStore.getState().clearToken();
-};
-
 export const showErrorMsg = (errorMsg: string) => {
   addToast({
     title: "Error",
@@ -39,11 +35,7 @@ service.interceptors.response.use(
       err.status !== 401 &&
       err.status !== 403
     ) {
-      showErrorMsg(err.data?.message || err.message);
-    }
-
-    if (err.status === 401) {
-      clearToken();
+      showErrorMsg(err?.response?.data || err.message);
     }
 
     return Promise.reject(err);

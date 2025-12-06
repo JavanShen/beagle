@@ -90,6 +90,7 @@ const Playlist = () => {
 
   const currentPlaylistId = useParams()?.playlistId;
 
+  const token = useStore((state) => state.token);
   const playlists = useStore((state) => state.playlists);
   const setPlaylists = useStore((state) => state.setPlaylists);
   const allPlaylists = [
@@ -113,7 +114,7 @@ const Playlist = () => {
   useEffect(() => {
     fetchPlaylists();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [token]);
 
   const setCurrentGroup = (groupId: string) => {
     navigate(`/playlist/${groupId}`);

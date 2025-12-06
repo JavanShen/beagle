@@ -9,30 +9,28 @@ import { useRequest } from "ahooks";
 
 const Sources = () => {
   const token = useStore((state) => state.token);
-  const resetState = useStore((state) => state.reset);
 
-  const { data: sources } = useRequest(async () => {
+  const { data: sources = [], run: fetchSources } = useRequest(async () => {
     return (await getSources()).data;
   });
 
   const { run: remove } = useRequest(
-    async (source: string) => {
-      return await removeSource(source);
+    async (id: string) => {
+      return await removeSource(id);
     },
     {
       manual: true,
-      onSuccess: (res) => {
-        if (res.code === 200) {
-          resetState();
-        }
+      onSuccess: () => {
+        useStore.getState().clearToken();
+        fetchSources();
       },
     },
   );
 
   return token ? (
-    <>
+    <div className="flex gap-4">
       {sources?.map((source) => (
-        <Card shadow="sm" className="w-96" key={source.id}>
+        <Card shadow="sm" className="w-72" key={source.id}>
           <div className="flex justify-between p-4 items-center">
             <span>{source.username}</span>
             <div className="flex items-center gap-4">
@@ -48,14 +46,14 @@ const Sources = () => {
               >
                 <DeleteIcon
                   className="h-5 w-5"
-                  onClick={() => remove(source.source)}
+                  onClick={() => remove(source.id)}
                 />
               </Button>
             </div>
           </div>
         </Card>
       ))}
-    </>
+    </div>
   ) : (
     <Button
       color="primary"

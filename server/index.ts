@@ -4,6 +4,7 @@ import express from "express";
 import { sequelize } from "./models";
 import auth from "./middlewares/auth";
 import responseHandler from "./middlewares/response";
+import errorHandle from "./middlewares/errorHandle";
 import { sourcesRouter, musicRouter, playlistRouter } from "./routes";
 import fs from "fs/promises";
 import filesConfig from "./config/files";
@@ -39,6 +40,8 @@ const init = async () => {
   ) {
     app.use(express.static(filesConfig.frontendOutput));
   }
+
+  app.use(errorHandle);
 
   await sequelize.sync({ force: false });
 

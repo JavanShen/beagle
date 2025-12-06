@@ -70,7 +70,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
       raw: true,
     })) as unknown as SourceCreationAttributes;
     if (!source) {
-      res.status(404).json({ message: "凭证不存在" });
+      res.status(401).json({ message: "凭证不存在" });
       return;
     }
 

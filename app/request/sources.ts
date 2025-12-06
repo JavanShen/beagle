@@ -15,11 +15,11 @@ export const addSource = async (data: Omit<Source, "id">) =>
     data,
   });
 
-export const removeSource = async (source: string, signal?: AbortSignal) =>
+export const removeSource = async (id: string, signal?: AbortSignal) =>
   request({
     method: "POST",
     url: "/api/sources/removeSource",
-    data: { source },
+    data: { id },
     signal,
   });
 
